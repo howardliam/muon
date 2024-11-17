@@ -7,7 +7,9 @@ A starter project for game engine/games built on SDL3 using Vulkan for graphics 
 - [ ] Texture loading
 - [ ] Game object wrapper
 - [ ] Camera
-- [ ] Good base render system
+- [ ] Good base render system as an example
+- [ ] User input handling
+- [ ] Audio (OpenAL)
 
 \* Model loading only without indices.
 

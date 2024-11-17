@@ -11,18 +11,24 @@ find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 
 set(ENGINE_SRC
-    src/engine/window/window.cpp
-    src/engine/window/window.hpp
-
+    # Rendering systems
     src/engine/rendering/rendersystem.cpp
     src/engine/rendering/rendersystem.hpp
 
+    # Scene
+    src/engine/scene/camera.cpp
+    src/engine/scene/camera.hpp
+    src/engine/scene/gameobject.cpp
+    src/engine/scene/gameobject.hpp
+
+    # Vulkan
     src/engine/vulkan/buffer.cpp
     src/engine/vulkan/buffer.hpp
     src/engine/vulkan/descriptors.cpp
     src/engine/vulkan/descriptors.hpp
     src/engine/vulkan/device.cpp
     src/engine/vulkan/device.hpp
+    src/engine/vulkan/frameinfo.hpp
     src/engine/vulkan/model.cpp
     src/engine/vulkan/model.hpp
     src/engine/vulkan/pipeline.cpp
@@ -33,6 +39,10 @@ set(ENGINE_SRC
     src/engine/vulkan/swapchain.hpp
     src/engine/vulkan/texture.cpp
     src/engine/vulkan/texture.hpp
+
+    # Window
+    src/engine/window/window.cpp
+    src/engine/window/window.hpp
 )
 
 set(PROJ_SRC
