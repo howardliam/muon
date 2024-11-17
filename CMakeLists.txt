@@ -31,11 +31,16 @@ set(ENGINE_SRC
     src/engine/vulkan/renderer.hpp
     src/engine/vulkan/swapchain.cpp
     src/engine/vulkan/swapchain.hpp
+    src/engine/vulkan/texture.cpp
+    src/engine/vulkan/texture.hpp
 )
 
 set(PROJ_SRC
     src/main.cpp
     src/utils.hpp
+
+    src/app.cpp
+    src/app.hpp
 )
 
 set(STB_SRC

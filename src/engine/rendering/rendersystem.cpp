@@ -1,4 +1,5 @@
 #include "rendersystem.hpp"
+#include <glm/trigonometric.hpp>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -24,7 +25,8 @@ void RenderSystem::render_model(Model &model, VkCommandBuffer command_buffer) {
     pipeline->bind(command_buffer);
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.77778f, 0.01f, 1000.0f);
-    glm::mat4 transform = glm::translate(glm::mat4{1.0f}, {0.0f, 0.5f, -10.0f});
+    glm::mat4 transform = glm::translate(glm::mat4{1.0f}, {0.0f, 0.0f, -10.0f});
+    transform = glm::rotate(transform, glm::radians(30.0f), {1.0f, 1.0f, 1.0f});
 
     SimplePushConstantData push{};
     push.model = projection * transform;

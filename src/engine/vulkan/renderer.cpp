@@ -1,4 +1,5 @@
 #include "renderer.hpp"
+
 #include <SDL3/SDL_events.h>
 
 Renderer::Renderer(Window &window, Device &device) : window{window}, device{device} {
