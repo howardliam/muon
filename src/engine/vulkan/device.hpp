@@ -33,10 +33,10 @@ public:
     Device(Window &window);
     ~Device();
 
-    Device(const Device&) = delete;
-    Device& operator=(const Device&) = delete;
-    Device(const Device&&) = delete;
-    Device& operator=(const Device&&) = delete;
+    Device(const Device &) = delete;
+    Device& operator=(const Device& ) = delete;
+    Device(const Device &&) = delete;
+    Device& operator=(const Device &&) = delete;
 
     VkInstance get_instance() const { return instance; }
     VkPhysicalDevice get_physical_device() const { return physical_device; }

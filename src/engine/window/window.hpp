@@ -20,6 +20,9 @@ public:
     Window(WindowProperties &properties);
     ~Window();
 
+    Window(const Window &) = delete;
+    Window& operator=(const Window &) = delete;
+
     void poll_events();
 
     VkExtent2D get_extent() const { return { static_cast<uint32_t>(properties.width), static_cast<uint32_t>(properties.height) }; }

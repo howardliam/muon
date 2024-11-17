@@ -9,8 +9,8 @@
 struct PipelineConfigInfo {
     PipelineConfigInfo() = default;
 
-    PipelineConfigInfo(const PipelineConfigInfo&) = delete;
-    PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+    PipelineConfigInfo(const PipelineConfigInfo &) = delete;
+    PipelineConfigInfo& operator=(const PipelineConfigInfo &) = delete;
 
     VkPipelineViewportStateCreateInfo viewport_info;
     VkPipelineInputAssemblyStateCreateInfo input_assembly_info;

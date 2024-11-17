@@ -35,8 +35,8 @@ public:
     Model(Device &device, const Builder &builder);
     ~Model();
 
-    Model(const Model&) = delete;
-    Model& operator=(const Model&) = delete;
+    Model(const Model &) = delete;
+    Model& operator=(const Model &) = delete;
 
     void bind(VkCommandBuffer command_buffer);
     void draw(VkCommandBuffer command_buffer);

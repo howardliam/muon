@@ -9,8 +9,8 @@ public:
     Renderer(Window &window, Device &device);
     ~Renderer();
 
-    Renderer(const Renderer&) = delete;
-    Renderer& operator=(const Renderer&) = delete;
+    Renderer(const Renderer &) = delete;
+    Renderer& operator=(const Renderer &) = delete;
 
     VkCommandBuffer begin_frame();
     void end_frame();

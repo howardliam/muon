@@ -12,8 +12,8 @@ public:
     Swapchain(Device &device, VkExtent2D window_extent, std::shared_ptr<Swapchain> previous);
     ~Swapchain();
 
-    Swapchain(const Swapchain&) = delete;
-    Swapchain& operator=(const Swapchain&) = delete;
+    Swapchain(const Swapchain &) = delete;
+    Swapchain& operator=(const Swapchain &) = delete;
 
     VkFramebuffer get_frame_buffer(int index) { return swapchain_framebuffers[index]; }
     VkRenderPass get_render_pass() { return render_pass; }

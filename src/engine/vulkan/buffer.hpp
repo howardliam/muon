@@ -10,8 +10,8 @@ public:
         VkBufferUsageFlags usage_flags, VkMemoryPropertyFlags memory_property_flags, VkDeviceSize min_offset_alignment = 1);
     ~Buffer();
 
-    Buffer(const Buffer&) = delete;
-    Buffer& operator=(const Buffer&) = delete;
+    Buffer(const Buffer &) = delete;
+    Buffer& operator=(const Buffer &) = delete;
 
     VkResult map(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
     void unmap();
