@@ -28,6 +28,7 @@ public:
     void set_icon(const char *icon_path);
 
     SDL_Window *get_window() const { return window; }
+    void set_title(std::string title) { SDL_SetWindowTitle(window, title.c_str()); properties.title = title; }
 
     bool was_resized() const { return resized; }
     void reset_resized() { resized = false; }
