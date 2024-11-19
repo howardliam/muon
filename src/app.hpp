@@ -1,7 +1,9 @@
 #pragma once
 
-#include "engine/window/window.hpp"
+#include <memory>
 
+#include "engine/vulkan/descriptors.hpp"
+#include "engine/window/window.hpp"
 #include "engine/vulkan/device.hpp"
 #include "engine/vulkan/renderer.hpp"
 
@@ -12,8 +14,10 @@ public:
 
     void run();
 private:
-    WindowProperties &properties;
+    WindowProperties properties;
     Window window{properties};
     Device device{window};
     Renderer renderer{window, device};
+
+    std::unique_ptr<DescriptorPool> global_pool;
 };

@@ -1,4 +1,6 @@
 #include "descriptors.hpp"
+#include <spdlog/spdlog.h>
+#include <vulkan/vulkan_core.h>
 
 /* DescriptorSetLayout Builder */
 DescriptorSetLayout::Builder &DescriptorSetLayout::Builder::add_binding(uint32_t binding, VkDescriptorType descriptor_type, VkShaderStageFlags stage_flags, uint32_t count) {
@@ -7,7 +9,9 @@ DescriptorSetLayout::Builder &DescriptorSetLayout::Builder::add_binding(uint32_t
     layout_binding.descriptorType = descriptor_type;
     layout_binding.descriptorCount = count;
     layout_binding.stageFlags = stage_flags;
+
     bindings[binding] = layout_binding;
+
     return *this;
 }
 
@@ -16,7 +20,7 @@ std::unique_ptr<DescriptorSetLayout> DescriptorSetLayout::Builder::build() const
 }
 
 /* DescriptorSetLayout */
-DescriptorSetLayout::DescriptorSetLayout(Device &device, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings) : device{device} {
+DescriptorSetLayout::DescriptorSetLayout(Device &device, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings) : device{device}, bindings{bindings} {
     std::vector<VkDescriptorSetLayoutBinding> set_layout_bindings{};
     for (auto kv : bindings) {
         set_layout_bindings.push_back(kv.second);
@@ -77,7 +81,6 @@ DescriptorPool::~DescriptorPool() {
     vkDestroyDescriptorPool(device.get_device(), descriptor_pool, nullptr);
 }
 
-
 bool DescriptorPool::allocate_descriptor(const VkDescriptorSetLayout descriptor_set_layout, VkDescriptorSet &descriptor) const {
     VkDescriptorSetAllocateInfo alloc_info{};
     alloc_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -95,19 +98,19 @@ void DescriptorPool::free_descriptors(std::vector<VkDescriptorSet> &descriptors)
     vkFreeDescriptorSets(device.get_device(), descriptor_pool, static_cast<uint32_t>(descriptors.size()), descriptors.data());
 }
 
-void DescriptorPool::resetPool() {
+void DescriptorPool::reset_pool() {
     vkResetDescriptorPool(device.get_device(), descriptor_pool, 0);
 }
 
 /* DescriptorWriter */
 DescriptorWriter::DescriptorWriter(DescriptorSetLayout &set_layout, DescriptorPool &pool) : set_layout{set_layout}, pool{pool} {}
 
-DescriptorWriter &DescriptorWriter::write_buffer(uint32_t binding, VkDescriptorBufferInfo *buffer_info) {
-    auto &bindingDescription = set_layout.bindings[binding];
+DescriptorWriter &DescriptorWriter::write_to_buffer(uint32_t binding, VkDescriptorBufferInfo *buffer_info) {
+    auto &binding_description = set_layout.bindings[binding];
 
     VkWriteDescriptorSet write{};
     write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    write.descriptorType = bindingDescription.descriptorType;
+    write.descriptorType = binding_description.descriptorType;
     write.dstBinding = binding;
     write.pBufferInfo = buffer_info;
     write.descriptorCount = 1;
@@ -117,12 +120,11 @@ DescriptorWriter &DescriptorWriter::write_buffer(uint32_t binding, VkDescriptorB
 }
 
 DescriptorWriter &DescriptorWriter::write_image(uint32_t binding, VkDescriptorImageInfo *image_info) {
-    auto &bindingDescription = set_layout.bindings[binding];
-
+    auto &binding_description = set_layout.bindings[binding];
 
     VkWriteDescriptorSet write{};
     write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    write.descriptorType = bindingDescription.descriptorType;
+    write.descriptorType = binding_description.descriptorType;
     write.dstBinding = binding;
     write.pImageInfo = image_info;
     write.descriptorCount = 1;

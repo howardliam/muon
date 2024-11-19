@@ -58,7 +58,7 @@ public:
 
     bool allocate_descriptor(const VkDescriptorSetLayout descriptor_set_layout, VkDescriptorSet &descriptor) const;
     void free_descriptors(std::vector<VkDescriptorSet> &descriptors) const;
-    void resetPool();
+    void reset_pool();
 
 private:
     Device &device;
@@ -71,7 +71,7 @@ class DescriptorWriter {
 public:
     DescriptorWriter(DescriptorSetLayout &set_layout, DescriptorPool &pool);
 
-    DescriptorWriter &write_buffer(uint32_t binding, VkDescriptorBufferInfo *buffer_info);
+    DescriptorWriter &write_to_buffer(uint32_t binding, VkDescriptorBufferInfo *buffer_info);
     DescriptorWriter &write_image(uint32_t binding, VkDescriptorImageInfo *image_info);
 
     bool build(VkDescriptorSet &set);
