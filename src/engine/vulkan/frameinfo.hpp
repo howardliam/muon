@@ -2,9 +2,11 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include "../scene/camera.hpp"
+
 struct FrameInfo {
     int frame_index;
     float frame_time;
     VkCommandBuffer command_buffer;
-    /* Camera class */
+    Camera &camera;
 };

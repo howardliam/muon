@@ -12,6 +12,8 @@ public:
     void set_ortho_projection(float left, float right, float bottom, float top, float z_near, float z_far);
     void set_perspective_projection(float fov, float aspect_ratio, float z_near, float z_far);
 
+    void look_at(glm::vec3 position, glm::vec3 target, glm::vec3 up = {0.0f, 1.0f, 0.0f});
+
     const glm::mat4 &get_projection() const { return projection; }
     const glm::mat4 &get_view() const { return view; }
 

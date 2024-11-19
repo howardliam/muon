@@ -1,16 +1,18 @@
 #include "app.hpp"
 
 #include <chrono>
-#include <glm/trigonometric.hpp>
 #include <memory>
 
 #include <vulkan/vulkan.hpp>
+#include <glm/trigonometric.hpp>
 
-#include "engine/rendering/rendersystem.hpp"
 #include "engine/vulkan/buffer.hpp"
 #include "engine/vulkan/descriptors.hpp"
 #include "engine/vulkan/model.hpp"
 #include "engine/vulkan/swapchain.hpp"
+#include "engine/vulkan/texture.hpp"
+
+#include "engine/rendering/rendersystem.hpp"
 
 #include "engine/scene/camera.hpp"
 
@@ -25,10 +27,13 @@ App::App(WindowProperties &properties) : properties{properties} {
     global_pool = DescriptorPool::Builder(device)
         .set_max_sets(Swapchain::MAX_FRAMES_IN_FLIGHT)
         .add_pool_size(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, Swapchain::MAX_FRAMES_IN_FLIGHT)
+        .add_pool_size(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, Swapchain::MAX_FRAMES_IN_FLIGHT)
         .build();
 }
 
-App::~App() = default;
+App::~App() {
+    spdlog::info("Shutting down");
+}
 
 void App::run() {
     std::vector<std::unique_ptr<Buffer>> ubo_buffers(Swapchain::MAX_FRAMES_IN_FLIGHT);
@@ -45,20 +50,26 @@ void App::run() {
 
     auto global_set_layout = DescriptorSetLayout::Builder(device)
         .add_binding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
+        .add_binding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
         .build();
+
+    Texture texture{device, "assets/textures/icon.png"};
 
     std::vector<VkDescriptorSet> global_descriptor_sets(Swapchain::MAX_FRAMES_IN_FLIGHT);
     for (int i = 0; i < global_descriptor_sets.size(); i++) {
         auto buffer_info = ubo_buffers[i]->descriptor_info();
+        auto image_info = texture.descriptor_info();
 
         DescriptorWriter(*global_set_layout, *global_pool)
             .write_to_buffer(0, &buffer_info)
+            .write_image(1, &image_info)
             .build(global_descriptor_sets[i]);
     }
 
     RenderSystem render_system{device, renderer.get_swapchain_render_pass(), global_set_layout->get_descriptor_set_layout()};
 
     Camera camera{};
+    camera.look_at({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f});
 
     std::unique_ptr model = create_model_from_file(device, "assets/models/cube.obj");
 
@@ -80,6 +91,7 @@ void App::run() {
 
             GlobalUbo global_ubo{};
             global_ubo.projection = camera.get_projection();
+            global_ubo.view = camera.get_view();
             ubo_buffers[frame_index]->write_to_buffer(&global_ubo);
             ubo_buffers[frame_index]->flush();
 

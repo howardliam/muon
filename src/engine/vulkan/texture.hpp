@@ -18,6 +18,8 @@ public:
     VkImageView get_image_view() const { return image_view; }
     VkImageLayout get_image_layout() const { return image_layout; }
 
+    VkDescriptorImageInfo descriptor_info() const;
+
 private:
     Device &device;
 

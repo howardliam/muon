@@ -13,7 +13,7 @@ struct SimplePushConstantData {
 };
 
 RenderSystem::RenderSystem(Device &device, VkRenderPass render_pass, VkDescriptorSetLayout descriptor_set_layout) : device{device} {
-    create_pipeine_layout(descriptor_set_layout);
+    create_pipeline_layout(descriptor_set_layout);
     create_pipeine(render_pass);
 }
 
@@ -50,7 +50,7 @@ void RenderSystem::render_model(Model &model, VkCommandBuffer command_buffer, Vk
     model.draw(command_buffer);
 }
 
-void RenderSystem::create_pipeine_layout(VkDescriptorSetLayout descriptor_set_layout) {
+void RenderSystem::create_pipeline_layout(VkDescriptorSetLayout descriptor_set_layout) {
     VkPushConstantRange push_constant_range{};
     push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
     push_constant_range.offset = 0;

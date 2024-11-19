@@ -18,7 +18,7 @@ layout(push_constant) uniform Push {
 } push;
 
 void main() {
-    gl_Position = ubo.projection * push.model * vec4(position, 1.0);
+    gl_Position = ubo.projection * ubo.view * push.model * vec4(position, 1.0);
     out_colour = colour;
     out_tex_coord = tex_coord;
 }

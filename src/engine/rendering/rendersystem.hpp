@@ -24,6 +24,6 @@ private:
     std::unique_ptr<Pipeline> pipeline;
     VkPipelineLayout pipeline_layout;
 
-    void create_pipeine_layout(VkDescriptorSetLayout descriptor_set_layout);
+    void create_pipeline_layout(VkDescriptorSetLayout descriptor_set_layout);
     void create_pipeine(VkRenderPass render_pass);
 };

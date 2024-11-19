@@ -85,6 +85,15 @@ Texture::~Texture() {
     vkDestroySampler(device.get_device(), sampler, nullptr);
 }
 
+VkDescriptorImageInfo Texture::descriptor_info() const {
+    VkDescriptorImageInfo image_info{};
+    image_info.sampler = sampler;
+    image_info.imageView = image_view;
+    image_info.imageLayout = image_layout;
+
+    return image_info;
+}
+
 void Texture::transition_image_layout(VkImageLayout old_layout, VkImageLayout new_layout) {
     VkCommandBuffer command_buffer = device.begin_single_time_commands();
 
