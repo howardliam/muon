@@ -7,6 +7,7 @@
 #include <SDL3/SDL_video.h>
 
 #include "../../utils.hpp"
+#include "../input/inputmanager.hpp"
 
 struct WindowProperties {
     int width{defaults::WIDTH};
@@ -38,12 +39,16 @@ public:
 
     void create_surface(VkInstance instance, VkSurfaceKHR *surface);
 
+    void bind_input_manager(InputManager *input_manager);
+
 private:
     WindowProperties properties;
 
     SDL_Window *window;
 
     bool resized{false};
+
+    InputManager *input_manager{nullptr};
 
     void initialise_sdl();
     void initialise_window();

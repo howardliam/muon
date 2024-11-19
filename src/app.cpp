@@ -1,11 +1,14 @@
 #include "app.hpp"
 
+#include <SDL3/SDL_scancode.h>
 #include <chrono>
+#include <glm/ext/matrix_transform.hpp>
 #include <memory>
 
 #include <vulkan/vulkan.hpp>
 #include <glm/trigonometric.hpp>
 
+#include "engine/input/inputmanager.hpp"
 #include "engine/vulkan/buffer.hpp"
 #include "engine/vulkan/descriptors.hpp"
 #include "engine/vulkan/model.hpp"
@@ -36,6 +39,9 @@ App::~App() {
 }
 
 void App::run() {
+    InputManager input_manager;
+    window.bind_input_manager(&input_manager);
+
     std::vector<std::unique_ptr<Buffer>> ubo_buffers(Swapchain::MAX_FRAMES_IN_FLIGHT);
     for (int i = 0; i < ubo_buffers.size(); i++) {
         ubo_buffers[i] = std::make_unique<Buffer>(
@@ -68,8 +74,9 @@ void App::run() {
 
     RenderSystem render_system{device, renderer.get_swapchain_render_pass(), global_set_layout->get_descriptor_set_layout()};
 
+    glm::vec3 camera_pos = {0.0f, 0.0f, 0.0f};
     Camera camera{};
-    camera.look_at({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f});
+    camera.look_at(camera_pos, {0.0f, 0.0f, -1.0f});
 
     std::unique_ptr model = create_model_from_file(device, "assets/models/cube.obj");
 
@@ -79,13 +86,18 @@ void App::run() {
     while (window.is_open()) {
         window.poll_events();
 
+        if (input_manager.is_key_pressed(SDL_SCANCODE_ESCAPE)) {
+            window.set_to_close();
+        }
+
         auto new_time = std::chrono::high_resolution_clock::now();
         frame_time = std::chrono::duration<float, std::chrono::seconds::period>(new_time - current_time).count();
         current_time = new_time;
 
-        window.set_title(std::to_string(static_cast<int>(1 / frame_time)) + " FPS");
+        // window.set_title(std::to_string(static_cast<int>(1 / frame_time)) + " FPS");
 
         camera.set_perspective_projection(glm::radians(45.0f), renderer.get_aspect_ratio(), 0.01f, 1000.0f);
+
         if (const auto command_buffer = renderer.begin_frame()) {
             const int frame_index = renderer.get_frame_index();
 
@@ -102,6 +114,8 @@ void App::run() {
             renderer.end_swapchain_render_pass(command_buffer);
             renderer.end_frame();
         }
+
+        input_manager.update();
     }
 
     vkDeviceWaitIdle(device.get_device());

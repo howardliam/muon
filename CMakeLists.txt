@@ -11,6 +11,10 @@ find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 
 set(ENGINE_SRC
+    # Input
+    src/engine/input/inputmanager.cpp
+    src/engine/input/inputmanager.hpp
+
     # Rendering systems
     src/engine/rendering/rendersystem.cpp
     src/engine/rendering/rendersystem.hpp

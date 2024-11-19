@@ -21,6 +21,10 @@ Window::~Window() {
 void Window::poll_events() {
     SDL_Event event;
         while (SDL_PollEvent(&event)) {
+            if (input_manager != nullptr) {
+                input_manager->process_event(event);
+            }
+
             if (event.type == SDL_EVENT_QUIT) {
                 properties.open = false;
                 break;
@@ -47,6 +51,10 @@ void Window::create_surface(VkInstance instance, VkSurfaceKHR *surface) {
         spdlog::error("Failed to create window surface");
         exit(exitcode::FAILURE);
     }
+}
+
+void Window::bind_input_manager(InputManager *input_manager) {
+    this->input_manager = input_manager;
 }
 
 void Window::initialise_sdl() {
