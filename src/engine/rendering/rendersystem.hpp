@@ -5,6 +5,7 @@
 #include "../vulkan/device.hpp"
 #include "../vulkan/pipeline.hpp"
 #include "../vulkan/model.hpp"
+#include "../vulkan/frameinfo.hpp"
 
 class RenderSystem {
 public:
@@ -16,7 +17,7 @@ public:
 
 
     // void render_game_objects(FrameInfo &frame_info, std::vector<GameObject>& game_objects);
-    void render_model(Model &model, VkCommandBuffer command_buffer, VkDescriptorSet descriptor_set);
+    void render_model(FrameInfo &frame_info, Model &model);
 
 private:
     Device &device;

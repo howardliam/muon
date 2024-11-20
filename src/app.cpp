@@ -1,16 +1,17 @@
 #include "app.hpp"
 
-#include <SDL3/SDL_scancode.h>
 #include <chrono>
-#include <glm/ext/matrix_transform.hpp>
 #include <memory>
 
 #include <vulkan/vulkan.hpp>
 #include <glm/trigonometric.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <SDL3/SDL_scancode.h>
 
 #include "engine/input/inputmanager.hpp"
 #include "engine/vulkan/buffer.hpp"
 #include "engine/vulkan/descriptors.hpp"
+#include "engine/vulkan/frameinfo.hpp"
 #include "engine/vulkan/model.hpp"
 #include "engine/vulkan/swapchain.hpp"
 #include "engine/vulkan/texture.hpp"
@@ -109,7 +110,14 @@ void App::run() {
 
             renderer.begin_swapchain_render_pass(command_buffer);
 
-            render_system.render_model(*model, command_buffer, global_descriptor_sets[frame_index]);
+            FrameInfo frame_info{
+                frame_index,
+                frame_time,
+                command_buffer,
+                camera,
+                global_descriptor_sets[frame_index]
+            };
+            render_system.render_model(frame_info, *model);
 
             renderer.end_swapchain_render_pass(command_buffer);
             renderer.end_frame();

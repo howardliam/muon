@@ -23,6 +23,10 @@ public:
 private:
     Device &device;
 
+    uint32_t width;
+    uint32_t height;
+    uint32_t mip_levels;
+
     VkImage image;
     VkDeviceMemory image_memory;
     VkSampler sampler;
@@ -31,4 +35,5 @@ private:
     VkFormat image_format;
 
     void transition_image_layout(VkImageLayout old_layout, VkImageLayout new_layout);
+    void generate_mipmaps();
 };

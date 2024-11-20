@@ -11,6 +11,11 @@ find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 
 set(ENGINE_SRC
+    # Audio
+
+    # ECS
+    src/engine/entt.hpp
+
     # Input
     src/engine/input/inputmanager.cpp
     src/engine/input/inputmanager.hpp

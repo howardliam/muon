@@ -34,3 +34,4 @@ cmake --build build
 ## Additional thanks to
 - [STB](https://github.com/nothings/stb)
 - [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
+- [entt](https://github.com/skypjack/entt)

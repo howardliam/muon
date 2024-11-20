@@ -361,12 +361,12 @@ VkSurfaceFormatKHR Swapchain::choose_swap_surface_format(const std::vector<VkSur
 }
 
 VkPresentModeKHR Swapchain::choose_swap_present_mode(const std::vector<VkPresentModeKHR> &available_present_modes) {
-    for (const auto &available_present_mode : available_present_modes) {
-        if (available_present_mode == VK_PRESENT_MODE_MAILBOX_KHR) {
-            spdlog::debug("Present mode: Mailbox");
-            return available_present_mode;
-        }
-    }
+    // for (const auto &available_present_mode : available_present_modes) {
+    //     if (available_present_mode == VK_PRESENT_MODE_MAILBOX_KHR) {
+    //         spdlog::debug("Present mode: Mailbox");
+    //         return available_present_mode;
+    //     }
+    // }
 
     spdlog::debug("Present mode: V-Sync");
     return VK_PRESENT_MODE_FIFO_KHR;
