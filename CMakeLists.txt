@@ -14,7 +14,7 @@ set(ENGINE_SRC
     # Audio
 
     # ECS
-    src/engine/entt.hpp
+    src/engine/ecs/entt.hpp
 
     # Input
     src/engine/input/inputmanager.cpp
