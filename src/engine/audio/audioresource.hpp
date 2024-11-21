@@ -22,5 +22,6 @@ private:
     ALenum format{};
     ALuint buffer{};
     ALuint source{};
+
     void load_ogg(std::string &filename);
 };
