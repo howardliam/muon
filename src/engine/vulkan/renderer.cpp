@@ -104,13 +104,13 @@ void Renderer::end_swapchain_render_pass(VkCommandBuffer command_buffer) {
 void Renderer::create_command_buffers() {
     command_buffers.resize(Swapchain::MAX_FRAMES_IN_FLIGHT);
 
-    VkCommandBufferAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandPool = device.get_command_pool();
-    allocInfo.commandBufferCount = static_cast<uint32_t>(command_buffers.size());
+    VkCommandBufferAllocateInfo alloc_info{};
+    alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    alloc_info.commandPool = device.get_command_pool();
+    alloc_info.commandBufferCount = static_cast<uint32_t>(command_buffers.size());
 
-    if (vkAllocateCommandBuffers(device.get_device(), &allocInfo, command_buffers.data()) != VK_SUCCESS) {
+    if (vkAllocateCommandBuffers(device.get_device(), &alloc_info, command_buffers.data()) != VK_SUCCESS) {
         spdlog::error("Failed to allocate command buffers");
         exit(exitcode::FAILURE);
     }
@@ -134,9 +134,9 @@ void Renderer::recreate_swapchain() {
     if (swapchain == nullptr) {
         swapchain = std::make_unique<Swapchain>(device, extent);
     } else {
-        std::shared_ptr oldSwapchain = std::move(swapchain);
-        swapchain = std::make_unique<Swapchain>(device, extent, oldSwapchain);
-        if (!swapchain->compare_swap_formats(*oldSwapchain)) {
+        std::shared_ptr old_swap_chain = std::move(swapchain);
+        swapchain = std::make_unique<Swapchain>(device, extent, old_swap_chain);
+        if (!swapchain->compare_swap_formats(*old_swap_chain)) {
             spdlog::error("Swapchain does not match swap formats");
             exit(exitcode::FAILURE);
         }

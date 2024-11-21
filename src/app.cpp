@@ -95,7 +95,7 @@ void App::run() {
 
         // window.set_title(std::to_string(static_cast<int>(1 / frame_time)) + " FPS");
 
-        camera.set_perspective_projection(glm::radians(45.0f), renderer.get_aspect_ratio(), 0.01f, 1000.0f);
+        camera.set_perspective_projection(glm::radians(90.0f), renderer.get_aspect_ratio(), 0.01f, 1000.0f);
 
         renderer.set_clear_colour({1.0f, 1.0f, 1.0f, 1.0f});
         if (const auto command_buffer = renderer.begin_frame()) {
