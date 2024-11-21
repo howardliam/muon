@@ -10,11 +10,16 @@ find_package(SDL3 REQUIRED)
 find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 
+find_package(OpenAL REQUIRED)
+
+include_directories(libs/stb)
+include_directories(libs/tinyobjloader)
+include_directories(libs/entt)
+
 set(ENGINE_SRC
     # Audio
 
     # ECS
-    src/engine/ecs/entt.hpp
 
     # Input
     src/engine/input/inputmanager.cpp
@@ -62,26 +67,13 @@ set(PROJ_SRC
     src/app.hpp
 )
 
-set(STB_SRC
-    src/stb/stb_image.c
-    src/stb/stb_image.h
-)
-
-set(TOJ_SRC
-    src/tinyobjloader/tiny_obj_loader.cpp
-    src/tinyobjloader/tiny_obj_loader.h
-)
-
 add_executable(${PROJ_NAME}
     ${ENGINE_SRC}
     ${PROJ_SRC}
-    ${STB_SRC}
-    ${TOJ_SRC}
 )
 
 set(SHADER_DIR ${CMAKE_SOURCE_DIR}/assets/shaders)
 file(GLOB SHADERS "${SHADER_DIR}/*.vert" "${SHADER_DIR}/*.frag")
-message(STATUS "Found shader files: ${SHADERS}")
 
 set(SPIRV_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/assets/shaders)
 foreach (SHADER ${SHADERS})
@@ -101,14 +93,10 @@ endforeach ()
 add_custom_target(compile_shaders DEPENDS ${SPIRV_OUTPUTS})
 add_dependencies(${PROJ_NAME} compile_shaders)
 
-set(LIBS
-    pthread
-    dl
-    SDL3::SDL3
-    Vulkan::Vulkan
-    glm
-    spdlog::spdlog
-    fmt
-)
+set(LIBS pthread dl)
+set(GRAPHICS_LIBS SDL3::SDL3 Vulkan::Vulkan glm)
+set(LOGGING_LIBS spdlog::spdlog fmt)
+set(IMAGE_LIBS)
+set(AUDIO_LIBS openal)
 
-target_link_libraries(${PROJ_NAME} ${LIBS})
+target_link_libraries(${PROJ_NAME} PRIVATE ${LIBS} ${GRAPHICS_LIBS} ${LOGGING_LIBS} ${IMAGE_LIBS} ${AUDIO_LIBS})

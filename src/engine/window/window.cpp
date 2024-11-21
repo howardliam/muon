@@ -4,9 +4,7 @@
 #include <SDL3/SDL_video.h>
 #include <SDL3/SDL_vulkan.h>
 #include <spdlog/spdlog.h>
-#include <vulkan/vulkan_core.h>
-
-#include "../../stb/stb_image.h"
+#include <stb_image.h>
 
 Window::Window(WindowProperties &properties) : properties{properties} {
     initialise_sdl();

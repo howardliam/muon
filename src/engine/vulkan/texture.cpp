@@ -1,10 +1,10 @@
 #include "texture.hpp"
 
 #include <cmath>
-#include <vulkan/vulkan_core.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 #include "buffer.hpp"
-#include "../../stb/stb_image.h"
 
 Texture::Texture(Device &device, const std::string &path) : device{device} {
     int w, h, channels;

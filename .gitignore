@@ -1,3 +1,6 @@
 build/
+.cache
 # Renderdoc capture settings
 *.cap
+
+assets/audio

@@ -1,10 +1,9 @@
 #include "model.hpp"
 
-#include <unordered_map>
-
 #include <spdlog/spdlog.h>
 
-#include "../../tinyobjloader/tiny_obj_loader.h"
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
 
 /* Vertex */
 std::vector<VkVertexInputBindingDescription> Model::Vertex::get_binding_descriptions() {
