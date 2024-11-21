@@ -72,12 +72,12 @@ void Renderer::begin_swapchain_render_pass(VkCommandBuffer command_buffer) {
     render_pass_info.renderArea.offset = {0, 0};
     render_pass_info.renderArea.extent = swapchain->get_swapchain_extent();
 
-    std::array<VkClearValue, 2> clearValues{};
-    clearValues[0].color = {0.0f, 0.0f, 0.0f, 1.0f};
-    clearValues[1].depthStencil = {1.0f, 0};
+    std::array<VkClearValue, 2> clear_values{};
+    clear_values[0].color = clear_colour;
+    clear_values[1].depthStencil = clear_depth_stencil;
 
-    render_pass_info.clearValueCount = static_cast<uint32_t>(clearValues.size());
-    render_pass_info.pClearValues = clearValues.data();
+    render_pass_info.clearValueCount = static_cast<uint32_t>(clear_values.size());
+    render_pass_info.pClearValues = clear_values.data();
 
     vkCmdBeginRenderPass(command_buffer, &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
 

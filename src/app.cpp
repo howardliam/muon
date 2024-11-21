@@ -15,9 +15,7 @@
 #include "engine/vulkan/model.hpp"
 #include "engine/vulkan/swapchain.hpp"
 #include "engine/vulkan/texture.hpp"
-
 #include "engine/rendering/rendersystem.hpp"
-
 #include "engine/scene/camera.hpp"
 
 struct GlobalUbo {
@@ -99,6 +97,7 @@ void App::run() {
 
         camera.set_perspective_projection(glm::radians(45.0f), renderer.get_aspect_ratio(), 0.01f, 1000.0f);
 
+        renderer.set_clear_colour({1.0f, 1.0f, 1.0f, 1.0f});
         if (const auto command_buffer = renderer.begin_frame()) {
             const int frame_index = renderer.get_frame_index();
 
