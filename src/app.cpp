@@ -82,6 +82,11 @@ void App::run() {
     auto current_time = std::chrono::high_resolution_clock::now();
     float frame_time;
 
+    std::string filename = "assets/audio/break-window.ogg";
+    std::shared_ptr audio_resource = audio_manager.get_audio_resource(filename);
+
+    audio_resource->play();
+
     while (window.is_open()) {
         window.poll_events();
 

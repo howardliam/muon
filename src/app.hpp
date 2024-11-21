@@ -6,6 +6,7 @@
 #include "engine/window/window.hpp"
 #include "engine/vulkan/device.hpp"
 #include "engine/vulkan/renderer.hpp"
+#include "engine/audio/audiomanager.hpp"
 
 class App {
 public:
@@ -20,4 +21,6 @@ private:
     Renderer renderer{window, device};
 
     std::unique_ptr<DescriptorPool> global_pool;
+
+    AudioManager audio_manager;
 };

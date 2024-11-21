@@ -12,12 +12,19 @@ find_package(spdlog REQUIRED)
 
 find_package(OpenAL REQUIRED)
 
-include_directories(libs/stb)
-include_directories(libs/tinyobjloader)
-include_directories(libs/entt)
+include_directories(
+    libs/stb
+    libs/tinyobjloader
+    libs/entt
+)
 
 set(ENGINE_SRC
     # Audio
+    src/engine/audio/audiomanager.cpp
+    src/engine/audio/audiomanager.hpp
+    src/engine/audio/audioresource.cpp
+    src/engine/audio/audioresource.hpp
+    src/engine/audio/stb_vorbis.c
 
     # ECS
 
