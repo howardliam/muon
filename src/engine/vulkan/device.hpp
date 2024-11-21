@@ -72,8 +72,8 @@ private:
 
     VkPhysicalDeviceProperties properties{};
 
-    const std::vector<const char*> validation_layers = {"VK_LAYER_KHRONOS_validation"};
-    const std::vector<const char*> device_extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+    const std::vector<const char *> validation_layers = {"VK_LAYER_KHRONOS_validation"};
+    const std::vector<const char *> device_extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
     void create_instance();
     void setup_debug_messenger();
@@ -83,7 +83,7 @@ private:
     void create_command_pool();
 
     bool is_device_suitable(VkPhysicalDevice device);
-    std::vector<const char*> get_required_extensions();
+    std::vector<const char *> get_required_extensions();
     bool check_validation_layer_support();
     QueueFamilyIndices find_queue_families(VkPhysicalDevice device);
     void populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT &create_info);
