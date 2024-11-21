@@ -5,8 +5,6 @@
 
 #include <AL/al.h>
 
-class AudioManager;
-
 class AudioResource {
 public:
     AudioResource(std::string &filename);
@@ -25,6 +23,4 @@ private:
     ALuint buffer{};
     ALuint source{};
     void load_ogg(std::string &filename);
-
-    friend class AudioManager;
 };
