@@ -18,6 +18,7 @@ An amateur game engine for learning Vulkan among other technologies.
 - Vulkan
 - glm
 - spdlog
+- OpenAL
 
 ## Build instructions
 ```
