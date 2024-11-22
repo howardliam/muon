@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10.0)
 set(CMAKE_CXX_STANDARD 20)
 
-set(PROJ_NAME vulkan-sdl3-starter)
+set(PROJ_NAME muon)
 
 project(${PROJ_NAME} VERSION 0.1.0 LANGUAGES C CXX)
 

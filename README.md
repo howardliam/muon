@@ -1,8 +1,5 @@
-# This project has moved
-Due to it morphing from a starter project into an actual engine, it is moving to [muon](https://github.com/howardliam/muon)
-
-# Vulkan SDL3 Starter Project
-A starter project for game engine/games built on SDL3 using Vulkan for graphics API.
+# Muon Engine
+An amateur game engine for learning Vulkan among other technologies.
 
 ## Todo
 - [x] Initial Vulkan setup
@@ -24,18 +21,18 @@ A starter project for game engine/games built on SDL3 using Vulkan for graphics 
 
 ## Build instructions
 ```
-git clone https://github.com/howardliam/vulkan-sdl3-starter
-cd vulkan-sdl3-starter
+git clone https://github.com/howardliam/muon
+cd muon
 mkdir build
 cd build
 cmake -G Ninja ..
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .
 cd ..
 cmake --build build
-./build/vulkan-sdl3-starter
+./build/muon
 ```
 
-## Additional thanks to
+## Attributions
 - [STB](https://github.com/nothings/stb)
 - [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 - [entt](https://github.com/skypjack/entt)
