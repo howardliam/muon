@@ -86,6 +86,8 @@ void App::run() {
     std::shared_ptr audio_resource = audio_manager.get_audio_resource(filename);
 
     audio_resource->play();
+    audio_resource->pause();
+    audio_resource->resume();
 
     while (window.is_open()) {
         window.poll_events();

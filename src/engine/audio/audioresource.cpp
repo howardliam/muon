@@ -1,4 +1,5 @@
 #include "audioresource.hpp"
+#include <AL/al.h>
 
 #define STB_VORBIS_HEADER_ONLY
 #include "stb_vorbis.c"
@@ -26,11 +27,18 @@ AudioResource::~AudioResource() {
 
 void AudioResource::play() {
     alSourcePlay(source);
+}
 
-    // ALint state;
-    // do {
-    //     alGetSourcei(source, AL_SOURCE_STATE, &state);
-    // } while (state == AL_PLAYING);
+void AudioResource::pause() {
+    alSourcePause(source);
+}
+
+void AudioResource::resume() {
+    play();
+}
+
+void AudioResource::stop() {
+    alSourceStop(source);
 }
 
 void AudioResource::load_ogg(std::string &filename) {

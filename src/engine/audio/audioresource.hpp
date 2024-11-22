@@ -12,6 +12,9 @@ public:
 
     bool loaded_successfully() { return loaded; }
     void play();
+    void pause();
+    void resume();
+    void stop();
 
 private:
     bool loaded = false;

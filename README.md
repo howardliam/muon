@@ -1,3 +1,6 @@
+# This project has moved
+Due to it morphing from a starter project into an actual engine, it is moving to [muon](https://github.com/howardliam/muon)
+
 # Vulkan SDL3 Starter Project
 A starter project for game engine/games built on SDL3 using Vulkan for graphics API.
 

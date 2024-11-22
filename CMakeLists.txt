@@ -20,6 +20,8 @@ include_directories(
 
 set(ENGINE_SRC
     # Audio
+    src/engine/audio/audiolistener.cpp
+    src/engine/audio/audiolistener.hpp
     src/engine/audio/audiomanager.cpp
     src/engine/audio/audiomanager.hpp
     src/engine/audio/audioresource.cpp
