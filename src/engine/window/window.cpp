@@ -72,7 +72,7 @@ void Window::initialise_window() {
 
     if (window == nullptr) {
         auto err = SDL_GetError();
-        spdlog::error("Failed to create window: {}", err);
+        spdlog::error("Failed to initialise window: {}", err);
         exit(exitcode::FAILURE);
     }
 

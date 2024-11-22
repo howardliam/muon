@@ -1,4 +1,4 @@
-#include "audioresource.hpp"
+#include "resource.hpp"
 #include <AL/al.h>
 
 #define STB_VORBIS_HEADER_ONLY
@@ -15,30 +15,10 @@ AudioResource::AudioResource(std::string &filename) {
 
     alGenBuffers(1, &buffer);
     alBufferData(buffer, format, data.data(), data.size() * sizeof(short), sample_rate);
-
-    alGenSources(1, &source);
-    alSourcei(source, AL_BUFFER, buffer);
 }
 
 AudioResource::~AudioResource() {
-    alDeleteSources(1, &source);
     alDeleteBuffers(1, &buffer);
-}
-
-void AudioResource::play() {
-    alSourcePlay(source);
-}
-
-void AudioResource::pause() {
-    alSourcePause(source);
-}
-
-void AudioResource::resume() {
-    play();
-}
-
-void AudioResource::stop() {
-    alSourceStop(source);
 }
 
 void AudioResource::load_ogg(std::string &filename) {

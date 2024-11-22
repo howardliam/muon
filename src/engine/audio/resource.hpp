@@ -11,10 +11,7 @@ public:
     ~AudioResource();
 
     bool loaded_successfully() { return loaded; }
-    void play();
-    void pause();
-    void resume();
-    void stop();
+    ALuint get_buffer() { return buffer; }
 
 private:
     bool loaded = false;
@@ -24,7 +21,6 @@ private:
 
     ALenum format{};
     ALuint buffer{};
-    ALuint source{};
 
     void load_ogg(std::string &filename);
 };

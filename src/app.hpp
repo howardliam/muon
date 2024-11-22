@@ -6,7 +6,7 @@
 #include "engine/window/window.hpp"
 #include "engine/vulkan/device.hpp"
 #include "engine/vulkan/renderer.hpp"
-#include "engine/audio/audiomanager.hpp"
+#include "engine/audio/manager.hpp"
 
 class App {
 public:

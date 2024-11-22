@@ -20,12 +20,14 @@ include_directories(
 
 set(ENGINE_SRC
     # Audio
-    src/engine/audio/audiolistener.cpp
-    src/engine/audio/audiolistener.hpp
-    src/engine/audio/audiomanager.cpp
-    src/engine/audio/audiomanager.hpp
-    src/engine/audio/audioresource.cpp
-    src/engine/audio/audioresource.hpp
+    src/engine/audio/listener.cpp
+    src/engine/audio/listener.hpp
+    src/engine/audio/manager.cpp
+    src/engine/audio/manager.hpp
+    src/engine/audio/resource.cpp
+    src/engine/audio/resource.hpp
+    src/engine/audio/source.cpp
+    src/engine/audio/source.hpp
     src/engine/audio/stb_vorbis.c
 
     # ECS

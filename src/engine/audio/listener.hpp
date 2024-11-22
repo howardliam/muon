@@ -2,6 +2,8 @@
 
 class AudioListener {
 public:
+    AudioListener();
+    ~AudioListener();
 
 private:
 

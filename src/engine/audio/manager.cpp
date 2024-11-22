@@ -1,8 +1,14 @@
-#include "audiomanager.hpp"
+#include "manager.hpp"
 
+#include <fstream>
 #include <spdlog/spdlog.h>
 
 #include "../../utils.hpp"
+
+bool file_exists(std::string &path) {
+    std::ifstream file{path};
+    return file.good();
+}
 
 AudioManager::AudioManager() {
     device = alcOpenDevice(nullptr);
@@ -25,7 +31,18 @@ AudioManager::~AudioManager() {
     alcCloseDevice(device);
 }
 
+AudioSource AudioManager::get_audio_source(std::string &filename) {
+    auto resource = get_audio_resource(filename);
+
+    return AudioSource{*resource};
+}
+
 std::shared_ptr<AudioResource> AudioManager::get_audio_resource(std::string &filename) {
+    if (!file_exists(filename)) {
+        spdlog::warn("{} not found", filename);
+        return nullptr;
+    }
+
     auto resource = audio_resources[filename];
     if (resource != nullptr) {
         return resource;

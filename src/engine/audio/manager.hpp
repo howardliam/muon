@@ -6,18 +6,21 @@
 
 #include <AL/alc.h>
 
-#include "audioresource.hpp"
+#include "resource.hpp"
+#include "source.hpp"
 
 class AudioManager {
 public:
     AudioManager();
     ~AudioManager();
 
-    std::shared_ptr<AudioResource> get_audio_resource(std::string &filename);
+    AudioSource get_audio_source(std::string &filename);
 
 private:
     ALCdevice *device;
     ALCcontext *context;
 
     std::unordered_map<std::string, std::shared_ptr<AudioResource>> audio_resources{};
+
+    std::shared_ptr<AudioResource> get_audio_resource(std::string &filename);
 };

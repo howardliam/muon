@@ -8,7 +8,6 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <SDL3/SDL_scancode.h>
 
-#include "engine/input/inputmanager.hpp"
 #include "engine/vulkan/buffer.hpp"
 #include "engine/vulkan/descriptors.hpp"
 #include "engine/vulkan/frameinfo.hpp"
@@ -17,6 +16,7 @@
 #include "engine/vulkan/texture.hpp"
 #include "engine/rendering/rendersystem.hpp"
 #include "engine/scene/camera.hpp"
+#include "engine/input/inputmanager.hpp"
 
 struct GlobalUbo {
     glm::mat4 projection{1.0f};
@@ -81,13 +81,6 @@ void App::run() {
 
     auto current_time = std::chrono::high_resolution_clock::now();
     float frame_time;
-
-    std::string filename = "assets/audio/break-window.ogg";
-    std::shared_ptr audio_resource = audio_manager.get_audio_resource(filename);
-
-    audio_resource->play();
-    audio_resource->pause();
-    audio_resource->resume();
 
     while (window.is_open()) {
         window.poll_events();
