@@ -9,9 +9,11 @@ An amateur game engine for learning Vulkan among other technologies.
 - [ ] Camera
 - [ ] Good base render system as an example
 - [ ] User input handling
-- [ ] Audio (OpenAL)
+- [x] Audio (OpenAL)**
+- [ ] Text
 
 \* Model loading only without indices.
+\** Rather simple implementation.
 
 ## Requirements
 - SDL3
