@@ -7,3 +7,6 @@
 [submodule "libs/sdl"]
 	path = libs/sdl
 	url = https://github.com/libsdl-org/SDL
+[submodule "libs/msdf-atlas-gen"]
+	path = libs/msdf-atlas-gen
+	url = https://github.com/Chlumsky/msdf-atlas-gen
