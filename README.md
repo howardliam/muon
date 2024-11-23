@@ -33,13 +33,8 @@ An amateur game engine for learning Vulkan among other technologies.
 ```
 git clone https://github.com/howardliam/muon
 cd muon
-mkdir build
-cd build
-cmake -G Ninja ..
-cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .
-cd ..
-cmake --build build -- -j3
-./build/muon
+bash setup.sh
+bash run.sh
 ```
 
 ## Attributions
