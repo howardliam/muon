@@ -6,12 +6,11 @@ set(PROJ_NAME muon)
 project(${PROJ_NAME} VERSION 0.1.0 LANGUAGES C CXX)
 
 find_package(Vulkan REQUIRED)
+find_package(SDL3 REQUIRED)
 find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 
 find_package(OpenAL REQUIRED)
-
-add_subdirectory(libs/sdl)
 
 include_directories(
     libs/stb

@@ -4,6 +4,3 @@
 [submodule "libs/entt"]
 	path = libs/entt
 	url = https://github.com/skypjack/entt
-[submodule "libs/sdl"]
-	path = libs/sdl
-	url = https://github.com/libsdl-org/SDL
