@@ -1,4 +1,5 @@
 #!usr/bin/env bash
+git submodule init
 mkdir build
 cd build
 cmake -G Ninja ..
