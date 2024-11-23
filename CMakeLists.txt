@@ -12,7 +12,6 @@ find_package(spdlog REQUIRED)
 find_package(OpenAL REQUIRED)
 
 add_subdirectory(libs/sdl)
-add_subdirectory(libs/msdf-atlas-gen)
 
 include_directories(
     libs/stb
