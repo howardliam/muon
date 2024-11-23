@@ -1,9 +1,9 @@
-#include "pipeline.hpp"
+#include "engine/vulkan/pipeline.hpp"
 
 #include <cstdlib>
 #include <fstream>
 
-#include "model.hpp"
+#include "engine/vulkan/model.hpp"
 
 std::vector<char> read_file(const std::string &path) {
     std::ifstream file{path, std::ios::ate | std::ios::binary};

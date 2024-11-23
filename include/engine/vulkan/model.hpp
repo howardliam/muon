@@ -8,8 +8,8 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
-#include "device.hpp"
-#include "buffer.hpp"
+#include "engine/vulkan/device.hpp"
+#include "engine/vulkan/buffer.hpp"
 
 class Model {
 public:

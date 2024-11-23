@@ -1,4 +1,4 @@
-#include "window.hpp"
+#include "engine/window/window.hpp"
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_video.h>

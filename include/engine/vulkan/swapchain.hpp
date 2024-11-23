@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan.hpp>
 
-#include "device.hpp"
+#include "engine/vulkan/device.hpp"
 
 class Swapchain {
 public:

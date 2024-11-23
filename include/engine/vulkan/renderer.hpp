@@ -1,8 +1,8 @@
 #pragma once
 
-#include "device.hpp"
-#include "../window/window.hpp"
-#include "swapchain.hpp"
+#include "engine/vulkan/device.hpp"
+#include "engine/window/window.hpp"
+#include "engine/vulkan/swapchain.hpp"
 
 class Renderer {
 public:

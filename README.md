@@ -2,18 +2,23 @@
 An amateur game engine for learning Vulkan among other technologies.
 
 ## Todo
+### Graphics (Vulkan)
 - [x] Initial Vulkan setup
 - [x] Model loading*
 - [x] Texture loading
-- [ ] Game object wrapper
-- [ ] Camera
 - [ ] Good base render system as an example
-- [ ] User input handling
-- [x] Audio (OpenAL)**
+- [x] Camera
 - [ ] Text
+- [ ] Multithreading
+- [ ] Post processing
+### Audio
+- [ ] Audio (OpenAL)
+### Game
+- [ ] User input handling
+- [ ] ECS implementation
+- [ ] C# scripting with mono
 
 \* Model loading only without indices.
-\** Rather simple implementation.
 
 ## Requirements
 - SDL3
@@ -21,6 +26,8 @@ An amateur game engine for learning Vulkan among other technologies.
 - glm
 - spdlog
 - OpenAL
+- Harfbuzz
+- Freetype
 
 ## Build instructions
 ```
@@ -31,7 +38,7 @@ cd build
 cmake -G Ninja ..
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=YES .
 cd ..
-cmake --build build
+cmake --build build -- -j3
 ./build/muon
 ```
 

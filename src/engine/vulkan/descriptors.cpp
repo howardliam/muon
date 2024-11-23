@@ -1,4 +1,5 @@
-#include "descriptors.hpp"
+#include "engine/vulkan/descriptors.hpp"
+
 #include <spdlog/spdlog.h>
 #include <vulkan/vulkan_core.h>
 

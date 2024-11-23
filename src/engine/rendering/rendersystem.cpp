@@ -1,12 +1,10 @@
-#include "rendersystem.hpp"
-#include <vulkan/vulkan_core.h>
+#include "engine/rendering/rendersystem.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/ext/matrix_transform.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
 
 static glm::mat4 transform = glm::translate(glm::mat4{1.0f}, {0.0f, 0.0f, -10.0f});
 
@@ -37,11 +35,9 @@ void RenderSystem::render_model(FrameInfo &frame_info, Model &model) {
         nullptr
     );
 
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.77778f, 0.01f, 1000.0f);
     transform = glm::rotate(transform, glm::radians(1.0f), {0.0f, 1.0f, 0.0f});
 
     SimplePushConstantData push{};
-    // push.model = projection * transform;
     push.model = transform;
 
     auto shader_stages = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;

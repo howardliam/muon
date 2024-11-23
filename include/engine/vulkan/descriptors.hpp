@@ -1,6 +1,6 @@
 #pragma once
 
-#include "device.hpp"
+#include "engine/vulkan/device.hpp"
 
 class DescriptorSetLayout {
 public:

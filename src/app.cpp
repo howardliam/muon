@@ -3,6 +3,7 @@
 #include <chrono>
 #include <memory>
 
+#include <spdlog/spdlog.h>
 #include <vulkan/vulkan.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -77,7 +78,7 @@ void App::run() {
     Camera camera{};
     camera.look_at(camera_pos, {0.0f, 0.0f, -1.0f});
 
-    std::unique_ptr model = create_model_from_file(device, "assets/models/cube.obj");
+    std::unique_ptr model = create_model_from_file(device, "assets/models/quad.obj");
 
     auto current_time = std::chrono::high_resolution_clock::now();
     float frame_time;

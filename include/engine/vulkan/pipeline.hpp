@@ -4,7 +4,7 @@
 
 #include <vulkan/vulkan.hpp>
 
-#include "device.hpp"
+#include "engine/vulkan/device.hpp"
 
 struct PipelineConfigInfo {
     PipelineConfigInfo() = default;

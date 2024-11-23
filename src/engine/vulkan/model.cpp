@@ -1,4 +1,4 @@
-#include "model.hpp"
+#include "engine/vulkan/model.hpp"
 
 #include <spdlog/spdlog.h>
 

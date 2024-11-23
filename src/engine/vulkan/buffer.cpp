@@ -1,4 +1,4 @@
-#include "buffer.hpp"
+#include "engine/vulkan/buffer.hpp"
 
 Buffer::Buffer(Device &device, VkDeviceSize instance_size, uint32_t instance_count,
     VkBufferUsageFlags usage_flags, VkMemoryPropertyFlags memory_property_flags, VkDeviceSize min_offset_alignment)

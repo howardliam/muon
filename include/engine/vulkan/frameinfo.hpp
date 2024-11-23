@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan.hpp>
 
-#include "../scene/camera.hpp"
+#include "engine/scene/camera.hpp"
 
 struct FrameInfo {
     int frame_index;
