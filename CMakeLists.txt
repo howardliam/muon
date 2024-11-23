@@ -16,6 +16,7 @@ include_directories(
     libs/stb
     libs/tinyobjloader
     libs/entt
+    libs/cpptoml/include
 )
 
 set(ENGINE_SRC

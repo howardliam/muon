@@ -26,8 +26,6 @@ An amateur game engine for learning Vulkan among other technologies.
 - glm
 - spdlog
 - OpenAL
-- Harfbuzz
-- Freetype
 
 ## Build instructions
 ```
