@@ -49,7 +49,6 @@ set(ENGINE_SRC
 
 set(PROJ_SRC
     src/main.cpp
-    src/utils.hpp
 
     src/app.cpp
     src/app.hpp
