@@ -15,7 +15,7 @@ find_package(OpenAL REQUIRED)
 include_directories(
     libs/stb
     libs/tinyobjloader
-    libs/entt
+    libs/entt/single_include/entt
     libs/cpptoml/include
 )
 
