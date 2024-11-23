@@ -12,6 +12,11 @@ find_package(spdlog REQUIRED)
 
 find_package(OpenAL REQUIRED)
 
+set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "" FORCE)
+set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "" FORCE)
+set(MSDF_ATLAS_USE_SKIA OFF CACHE BOOL "" FORCE)
+add_subdirectory(libs/msdf-atlas-gen)
+
 include_directories(
     libs/stb
     libs/tinyobjloader
