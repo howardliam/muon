@@ -12,11 +12,6 @@ find_package(spdlog REQUIRED)
 
 find_package(OpenAL REQUIRED)
 
-set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "" FORCE)
-set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "" FORCE)
-set(MSDF_ATLAS_USE_SKIA OFF CACHE BOOL "" FORCE)
-add_subdirectory(libs/msdf-atlas-gen)
-
 include_directories(
     libs/stb
     libs/tinyobjloader
@@ -43,6 +38,7 @@ set(ENGINE_SRC
     src/engine/vulkan/buffer.cpp
     src/engine/vulkan/descriptors.cpp
     src/engine/vulkan/device.cpp
+    src/engine/vulkan/font.cpp
     src/engine/vulkan/model.cpp
     src/engine/vulkan/pipeline.cpp
     src/engine/vulkan/renderer.cpp
