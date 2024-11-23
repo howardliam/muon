@@ -18,19 +18,8 @@ include_directories(
     libs/entt
 )
 
-include_directories(include)
-
 set(ENGINE_SRC
     # Audio
-    src/engine/audio/listener.cpp
-    src/engine/audio/listener.hpp
-    src/engine/audio/manager.cpp
-    src/engine/audio/manager.hpp
-    src/engine/audio/resource.cpp
-    src/engine/audio/resource.hpp
-    src/engine/audio/source.cpp
-    src/engine/audio/source.hpp
-    src/engine/audio/stb_vorbis.c
 
     # ECS
 
