@@ -12,11 +12,16 @@ find_package(spdlog REQUIRED)
 
 find_package(OpenAL REQUIRED)
 
+set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "" FORCE)
+set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "" FORCE)
+set(MSDF_ATLAS_USE_SKIA OFF CACHE BOOL "" FORCE)
+add_subdirectory(external/msdf-atlas-gen)
+
 include_directories(
     libs/stb
     libs/tinyobjloader
-    libs/entt/single_include/entt
-    libs/cpptoml/include
+    external/entt/single_include/entt
+    external/cpptoml/include
 )
 
 set(ENGINE_SRC
@@ -85,8 +90,10 @@ add_dependencies(${PROJ_NAME} compile_shaders)
 set(LIBS pthread dl)
 set(GRAPHICS_LIBS SDL3::SDL3 Vulkan::Vulkan glm)
 set(LOGGING_LIBS spdlog::spdlog fmt)
-set(TEXT_LIBS)
+set(TEXT_LIBS msdf-atlas-gen)
 set(AUDIO_LIBS openal)
 
-target_include_directories(${PROJ_NAME} PRIVATE include/)
+set(MSDF_DIRS external/msdf-atlas-gen/msdf-atlas-gen/ external/msdf-atlas-gen/msdfgen/)
+
+target_include_directories(${PROJ_NAME} PRIVATE include/ ${MSDF_DIRS})
 target_link_libraries(${PROJ_NAME} PRIVATE ${LIBS} ${GRAPHICS_LIBS} ${LOGGING_LIBS} ${TEXT_LIBS} ${AUDIO_LIBS})

@@ -6,10 +6,19 @@
 
 #include "engine/vulkan/device.hpp"
 
+struct TextureCreateInfo {
+    VkFormat image_format;
+    uint32_t instance_size;
+    uint32_t width;
+    uint32_t height;
+    void *image_data;
+};
+
 class Texture {
 public:
     Texture(Device &device, const std::string &path);
     Texture(Device &device, int width, int height, void *image_data);
+    Texture(Device &device, TextureCreateInfo &info);
     ~Texture();
 
     Texture(const Texture &) = delete;
@@ -33,6 +42,7 @@ private:
     VkImageView image_view;
     VkImageLayout image_layout;
     VkFormat image_format;
+    uint32_t instance_size;
 
     void create_texture(void *image_data);
 

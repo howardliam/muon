@@ -11,12 +11,19 @@ An amateur game engine for learning Vulkan among other technologies.
 - [ ] Text
 - [ ] Multithreading
 - [ ] Post processing
+- [ ] Switch from tinyobjloader to Assimp
+- [ ] Improve texture loading
 ### Audio
 - [ ] Audio (OpenAL)
+### Networking
+- [ ] TCP support
+- [ ] UDP support
 ### Game
 - [ ] User input handling
 - [ ] ECS implementation
 - [ ] C# scripting with mono
+### Assets
+- [ ] Asset packing
 
 \* Model loading only without indices.
 

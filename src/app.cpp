@@ -1,5 +1,7 @@
 #include "app.hpp"
 
+#include <SDL3/SDL_dialog.h>
+#include <SDL3/SDL_messagebox.h>
 #include <chrono>
 #include <memory>
 
@@ -18,6 +20,7 @@
 #include "engine/rendering/rendersystem.hpp"
 #include "engine/scene/camera.hpp"
 #include "engine/input/inputmanager.hpp"
+#include "engine/vulkan/font.hpp"
 
 struct GlobalUbo {
     glm::mat4 projection{1.0f};
@@ -39,6 +42,10 @@ App::~App() {
 }
 
 void App::run() {
+    std::string font_path = "assets/fonts/OpenSans-Regular.ttf";
+    Font font{font_path, device};
+    auto atlas = font.get_atlas();
+
     InputManager input_manager;
     window.bind_input_manager(&input_manager);
 
@@ -64,7 +71,8 @@ void App::run() {
     std::vector<VkDescriptorSet> global_descriptor_sets(Swapchain::MAX_FRAMES_IN_FLIGHT);
     for (int i = 0; i < global_descriptor_sets.size(); i++) {
         auto buffer_info = ubo_buffers[i]->descriptor_info();
-        auto image_info = texture.descriptor_info();
+        // auto image_info = texture.descriptor_info();
+        auto image_info = atlas->descriptor_info();
 
         DescriptorWriter(*global_set_layout, *global_pool)
             .write_to_buffer(0, &buffer_info)

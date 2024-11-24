@@ -1,6 +1,9 @@
-[submodule "libs/cpptoml"]
-	path = libs/cpptoml
+[submodule "external/cpptoml"]
+	path = external/cpptoml
 	url = https://github.com/skystrife/cpptoml
-[submodule "libs/entt"]
-	path = libs/entt
+[submodule "external/entt"]
+	path = external/entt
 	url = https://github.com/skypjack/entt
+[submodule "external/msdf-atlas-gen"]
+	path = external/msdf-atlas-gen
+	url = https://github.com/Chlumsky/msdf-atlas-gen

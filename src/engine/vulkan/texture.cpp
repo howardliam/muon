@@ -13,13 +13,24 @@ Texture::Texture(Device &device, const std::string &path) : device{device} {
     width = static_cast<uint32_t>(w);
     height = static_cast<uint32_t>(h);
 
+    image_format = VK_FORMAT_R8G8B8A8_SRGB;
+    instance_size = 4;
+
     create_texture(image_data);
 
     stbi_image_free(image_data);
 }
 
 Texture::Texture(Device &device, int width, int height, void *image_data) : device{device}, width{static_cast<uint32_t>(width)}, height{static_cast<uint32_t>(height)} {
+    image_format = VK_FORMAT_R8G8B8A8_SRGB;
+    instance_size = 4;
+
     create_texture(image_data);
+}
+
+Texture::Texture(Device &device, TextureCreateInfo &info) : device{device}, width{info.width}, height{info.height},
+image_format{info.image_format}, instance_size{info.instance_size} {
+    create_texture(info.image_data);
 }
 
 Texture::~Texture() {
@@ -41,7 +52,7 @@ VkDescriptorImageInfo Texture::descriptor_info() const {
 void Texture::create_texture(void *image_data) {
     Buffer staging_buffer{
         device,
-        4,
+        instance_size,
         width * height,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -49,8 +60,6 @@ void Texture::create_texture(void *image_data) {
 
     staging_buffer.map();
     staging_buffer.write_to_buffer(image_data);
-
-    image_format = VK_FORMAT_R8G8B8A8_SRGB;
 
     VkImageCreateInfo image_info{};
     image_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
