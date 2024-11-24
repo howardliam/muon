@@ -21,13 +21,6 @@ Texture::Texture(Device &device, const std::string &path) : device{device} {
     stbi_image_free(image_data);
 }
 
-Texture::Texture(Device &device, int width, int height, void *image_data) : device{device}, width{static_cast<uint32_t>(width)}, height{static_cast<uint32_t>(height)} {
-    image_format = VK_FORMAT_R8G8B8A8_SRGB;
-    instance_size = 4;
-
-    create_texture(image_data);
-}
-
 Texture::Texture(Device &device, TextureCreateInfo &info) : device{device}, width{info.width}, height{info.height},
 image_format{info.image_format}, instance_size{info.instance_size} {
     create_texture(info.image_data);

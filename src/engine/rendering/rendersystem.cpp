@@ -12,16 +12,16 @@ struct SimplePushConstantData {
     glm::mat4 model{1.0f};
 };
 
-RenderSystem::RenderSystem(Device &device, VkRenderPass render_pass, VkDescriptorSetLayout descriptor_set_layout) : device{device} {
+RenderSystem3D::RenderSystem3D(Device &device, VkRenderPass render_pass, VkDescriptorSetLayout descriptor_set_layout) : device{device} {
     create_pipeline_layout(descriptor_set_layout);
     create_pipeine(render_pass);
 }
 
-RenderSystem::~RenderSystem() {
+RenderSystem3D::~RenderSystem3D() {
     vkDestroyPipelineLayout(device.get_device(), pipeline_layout, nullptr);
 }
 
-void RenderSystem::render_model(FrameInfo &frame_info, Model &model) {
+void RenderSystem3D::render_model(FrameInfo &frame_info, Model &model) {
     pipeline->bind(frame_info.command_buffer);
 
     vkCmdBindDescriptorSets(
@@ -47,7 +47,7 @@ void RenderSystem::render_model(FrameInfo &frame_info, Model &model) {
     model.draw(frame_info.command_buffer);
 }
 
-void RenderSystem::create_pipeline_layout(VkDescriptorSetLayout descriptor_set_layout) {
+void RenderSystem3D::create_pipeline_layout(VkDescriptorSetLayout descriptor_set_layout) {
     VkPushConstantRange push_constant_range{};
     push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
     push_constant_range.offset = 0;
@@ -68,11 +68,11 @@ void RenderSystem::create_pipeline_layout(VkDescriptorSetLayout descriptor_set_l
     }
 }
 
-void RenderSystem::create_pipeine(VkRenderPass render_pass) {
+void RenderSystem3D::create_pipeine(VkRenderPass render_pass) {
     PipelineConfigInfo pipeline_config{};
     Pipeline::default_pipeline_config_info(pipeline_config);
     pipeline_config.render_pass= render_pass;
     pipeline_config.pipeline_layout = pipeline_layout;
 
-    pipeline = std::make_unique<Pipeline>(device, "assets/shaders/shader.vert.spv", "assets/shaders/shader.frag.spv", pipeline_config);
+    pipeline = std::make_unique<Pipeline>(device, "assets/shaders/shader.vert.spv", "assets/shaders/text.frag.spv", pipeline_config);
 }

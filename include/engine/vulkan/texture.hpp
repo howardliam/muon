@@ -17,12 +17,14 @@ struct TextureCreateInfo {
 class Texture {
 public:
     Texture(Device &device, const std::string &path);
-    Texture(Device &device, int width, int height, void *image_data);
     Texture(Device &device, TextureCreateInfo &info);
     ~Texture();
 
     Texture(const Texture &) = delete;
     Texture& operator=(const Texture &) = delete;
+
+    const uint32_t get_width() const { return width; }
+    const uint32_t get_height() const { return height; }
 
     VkSampler get_sampler() const { return sampler; }
     VkImageView get_image_view() const { return image_view; }

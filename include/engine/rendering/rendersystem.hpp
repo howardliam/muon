@@ -7,13 +7,13 @@
 #include "engine/vulkan/model.hpp"
 #include "engine/vulkan/frameinfo.hpp"
 
-class RenderSystem {
+class RenderSystem3D {
 public:
-    RenderSystem(Device &device, VkRenderPass render_pass, VkDescriptorSetLayout descriptor_set_layout);
-    ~RenderSystem();
+    RenderSystem3D(Device &device, VkRenderPass render_pass, VkDescriptorSetLayout descriptor_set_layout);
+    ~RenderSystem3D();
 
-    RenderSystem(const RenderSystem&) = delete;
-    RenderSystem& operator=(const RenderSystem&) = delete;
+    RenderSystem3D(const RenderSystem3D&) = delete;
+    RenderSystem3D& operator=(const RenderSystem3D&) = delete;
 
 
     // void render_game_objects(FrameInfo &frame_info, std::vector<GameObject>& game_objects);

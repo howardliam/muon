@@ -35,7 +35,6 @@ std::shared_ptr<Texture> create_atlas(Device &device, std::vector<msdf_atlas::Gl
     info.height = height;
     info.image_data = (void *)bitmap.pixels;
 
-    // std::shared_ptr texture = std::make_shared<Texture>(device, width, height, (void *)bitmap.pixels);
     std::shared_ptr texture = std::make_shared<Texture>(device, info);
     return texture;
 }
@@ -104,6 +103,8 @@ Font::Font(std::string &font_path, Device &device) {
     }
 
     atlas = create_atlas<uint8_t, float, 3, msdf_atlas::msdfGenerator>(device, glyphs, width, height);
+
+    // glyphs[0].getQuadAtlasBounds(double &l, double &b, double &r, double &t);
 
     msdfgen::destroyFont(font);
     msdfgen::deinitializeFreetype(freetype);

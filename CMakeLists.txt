@@ -34,6 +34,7 @@ set(ENGINE_SRC
 
     # Rendering systems
     src/engine/rendering/rendersystem.cpp
+    src/engine/rendering/textrenderer.cpp
 
     # Scene
     src/engine/scene/camera.cpp
