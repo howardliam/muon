@@ -13,11 +13,11 @@ int main() {
     auto config = cpptoml::parse_file("config.toml");
     auto window = config->get_table("window");
 
-    WindowProperties window_properties{};
-    window_properties.title = window->get_as<std::string>("title").value_or(defaults::TITLE);
-    window_properties.width = window->get_as<int>("width").value_or(defaults::WIDTH);
-    window_properties.height = window->get_as<int>("height").value_or(defaults::HEIGHT);
+    muon::WindowProperties window_properties{};
+    window_properties.title = window->get_as<std::string>("title").value_or(muon::defaults::TITLE);
+    window_properties.width = window->get_as<int>("width").value_or(muon::defaults::WIDTH);
+    window_properties.height = window->get_as<int>("height").value_or(muon::defaults::HEIGHT);
 
-    App app{window_properties};
+    muon::App app{window_properties};
     app.run();
 }

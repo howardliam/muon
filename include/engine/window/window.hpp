@@ -9,47 +9,51 @@
 #include "../../utils.hpp"
 #include "../input/inputmanager.hpp"
 
-struct WindowProperties {
-    int width{defaults::WIDTH};
-    int height{defaults::HEIGHT};
-    std::string title{defaults::TITLE};
-    bool open{true};
-};
+namespace muon {
 
-class Window {
-public:
-    Window(WindowProperties &properties);
-    ~Window();
+    struct WindowProperties {
+        int width{defaults::WIDTH};
+        int height{defaults::HEIGHT};
+        std::string title{defaults::TITLE};
+        bool open{true};
+    };
 
-    Window(const Window &) = delete;
-    Window& operator=(const Window &) = delete;
+    class Window {
+    public:
+        Window(WindowProperties &properties);
+        ~Window();
 
-    void poll_events();
+        Window(const Window &) = delete;
+        Window& operator=(const Window &) = delete;
 
-    VkExtent2D get_extent() const { return { static_cast<uint32_t>(properties.width), static_cast<uint32_t>(properties.height) }; }
-    bool is_open() const { return properties.open; }
-    void set_to_close() { properties.open = false; }
-    void set_icon(const char *icon_path);
+        void poll_events();
 
-    SDL_Window *get_window() const { return window; }
-    void set_title(std::string title) { SDL_SetWindowTitle(window, title.c_str()); properties.title = title; }
+        VkExtent2D get_extent() const { return { static_cast<uint32_t>(properties.width), static_cast<uint32_t>(properties.height) }; }
+        bool is_open() const { return properties.open; }
+        void set_to_close() { properties.open = false; }
+        void set_icon(const char *icon_path);
 
-    bool was_resized() const { return resized; }
-    void reset_resized() { resized = false; }
+        SDL_Window *get_window() const { return window; }
+        void set_title(std::string title) { SDL_SetWindowTitle(window, title.c_str()); properties.title = title; }
 
-    void create_surface(VkInstance instance, VkSurfaceKHR *surface);
+        bool was_resized() const { return resized; }
+        void reset_resized() { resized = false; }
 
-    void bind_input_manager(InputManager *input_manager);
+        void create_surface(VkInstance instance, VkSurfaceKHR *surface);
 
-private:
-    WindowProperties properties;
+        void bind_input_manager(InputManager *input_manager);
 
-    SDL_Window *window;
+    private:
+        WindowProperties properties;
 
-    bool resized{false};
+        SDL_Window *window;
 
-    InputManager *input_manager{nullptr};
+        bool resized{false};
 
-    void initialise_sdl();
-    void initialise_window();
-};
+        InputManager *input_manager{nullptr};
+
+        void initialise_sdl();
+        void initialise_window();
+    };
+
+}

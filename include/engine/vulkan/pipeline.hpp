@@ -6,46 +6,50 @@
 
 #include "engine/vulkan/device.hpp"
 
-struct PipelineConfigInfo {
-    PipelineConfigInfo() = default;
+namespace muon {
 
-    PipelineConfigInfo(const PipelineConfigInfo &) = delete;
-    PipelineConfigInfo& operator=(const PipelineConfigInfo &) = delete;
+    struct PipelineConfigInfo {
+        PipelineConfigInfo() = default;
 
-    VkPipelineViewportStateCreateInfo viewport_info;
-    VkPipelineInputAssemblyStateCreateInfo input_assembly_info;
-    VkPipelineRasterizationStateCreateInfo rasterisation_info;
-    VkPipelineMultisampleStateCreateInfo multisample_info;
-    VkPipelineColorBlendAttachmentState colour_blend_attachment;
-    VkPipelineColorBlendStateCreateInfo colour_blend_info;
-    VkPipelineDepthStencilStateCreateInfo depth_stencil_info;
-    std::vector<VkDynamicState> dynamic_state_enables;
-    VkPipelineDynamicStateCreateInfo dynamic_state_info;
-    VkPipelineLayout pipeline_layout = nullptr;
-    VkRenderPass render_pass = nullptr;
-    uint32_t subpass = 0;
-};
+        PipelineConfigInfo(const PipelineConfigInfo &) = delete;
+        PipelineConfigInfo& operator=(const PipelineConfigInfo &) = delete;
 
-class Pipeline {
-public:
-    Pipeline(Device &device, const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info);
-    ~Pipeline();
+        VkPipelineViewportStateCreateInfo viewport_info;
+        VkPipelineInputAssemblyStateCreateInfo input_assembly_info;
+        VkPipelineRasterizationStateCreateInfo rasterisation_info;
+        VkPipelineMultisampleStateCreateInfo multisample_info;
+        VkPipelineColorBlendAttachmentState colour_blend_attachment;
+        VkPipelineColorBlendStateCreateInfo colour_blend_info;
+        VkPipelineDepthStencilStateCreateInfo depth_stencil_info;
+        std::vector<VkDynamicState> dynamic_state_enables;
+        VkPipelineDynamicStateCreateInfo dynamic_state_info;
+        VkPipelineLayout pipeline_layout = nullptr;
+        VkRenderPass render_pass = nullptr;
+        uint32_t subpass = 0;
+    };
 
-    Pipeline(const Pipeline&) = delete;
-    Pipeline& operator=(const Pipeline&) = delete;
+    class Pipeline {
+    public:
+        Pipeline(Device &device, const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info);
+        ~Pipeline();
 
-    void bind(VkCommandBuffer command_buffer);
+        Pipeline(const Pipeline&) = delete;
+        Pipeline& operator=(const Pipeline&) = delete;
 
-    static void default_pipeline_config_info(PipelineConfigInfo &config_info);
-private:
-    Device &device;
-    VkPipeline graphics_pipeline;
-    VkShaderModule vert_shader_module;
-    VkShaderModule frag_shader_module;
+        void bind(VkCommandBuffer command_buffer);
+
+        static void default_pipeline_config_info(PipelineConfigInfo &config_info);
+    private:
+        Device &device;
+        VkPipeline graphics_pipeline;
+        VkShaderModule vert_shader_module;
+        VkShaderModule frag_shader_module;
 
 
-    void create_shader_module(const std::vector<char> &code, VkShaderModule *shader_module);
-    void create_graphics_pipeline(const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info);
-};
+        void create_shader_module(const std::vector<char> &code, VkShaderModule *shader_module);
+        void create_graphics_pipeline(const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info);
+    };
 
-// static std::vector<char> read_file(const std::string &path);
+    // static std::vector<char> read_file(const std::string &path);
+
+}

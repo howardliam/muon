@@ -7,6 +7,8 @@
 #include "engine/vulkan/device.hpp"
 #include "engine/vulkan/renderer.hpp"
 
+namespace muon {
+
 class App {
 public:
     App(WindowProperties &properties);
@@ -21,3 +23,5 @@ private:
 
     std::unique_ptr<DescriptorPool> global_pool;
 };
+
+}

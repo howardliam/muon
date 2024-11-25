@@ -27,10 +27,13 @@ include_directories(
 set(ENGINE_SRC
     # Audio
 
-    # ECS
-
     # Input
     src/engine/input/inputmanager.cpp
+
+    # Render
+    src/engine/render/common.cpp
+    src/engine/render/rendermodule.cpp
+    src/engine/render/scenemodule.cpp
 
     # Rendering systems
     src/engine/rendering/rendersystem.cpp
@@ -39,6 +42,7 @@ set(ENGINE_SRC
     # Scene
     src/engine/scene/camera.cpp
     src/engine/scene/gameobject.cpp
+    src/engine/scene/scene.cpp
 
     # Vulkan
     src/engine/vulkan/buffer.cpp

@@ -1,13 +1,17 @@
 #pragma once
 
-namespace exitcode {
-    constexpr int SUCCESS = 0;
-    constexpr int FAILURE = 1;
-}
+namespace muon {
 
-namespace defaults {
-    constexpr int WIDTH = 1280;
-    constexpr int HEIGHT = 720;
-    constexpr char TITLE[] = "Vulkan SDL3 Window";
-    constexpr char ICON_PATH[] = "assets/textures/icon.png";
+    namespace exitcode {
+        constexpr int SUCCESS = 0;
+        constexpr int FAILURE = 1;
+    }
+
+    namespace defaults {
+        constexpr int WIDTH = 1280;
+        constexpr int HEIGHT = 720;
+        constexpr char TITLE[] = "Vulkan SDL3 Window";
+        constexpr char ICON_PATH[] = "assets/textures/icon.png";
+    }
+
 }

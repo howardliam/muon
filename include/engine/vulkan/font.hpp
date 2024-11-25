@@ -9,17 +9,21 @@
 #include "engine/vulkan/device.hpp"
 #include "engine/vulkan/texture.hpp"
 
-class Font {
-public:
-    Font(std::string &font_path, Device &device);
-    ~Font() = default;
+namespace muon {
 
-    std::vector<msdf_atlas::GlyphGeometry> get_glyphs() { return glyphs; }
-    msdf_atlas::FontGeometry get_font_geometry() { return font_geometry; }
-    std::shared_ptr<Texture> get_atlas() const { return atlas; }
+    class Font {
+    public:
+        Font(std::string &font_path, Device &device);
+        ~Font() = default;
 
-private:
-    std::vector<msdf_atlas::GlyphGeometry> glyphs{};
-    msdf_atlas::FontGeometry font_geometry;
-    std::shared_ptr<Texture> atlas;
-};
+        std::vector<msdf_atlas::GlyphGeometry> get_glyphs() { return glyphs; }
+        msdf_atlas::FontGeometry get_font_geometry() { return font_geometry; }
+        std::shared_ptr<Texture> get_atlas() const { return atlas; }
+
+    private:
+        std::vector<msdf_atlas::GlyphGeometry> glyphs{};
+        msdf_atlas::FontGeometry font_geometry;
+        std::shared_ptr<Texture> atlas;
+    };
+
+}
