@@ -1,9 +1,12 @@
 #include "engine/vulkan/model.hpp"
 
-#include <spdlog/spdlog.h>
+#include "assimp/Importer.hpp"
+#include "assimp/mesh.h"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
+#include "utils.hpp"
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
+#include <spdlog/spdlog.h>
 
 namespace muon {
 
@@ -59,61 +62,52 @@ namespace muon {
 
     /* Builder */
     void Model::Builder::load_model(const std::string &path) {
-        tinyobj::attrib_t attrib;
-        std::vector<tinyobj::shape_t> shapes;
-        std::vector<tinyobj::material_t> materials;
-        std::string warn, err;
+        Assimp::Importer importer;
 
-        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str())) {
-            spdlog::error("{}", warn + err);
+        auto flags = aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_GenNormals | aiProcess_OptimizeMeshes;
+        const aiScene *scene = importer.ReadFile(path, flags);
+
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+            spdlog::error("Error: {}", importer.GetErrorString());
             exit(exitcode::FAILURE);
         }
 
-        vertices.clear();
-        indices.clear();
+        if (scene->mNumMeshes > 0) {
+            aiMesh *mesh = scene->mMeshes[0];
 
-        /* Fix this fucking shit */
-        // std::unordered_map<Vertex, uint32_t> unique_vertices{};
-
-        for (const auto& shape : shapes) {
-            for (const auto& index : shape.mesh.indices) {
+            for (uint32_t i = 0; i < mesh->mNumVertices; i++) {
                 Vertex vertex{};
 
-                if (index.vertex_index >= 0) {
-                    vertex.position = {
-                        attrib.vertices[3 * index.vertex_index + 0],
-                        attrib.vertices[3 * index.vertex_index + 1],
-                        attrib.vertices[3 * index.vertex_index + 2],
-                    };
+                vertex.position.x = mesh->mVertices[i].x;
+                vertex.position.y = mesh->mVertices[i].y;
+                vertex.position.z = mesh->mVertices[i].z;
 
-                    vertex.colour = {
-                        attrib.colors[3 * index.vertex_index + 0],
-                        attrib.colors[3 * index.vertex_index + 1],
-                        attrib.colors[3 * index.vertex_index + 2],
-                    };
+                if (mesh->HasNormals()) {
+                    vertex.normal.x = mesh->mNormals[i].x;
+                    vertex.normal.y = mesh->mNormals[i].y;
+                    vertex.normal.z = mesh->mNormals[i].z;
                 }
 
-                if (index.normal_index >= 0) {
-                    vertex.normal = {
-                        attrib.normals[3 * index.normal_index + 0],
-                        attrib.normals[3 * index.normal_index + 1],
-                        attrib.normals[3 * index.normal_index + 2],
-                    };
-                }
-                if (index.texcoord_index >= 0) {
-                    vertex.tex_coord = {
-                        attrib.texcoords[2 * index.texcoord_index + 0],
-                        attrib.texcoords[2 * index.texcoord_index + 1],
-                    };
+                if (mesh->HasTextureCoords(0)) {
+                    vertex.tex_coord.x = mesh->mTextureCoords[0][i].x;
+                    vertex.tex_coord.y = mesh->mTextureCoords[0][i].y;
+                } else {
+                    vertex.tex_coord.x = 0.0f;
+                    vertex.tex_coord.y = 0.0f;
                 }
 
-                // if (unique_vertices.find(vertex) == unique_vertices.end()) {
-                //     unique_vertices[vertex] = static_cast<uint32_t>(vertices.size());
-                //     vertices.push_back(vertex);
-                // }
-                // indices.push_back(unique_vertices[vertex]);
+                vertex.colour.x = 1.0f;
+                vertex.colour.y = 1.0f;
+                vertex.colour.z = 1.0f;
 
                 vertices.push_back(vertex);
+            }
+
+            for (uint32_t i = 0; i < mesh->mNumFaces; i++) {
+                aiFace face = mesh->mFaces[i];
+                for (uint32_t j = 0; j < face.mNumIndices; j++) {
+                    indices.push_back(face.mIndices[j]);
+                }
             }
         }
     }
@@ -206,10 +200,11 @@ namespace muon {
         device.copy_buffer(staging_buffer.get_buffer(), index_buffer->get_buffer(), buffer_size);
     }
 
-    std::unique_ptr<Model> create_model_from_file(Device &device, const std::string &path) {
+    std::unique_ptr<Model> Model::from_file(Device &device, const std::string &path) {
         Model::Builder builder{};
         builder.load_model(path);
-        spdlog::debug("Vertex count {}", builder.vertices.size());
+        spdlog::trace("Vertex count: {}", builder.vertices.size());
+        spdlog::trace("Index count: {}", builder.indices.size());
         return std::make_unique<Model>(device, builder);
     }
 

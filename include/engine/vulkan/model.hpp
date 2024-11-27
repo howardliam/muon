@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 #include <vulkan/vulkan.hpp>
@@ -40,6 +41,8 @@ namespace muon {
         Model(const Model &) = delete;
         Model& operator=(const Model &) = delete;
 
+        static std::unique_ptr<Model> from_file(Device &device, const std::string &path);
+
         void bind(VkCommandBuffer command_buffer);
         void draw(VkCommandBuffer command_buffer);
 
@@ -56,7 +59,5 @@ namespace muon {
         void create_vertex_buffer(const std::vector<Vertex> &vertices);
         void create_index_buffer(const std::vector<uint32_t> &indices);
     };
-
-    std::unique_ptr<Model> create_model_from_file(Device &device, const std::string &path);
 
 }
