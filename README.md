@@ -51,3 +51,7 @@ bash run.sh
 - Classes/structs are PascalCase
 - Functions/methods are camelCase
 - Variables and object members are snake_case
+- Abbreviations and initialisations count as a word and
+  follow naming conventions as such, example:
+  - `initializeSdl`, `loadGltfModel`
+- Project uses American English for consistency
