@@ -25,13 +25,6 @@ An amateur game engine for learning Vulkan among other technologies.
 ### Assets
 - [ ] Asset packing
 
-## Requirements
-- SDL3
-- Vulkan
-- glm
-- spdlog
-- OpenAL
-
 ## Build instructions
 ```
 git clone https://github.com/howardliam/muon
@@ -40,9 +33,18 @@ bash setup.sh
 bash run.sh
 ```
 
-## Attributions
-- [STB](https://github.com/nothings/stb)
-- [entt](https://github.com/skypjack/entt)
+## Attributions and Requirements
+- [Vulkan](https://www.vulkan.org/)
+- [SDL3](https://www.libsdl.org/index.php)
+- [spdlog](https://github.com/gabime/spdlog)
+- [glm](https://github.com/g-truc/glm)
+- [STB](https://github.com/nothings/stb) *
+- [entt](https://github.com/skypjack/entt) *
+- [cpptoml](https://github.com/skystrife/cpptoml) *
+- [assimp](https://github.com/assimp/assimp) *
+- [msdf-atlas-gen](https://github.com/Chlumsky/msdf-atlas-gen) *
+
+\* provided as a submodule
 
 ## Additional notes
 ### Conventions
