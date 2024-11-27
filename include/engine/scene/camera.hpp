@@ -11,7 +11,7 @@ namespace muon {
         Camera() = default;
         ~Camera() = default;
 
-        void setOrthoProjection(float left, float right, float bottom, float top, float z_near, float z_far);
+        void setOrthographicProjection(float left, float right, float bottom, float top);
         void setPerspectiveProjection(float fov_x, float aspect_ratio, float z_near, float z_far);
 
         void lookAt(glm::vec3 position, glm::vec3 target, glm::vec3 up = {0.0f, 1.0f, 0.0f});
