@@ -4,7 +4,7 @@ An amateur game engine for learning Vulkan among other technologies.
 ## Todo
 ### Graphics (Vulkan)
 - [x] Initial Vulkan setup
-- [x] Model loading*
+- [x] Model loading
 - [x] Texture loading
 - [ ] Good base render system as an example
 - [x] Camera
@@ -24,8 +24,6 @@ An amateur game engine for learning Vulkan among other technologies.
 - [ ] C# scripting with mono
 ### Assets
 - [ ] Asset packing
-
-\* Model loading only without indices.
 
 ## Requirements
 - SDL3
