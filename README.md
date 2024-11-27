@@ -11,8 +11,8 @@ An amateur game engine for learning Vulkan among other technologies.
 - [ ] Text
 - [ ] Multithreading
 - [ ] Post processing
-- [ ] Switch from tinyobjloader to Assimp
-- [ ] Improve texture loading
+- [x] Switch from tinyobjloader to Assimp
+- [x] Improve texture loading
 ### Audio
 - [ ] Audio (OpenAL)
 ### Networking
