@@ -30,8 +30,6 @@ namespace muon {
     };
 
     std::unique_ptr<Model> generate_text(Device &device, Font &font, std::string &text) {
-        glm::vec3 position{0.5f, 0.5f, 0.0f};
-
         const auto &font_geometry = font.get_font_geometry();
         const auto &metrics = font_geometry.getMetrics();
 
@@ -105,28 +103,28 @@ namespace muon {
             tex_coord_max *= glm::vec2{texel_width, texel_height};
 
             vertices.push_back({ // Top left
-                position * glm::vec3(quad_min.x, quad_max.y, 0.0f),
+                glm::vec3{quad_min.x, quad_max.y, 0.0f},
                 glm::vec3{1.0f, 1.0f, 1.0f},
                 glm::vec3{0.0f, 0.0f, 0.0f},
                 glm::vec2{tex_coord_min.x, tex_coord_max.y},
             });
 
             vertices.push_back({ // Bottom left
-                position * glm::vec3(quad_min, 0.0f),
+                glm::vec3{quad_min, 0.0f},
                 glm::vec3{1.0f, 1.0f, 1.0f},
                 glm::vec3{0.0f, 0.0f, 0.0f},
                 glm::vec2{tex_coord_min.x, tex_coord_min.y},
             });
 
             vertices.push_back({ // Bottom right
-                position * glm::vec3(quad_max.x, quad_min.y, 0.0f),
+                glm::vec3{quad_max.x, quad_min.y, 0.0f},
                 glm::vec3{1.0f, 1.0f, 1.0f},
                 glm::vec3{0.0f, 0.0f, 0.0f},
                 glm::vec2{tex_coord_max.x, tex_coord_min.y},
             });
 
             vertices.push_back({ // Top right
-                position * glm::vec3(quad_max, 0.0f),
+                glm::vec3{quad_max, 0.0f},
                 glm::vec3{1.0f, 1.0f, 1.0f},
                 glm::vec3{0.0f, 0.0f, 0.0f},
                 glm::vec2{tex_coord_max.x, tex_coord_max.y},
@@ -212,7 +210,7 @@ namespace muon {
         Camera camera{};
         camera.look_at(camera_pos, {0.0f, 0.0f, -1.0f});
 
-        std::unique_ptr model = create_model_from_file(device, "assets/models/quad.obj");
+        std::unique_ptr model = Model::from_file(device, "assets/models/quad.obj");
 
         std::string text = "Hello, World";
         std::unique_ptr text_model = generate_text(device, font, text);
@@ -247,8 +245,8 @@ namespace muon {
 
                 renderer.begin_swapchain_render_pass(command_buffer);
 
-                std::string fps_text = std::to_string(static_cast<int>(1.0f / frame_time)) + " FPS";
-                text_model = generate_text(device, font, fps_text);
+                // std::string fps_text = std::to_string(static_cast<int>(1.0f / frame_time)) + " FPS";
+                // text_model = generate_text(device, font, fps_text);
 
                 FrameInfo frame_info{
                     frame_index,
@@ -258,7 +256,7 @@ namespace muon {
                     global_descriptor_sets[frame_index]
                 };
                 render_system.render_model(frame_info, *model);
-                render_system.render_model(frame_info, *text_model);
+                // render_system.render_model(frame_info, *text_model);
 
                 renderer.end_swapchain_render_pass(command_buffer);
                 renderer.end_frame();

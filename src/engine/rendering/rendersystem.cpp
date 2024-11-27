@@ -37,7 +37,7 @@ namespace muon {
             nullptr
         );
 
-        // transform = glm::rotate(transform, glm::radians(1.0f), {0.0f, 1.0f, 0.0f});
+        transform = glm::rotate(transform, glm::radians(1.0f), {0.0f, 1.0f, 0.0f});
 
         SimplePushConstantData push{};
         push.model = transform;
