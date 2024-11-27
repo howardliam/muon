@@ -17,20 +17,20 @@ namespace muon {
         Swapchain(const Swapchain &) = delete;
         Swapchain& operator=(const Swapchain &) = delete;
 
-        VkFramebuffer get_frame_buffer(int index) { return swapchain_framebuffers[index]; }
-        VkRenderPass get_render_pass() { return render_pass; }
-        VkImageView get_image_view(int index) { return swapchain_image_views[index]; }
-        size_t get_image_count() { return swapchain_images.size(); }
-        VkFormat get_swapchain_image_format() { return swapchain_image_format; }
-        VkExtent2D get_swapchain_extent() { return swapchain_extent; }
-        uint32_t get_width() { return swapchain_extent.width; }
-        uint32_t get_height() { return swapchain_extent.height; }
-        float extent_aspect_ratio() { return static_cast<float>(swapchain_extent.width) / static_cast<float>(swapchain_extent.height); }
+        VkFramebuffer getFramebuffer(int index) { return swapchain_framebuffers[index]; }
+        VkRenderPass getRenderPass() { return render_pass; }
+        VkImageView getImageView(int index) { return swapchain_image_views[index]; }
+        size_t getImageCount() { return swapchain_images.size(); }
+        VkFormat getSwapchainImageFormat() { return swapchain_image_format; }
+        VkExtent2D getSwapchainExtent() { return swapchain_extent; }
+        uint32_t getWidth() { return swapchain_extent.width; }
+        uint32_t getHeight() { return swapchain_extent.height; }
+        float extentAspectRatio() { return static_cast<float>(swapchain_extent.width) / static_cast<float>(swapchain_extent.height); }
 
-        VkFormat find_depth_format();
-        VkResult acquire_next_image(uint32_t *image_index);
-        VkResult submit_command_buffers(const VkCommandBuffer *buffers, uint32_t *image_index);
-        bool compare_swap_formats(const Swapchain &swapchain) const;
+        VkFormat findDepthFormat();
+        VkResult acquireNextImage(uint32_t *image_index);
+        VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *image_index);
+        bool compareSwapFormats(const Swapchain &swapchain) const;
 
     private:
         VkFormat swapchain_image_format;
@@ -59,16 +59,16 @@ namespace muon {
         size_t current_frame = 0;
 
         void init();
-        void create_swapchain();
-        void create_image_views();
-        void create_depth_resources();
-        void create_render_pass();
-        void create_framebuffers();
-        void create_sync_objects();
+        void createSwapchain();
+        void createImageViews();
+        void createDepthResources();
+        void createRenderPass();
+        void createFramebuffers();
+        void createSyncObjects();
 
-        VkSurfaceFormatKHR choose_swap_surface_format(const std::vector<VkSurfaceFormatKHR> &available_formats);
-        VkPresentModeKHR choose_swap_present_mode(const std::vector<VkPresentModeKHR> &available_present_modes);
-        VkExtent2D choose_swap_extent(const VkSurfaceCapabilitiesKHR &capabilities);
+        VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &available_formats);
+        VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &available_present_modes);
+        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
     };
 
 }

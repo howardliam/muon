@@ -6,7 +6,7 @@
 namespace muon {
 
     /* DescriptorSetLayout Builder */
-    DescriptorSetLayout::Builder &DescriptorSetLayout::Builder::add_binding(uint32_t binding, VkDescriptorType descriptor_type, VkShaderStageFlags stage_flags, uint32_t count) {
+    DescriptorSetLayout::Builder &DescriptorSetLayout::Builder::addBinding(uint32_t binding, VkDescriptorType descriptor_type, VkShaderStageFlags stage_flags, uint32_t count) {
         VkDescriptorSetLayoutBinding layout_binding{};
         layout_binding.binding = binding;
         layout_binding.descriptorType = descriptor_type;
@@ -34,28 +34,28 @@ namespace muon {
         descriptor_set_layout_info.bindingCount = static_cast<uint32_t>(set_layout_bindings.size());
         descriptor_set_layout_info.pBindings = set_layout_bindings.data();
 
-        if (vkCreateDescriptorSetLayout(device.get_device(), &descriptor_set_layout_info, nullptr, &descriptor_set_layout) != VK_SUCCESS) {
+        if (vkCreateDescriptorSetLayout(device.getDevice(), &descriptor_set_layout_info, nullptr, &descriptor_set_layout) != VK_SUCCESS) {
             spdlog::error("Failed to create descriptor set layout");
             exit(exitcode::FAILURE);
         }
     }
 
     DescriptorSetLayout::~DescriptorSetLayout() {
-        vkDestroyDescriptorSetLayout(device.get_device(), descriptor_set_layout, nullptr);
+        vkDestroyDescriptorSetLayout(device.getDevice(), descriptor_set_layout, nullptr);
     }
 
     /* DescriptorPool Builder */
-    DescriptorPool::Builder &DescriptorPool::Builder::add_pool_size(VkDescriptorType descriptor_type, uint32_t count) {
+    DescriptorPool::Builder &DescriptorPool::Builder::addPoolSize(VkDescriptorType descriptor_type, uint32_t count) {
         pool_sizes.push_back({descriptor_type, count});
         return *this;
     }
 
-    DescriptorPool::Builder &DescriptorPool::Builder::set_pool_flags(VkDescriptorPoolCreateFlags flags) {
+    DescriptorPool::Builder &DescriptorPool::Builder::setPoolFlags(VkDescriptorPoolCreateFlags flags) {
         pool_flags = flags;
         return *this;
     }
 
-    DescriptorPool::Builder &DescriptorPool::Builder::set_max_sets(uint32_t count) {
+    DescriptorPool::Builder &DescriptorPool::Builder::setMaxSets(uint32_t count) {
         max_sets = count;
         return *this;
     }
@@ -74,41 +74,41 @@ namespace muon {
         descriptor_pool_info.maxSets = max_sets;
         descriptor_pool_info.flags = pool_flags;
 
-        if (vkCreateDescriptorPool(device.get_device(), &descriptor_pool_info, nullptr, &descriptor_pool) != VK_SUCCESS) {
+        if (vkCreateDescriptorPool(device.getDevice(), &descriptor_pool_info, nullptr, &descriptor_pool) != VK_SUCCESS) {
             spdlog::error("Failed to create descriptor pool");
             exit(exitcode::FAILURE);
         }
     }
 
     DescriptorPool::~DescriptorPool() {
-        vkDestroyDescriptorPool(device.get_device(), descriptor_pool, nullptr);
+        vkDestroyDescriptorPool(device.getDevice(), descriptor_pool, nullptr);
     }
 
-    bool DescriptorPool::allocate_descriptor(const VkDescriptorSetLayout descriptor_set_layout, VkDescriptorSet &descriptor) const {
+    bool DescriptorPool::allocateDescriptor(const VkDescriptorSetLayout descriptor_set_layout, VkDescriptorSet &descriptor) const {
         VkDescriptorSetAllocateInfo alloc_info{};
         alloc_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
         alloc_info.descriptorPool = descriptor_pool;
         alloc_info.pSetLayouts = &descriptor_set_layout;
         alloc_info.descriptorSetCount = 1;
 
-        if (vkAllocateDescriptorSets(device.get_device(), &alloc_info, &descriptor) != VK_SUCCESS) {
+        if (vkAllocateDescriptorSets(device.getDevice(), &alloc_info, &descriptor) != VK_SUCCESS) {
             return false;
         }
         return true;
     }
 
-    void DescriptorPool::free_descriptors(std::vector<VkDescriptorSet> &descriptors) const {
-        vkFreeDescriptorSets(device.get_device(), descriptor_pool, static_cast<uint32_t>(descriptors.size()), descriptors.data());
+    void DescriptorPool::freeDescriptors(std::vector<VkDescriptorSet> &descriptors) const {
+        vkFreeDescriptorSets(device.getDevice(), descriptor_pool, static_cast<uint32_t>(descriptors.size()), descriptors.data());
     }
 
-    void DescriptorPool::reset_pool() {
-        vkResetDescriptorPool(device.get_device(), descriptor_pool, 0);
+    void DescriptorPool::resetPool() {
+        vkResetDescriptorPool(device.getDevice(), descriptor_pool, 0);
     }
 
     /* DescriptorWriter */
     DescriptorWriter::DescriptorWriter(DescriptorSetLayout &set_layout, DescriptorPool &pool) : set_layout{set_layout}, pool{pool} {}
 
-    DescriptorWriter &DescriptorWriter::write_to_buffer(uint32_t binding, VkDescriptorBufferInfo *buffer_info) {
+    DescriptorWriter &DescriptorWriter::writeToBuffer(uint32_t binding, VkDescriptorBufferInfo *buffer_info) {
         auto &binding_description = set_layout.bindings[binding];
 
         VkWriteDescriptorSet write{};
@@ -122,7 +122,7 @@ namespace muon {
         return *this;
     }
 
-    DescriptorWriter &DescriptorWriter::write_image(uint32_t binding, VkDescriptorImageInfo *image_info) {
+    DescriptorWriter &DescriptorWriter::writeImage(uint32_t binding, VkDescriptorImageInfo *image_info) {
         auto &binding_description = set_layout.bindings[binding];
 
         VkWriteDescriptorSet write{};
@@ -137,7 +137,7 @@ namespace muon {
     }
 
     bool DescriptorWriter::build(VkDescriptorSet &set) {
-        bool success = pool.allocate_descriptor(set_layout.get_descriptor_set_layout(), set);
+        bool success = pool.allocateDescriptor(set_layout.getDescriptorSetLayout(), set);
         if (!success) {
             return false;
         }
@@ -149,7 +149,7 @@ namespace muon {
         for (auto &write : writes) {
             write.dstSet = set;
         }
-        vkUpdateDescriptorSets(pool.device.get_device(), writes.size(), writes.data(), 0, nullptr);
+        vkUpdateDescriptorSets(pool.device.getDevice(), writes.size(), writes.data(), 0, nullptr);
     }
 
 }

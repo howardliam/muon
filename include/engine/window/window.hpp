@@ -26,22 +26,22 @@ namespace muon {
         Window(const Window &) = delete;
         Window& operator=(const Window &) = delete;
 
-        void poll_events();
+        void pollEvents();
 
-        VkExtent2D get_extent() const { return { static_cast<uint32_t>(properties.width), static_cast<uint32_t>(properties.height) }; }
-        bool is_open() const { return properties.open; }
-        void set_to_close() { properties.open = false; }
-        void set_icon(const char *icon_path);
+        VkExtent2D getExtent() const { return { static_cast<uint32_t>(properties.width), static_cast<uint32_t>(properties.height) }; }
+        bool isOpen() const { return properties.open; }
+        void setToClose() { properties.open = false; }
+        void setIcon(const char *icon_path);
 
-        SDL_Window *get_window() const { return window; }
-        void set_title(std::string title) { SDL_SetWindowTitle(window, title.c_str()); properties.title = title; }
+        SDL_Window *getWindow() const { return window; }
+        void setTitle(std::string title) { SDL_SetWindowTitle(window, title.c_str()); properties.title = title; }
 
-        bool was_resized() const { return resized; }
-        void reset_resized() { resized = false; }
+        bool wasResized() const { return resized; }
+        void resetResized() { resized = false; }
 
-        void create_surface(VkInstance instance, VkSurfaceKHR *surface);
+        void createSurface(VkInstance instance, VkSurfaceKHR *surface);
 
-        void bind_input_manager(InputManager *input_manager);
+        void bindInputManager(InputManager *input_manager);
 
     private:
         WindowProperties properties;
@@ -52,8 +52,8 @@ namespace muon {
 
         InputManager *input_manager{nullptr};
 
-        void initialise_sdl();
-        void initialise_window();
+        void initializeSdl();
+        void initializeWindow();
     };
 
 }

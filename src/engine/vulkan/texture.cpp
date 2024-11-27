@@ -18,24 +18,24 @@ namespace muon {
         image_format = VK_FORMAT_R8G8B8A8_SRGB;
         instance_size = 4;
 
-        create_texture(image_data);
+        createTexture(image_data);
 
         stbi_image_free(image_data);
     }
 
     Texture::Texture(Device &device, TextureCreateInfo &info) : device{device}, width{info.width}, height{info.height},
     image_format{info.image_format}, instance_size{info.instance_size} {
-        create_texture(info.image_data);
+        createTexture(info.image_data);
     }
 
     Texture::~Texture() {
-        vkDestroyImage(device.get_device(), image, nullptr);
-        vkFreeMemory(device.get_device(), image_memory, nullptr);
-        vkDestroyImageView(device.get_device(), image_view, nullptr);
-        vkDestroySampler(device.get_device(), sampler, nullptr);
+        vkDestroyImage(device.getDevice(), image, nullptr);
+        vkFreeMemory(device.getDevice(), image_memory, nullptr);
+        vkDestroyImageView(device.getDevice(), image_view, nullptr);
+        vkDestroySampler(device.getDevice(), sampler, nullptr);
     }
 
-    VkDescriptorImageInfo Texture::descriptor_info() const {
+    VkDescriptorImageInfo Texture::descriptorInfo() const {
         VkDescriptorImageInfo image_info{};
         image_info.sampler = sampler;
         image_info.imageView = image_view;
@@ -44,7 +44,7 @@ namespace muon {
         return image_info;
     }
 
-    void Texture::create_texture(void *image_data) {
+    void Texture::createTexture(void *image_data) {
         Buffer staging_buffer{
             device,
             instance_size,
@@ -54,7 +54,7 @@ namespace muon {
         };
 
         staging_buffer.map();
-        staging_buffer.write_to_buffer(image_data);
+        staging_buffer.writeToBuffer(image_data);
 
         VkImageCreateInfo image_info{};
         image_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -71,13 +71,13 @@ namespace muon {
         image_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
         image_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        device.create_image_with_info(image_info, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, image, image_memory);
+        device.createImageWithInfo(image_info, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, image, image_memory);
 
-        transition_image_layout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        transitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-        device.copy_buffer_to_image(staging_buffer.get_buffer(), image, width, height, 1);
+        device.copyBufferToImage(staging_buffer.getBuffer(), image, width, height, 1);
 
-        transition_image_layout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        transitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
         image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
@@ -97,7 +97,7 @@ namespace muon {
         sampler_info.anisotropyEnable = VK_TRUE;
         sampler_info.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
 
-        vkCreateSampler(device.get_device(), &sampler_info, nullptr, &sampler);
+        vkCreateSampler(device.getDevice(), &sampler_info, nullptr, &sampler);
 
         VkImageViewCreateInfo image_view_info{};
         image_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -111,11 +111,11 @@ namespace muon {
         image_view_info.subresourceRange.baseArrayLayer = 0;
         image_view_info.subresourceRange.layerCount = 1;
 
-        vkCreateImageView(device.get_device(), &image_view_info, nullptr, &image_view);
+        vkCreateImageView(device.getDevice(), &image_view_info, nullptr, &image_view);
     }
 
-    void Texture::transition_image_layout(VkImageLayout old_layout, VkImageLayout new_layout) {
-        VkCommandBuffer command_buffer = device.begin_single_time_commands();
+    void Texture::transitionImageLayout(VkImageLayout old_layout, VkImageLayout new_layout) {
+        VkCommandBuffer command_buffer = device.beginSingleTimeCommands();
 
         VkImageMemoryBarrier barrier{};
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -152,7 +152,7 @@ namespace muon {
 
         vkCmdPipelineBarrier(command_buffer, source_stage, destination_stage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 
-        device.end_single_time_commands(command_buffer);
+        device.endSingleTimeCommands(command_buffer);
     }
 
 }

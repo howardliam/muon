@@ -11,7 +11,7 @@
 namespace muon {
 
     /* Vertex */
-    std::vector<VkVertexInputBindingDescription> Model::Vertex::get_binding_descriptions() {
+    std::vector<VkVertexInputBindingDescription> Model::Vertex::getBindingDescriptions() {
         std::vector<VkVertexInputBindingDescription> binding_descriptions(1);
 
         binding_descriptions[0].binding = 0;
@@ -21,7 +21,7 @@ namespace muon {
         return binding_descriptions;
     }
 
-    std::vector<VkVertexInputAttributeDescription> Model::Vertex::get_attribute_descriptions() {
+    std::vector<VkVertexInputAttributeDescription> Model::Vertex::getAttributeDescriptions() {
         std::vector<VkVertexInputAttributeDescription> attribute_descriptions{};
 
         uint32_t location = 0;
@@ -61,7 +61,7 @@ namespace muon {
     }
 
     /* Builder */
-    void Model::Builder::load_model(const std::string &path) {
+    void Model::Builder::loadModel(const std::string &path) {
         Assimp::Importer importer;
 
         auto flags = aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_GenNormals | aiProcess_OptimizeMeshes;
@@ -114,20 +114,20 @@ namespace muon {
 
     /* Model */
     Model::Model(Device &device, const Builder &builder) : device{device} {
-        create_vertex_buffer(builder.vertices);
-        create_index_buffer(builder.indices);
+        createVertexBuffer(builder.vertices);
+        createIndexBuffer(builder.indices);
     }
 
     Model::~Model() = default;
 
     void Model::bind(VkCommandBuffer command_buffer) {
-        const VkBuffer buffers[] = {vertex_buffer->get_buffer()};
+        const VkBuffer buffers[] = {vertex_buffer->getBuffer()};
         constexpr VkDeviceSize offsets[] = {0};
 
         vkCmdBindVertexBuffers(command_buffer, 0, 1, buffers, offsets);
 
         if (has_index_buffer) {
-            vkCmdBindIndexBuffer(command_buffer, index_buffer->get_buffer(), 0, VK_INDEX_TYPE_UINT32);
+            vkCmdBindIndexBuffer(command_buffer, index_buffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
         }
     }
 
@@ -139,7 +139,7 @@ namespace muon {
         }
     }
 
-    void Model::create_vertex_buffer(const std::vector<Vertex> &vertices) {
+    void Model::createVertexBuffer(const std::vector<Vertex> &vertices) {
         vertex_count = static_cast<uint32_t>(vertices.size());
 
         uint32_t vertex_size = sizeof(vertices[0]);
@@ -154,7 +154,7 @@ namespace muon {
         };
 
         staging_buffer.map();
-        staging_buffer.write_to_buffer((void*)vertices.data());
+        staging_buffer.writeToBuffer((void*)vertices.data());
 
         vertex_buffer = std::make_unique<Buffer>(
             device,
@@ -164,10 +164,10 @@ namespace muon {
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
         );
 
-        device.copy_buffer(staging_buffer.get_buffer(), vertex_buffer->get_buffer(), buffer_size);
+        device.copyBuffer(staging_buffer.getBuffer(), vertex_buffer->getBuffer(), buffer_size);
     }
 
-    void Model::create_index_buffer(const std::vector<uint32_t> &indices) {
+    void Model::createIndexBuffer(const std::vector<uint32_t> &indices) {
         index_count = static_cast<uint32_t>(indices.size());
         has_index_buffer = index_count > 0;
 
@@ -187,7 +187,7 @@ namespace muon {
         };
 
         staging_buffer.map();
-        staging_buffer.write_to_buffer((void*)indices.data());
+        staging_buffer.writeToBuffer((void *)indices.data());
 
         index_buffer = std::make_unique<Buffer>(
             device,
@@ -197,12 +197,12 @@ namespace muon {
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
         );
 
-        device.copy_buffer(staging_buffer.get_buffer(), index_buffer->get_buffer(), buffer_size);
+        device.copyBuffer(staging_buffer.getBuffer(), index_buffer->getBuffer(), buffer_size);
     }
 
-    std::unique_ptr<Model> Model::from_file(Device &device, const std::string &path) {
+    std::unique_ptr<Model> Model::fromFile(Device &device, const std::string &path) {
         Model::Builder builder{};
-        builder.load_model(path);
+        builder.loadModel(path);
         spdlog::trace("Vertex count: {}", builder.vertices.size());
         spdlog::trace("Index count: {}", builder.indices.size());
         return std::make_unique<Model>(device, builder);

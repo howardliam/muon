@@ -18,7 +18,7 @@ namespace muon {
 
 
         // void render_game_objects(FrameInfo &frame_info, std::vector<GameObject>& game_objects);
-        void render_model(FrameInfo &frame_info, Model &model);
+        void renderModel(FrameInfo &frame_info, Model &model);
 
     private:
         Device &device;
@@ -26,7 +26,7 @@ namespace muon {
         std::unique_ptr<Pipeline> pipeline;
         VkPipelineLayout pipeline_layout;
 
-        void create_pipeline_layout(VkDescriptorSetLayout descriptor_set_layout);
-        void create_pipeline(VkRenderPass render_pass);
+        void createPipelineLayout(VkDescriptorSetLayout descriptor_set_layout);
+        void createPipeline(VkRenderPass render_pass);
     };
 }

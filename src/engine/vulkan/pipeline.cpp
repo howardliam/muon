@@ -7,7 +7,7 @@
 
 namespace muon {
 
-    std::vector<char> read_file(const std::string &path) {
+    std::vector<char> readFile(const std::string &path) {
         std::ifstream file{path, std::ios::ate | std::ios::binary};
 
         if (!file.is_open()) {
@@ -27,37 +27,37 @@ namespace muon {
     }
 
     Pipeline::Pipeline(Device &device, const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info) : device{device} {
-        create_graphics_pipeline(vert_path, frag_path, config_info);
+        createGraphicsPipeline(vert_path, frag_path, config_info);
     }
 
     Pipeline::~Pipeline() {
-        vkDestroyShaderModule(device.get_device(), vert_shader_module, nullptr);
-        vkDestroyShaderModule(device.get_device(), frag_shader_module, nullptr);
-        vkDestroyPipeline(device.get_device(), graphics_pipeline, nullptr);
+        vkDestroyShaderModule(device.getDevice(), vert_shader_module, nullptr);
+        vkDestroyShaderModule(device.getDevice(), frag_shader_module, nullptr);
+        vkDestroyPipeline(device.getDevice(), graphics_pipeline, nullptr);
     }
 
     void Pipeline::bind(VkCommandBuffer command_buffer) {
         vkCmdBindPipeline(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphics_pipeline);
     }
 
-    void Pipeline::create_shader_module(const std::vector<char> &code, VkShaderModule *shader_module) {
+    void Pipeline::createShaderModule(const std::vector<char> &code, VkShaderModule *shader_module) {
         VkShaderModuleCreateInfo create_info{};
         create_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
         create_info.codeSize = code.size();
         create_info.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
-        if (vkCreateShaderModule(device.get_device(), &create_info, nullptr, shader_module) != VK_SUCCESS) {
+        if (vkCreateShaderModule(device.getDevice(), &create_info, nullptr, shader_module) != VK_SUCCESS) {
             spdlog::error("Failed to create shader module");
             exit(exitcode::FAILURE);
         }
     }
 
-    void Pipeline::create_graphics_pipeline(const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info) {
-        auto vert = read_file(vert_path);
-        auto frag = read_file(frag_path);
+    void Pipeline::createGraphicsPipeline(const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info) {
+        auto vert = readFile(vert_path);
+        auto frag = readFile(frag_path);
 
-        create_shader_module(vert, &vert_shader_module);
-        create_shader_module(frag, &frag_shader_module);
+        createShaderModule(vert, &vert_shader_module);
+        createShaderModule(frag, &frag_shader_module);
 
         VkPipelineShaderStageCreateInfo shader_stages[2];
 
@@ -77,8 +77,8 @@ namespace muon {
         shader_stages[1].pNext = nullptr;
         shader_stages[1].pSpecializationInfo = nullptr;
 
-        auto binding_descriptions = Model::Vertex::get_binding_descriptions();
-        auto attribute_descriptions = Model::Vertex::get_attribute_descriptions();
+        auto binding_descriptions = Model::Vertex::getBindingDescriptions();
+        auto attribute_descriptions = Model::Vertex::getAttributeDescriptions();
 
         VkPipelineVertexInputStateCreateInfo vertex_input_info{};
         vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -107,13 +107,13 @@ namespace muon {
         pipeline_info.basePipelineIndex = -1;
         pipeline_info.basePipelineHandle = nullptr;
 
-        if (vkCreateGraphicsPipelines(device.get_device(), VK_NULL_HANDLE, 1, &pipeline_info, nullptr, &graphics_pipeline) != VK_SUCCESS) {
+        if (vkCreateGraphicsPipelines(device.getDevice(), VK_NULL_HANDLE, 1, &pipeline_info, nullptr, &graphics_pipeline) != VK_SUCCESS) {
             spdlog::error("Failed to create graphics pipeline");
             exit(exitcode::FAILURE);
         }
     }
 
-    void Pipeline::default_pipeline_config_info(PipelineConfigInfo &config_info) {
+    void Pipeline::defaultPipelineConfigInfo(PipelineConfigInfo &config_info) {
         config_info.input_assembly_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         config_info.input_assembly_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         config_info.input_assembly_info.primitiveRestartEnable = VK_FALSE;

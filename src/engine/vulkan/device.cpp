@@ -8,13 +8,13 @@
 namespace muon {
 
     /* Debug messenger */
-    static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT *callback_data, void *user_data) {
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT *callback_data, void *user_data) {
         spdlog::error("Validation layer: {}", callback_data->pMessage);
 
         return VK_FALSE;
     }
 
-    VkResult create_debug_utils_messenger(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *create_info, const VkAllocationCallbacks *allocator, VkDebugUtilsMessengerEXT *debug_messenger) {
+    VkResult createDebugUtilsMessenger(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *create_info, const VkAllocationCallbacks *allocator, VkDebugUtilsMessengerEXT *debug_messenger) {
         auto instance_proc_addr = vkGetInstanceProcAddr(instance,"vkCreateDebugUtilsMessengerEXT");
         const auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(instance_proc_addr);
         if (func != nullptr) {
@@ -24,7 +24,7 @@ namespace muon {
         }
     }
 
-    void destroy_debug_utils_messenger(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger, const VkAllocationCallbacks *allocator) {
+    void destroyDebugUtilsMessenger(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger, const VkAllocationCallbacks *allocator) {
         auto instance_proc_addr = vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
         const auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(instance_proc_addr);
         if (func != nullptr) {
@@ -34,12 +34,12 @@ namespace muon {
 
     /* Device class */
     Device::Device(Window &window) : window{window} {
-        create_instance();
-        setup_debug_messenger();
-        create_surface();
-        pick_physical_device();
-        create_logical_device();
-        create_command_pool();
+        createInstance();
+        setupDebugMessenger();
+        createSurface();
+        pickPhysicalDevice();
+        createLogicalDevice();
+        createCommandPool();
     }
 
     Device::~Device() {
@@ -47,7 +47,7 @@ namespace muon {
         vkDestroyDevice(device, nullptr);
 
         if (enable_validation_layers) {
-            destroy_debug_utils_messenger(instance, debug_messenger, nullptr);
+            destroyDebugUtilsMessenger(instance, debug_messenger, nullptr);
         }
 
         vkDestroySurfaceKHR(instance, surface, nullptr);
@@ -55,7 +55,7 @@ namespace muon {
     }
 
     /* Public functions */
-    uint32_t Device::find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags properties) {
+    uint32_t Device::findMemoryType(uint32_t type_filter, VkMemoryPropertyFlags properties) {
         VkPhysicalDeviceMemoryProperties memory_properties;
         vkGetPhysicalDeviceMemoryProperties(physical_device, &memory_properties);
         for (uint32_t i = 0; i < memory_properties.memoryTypeCount; i++) {
@@ -69,7 +69,7 @@ namespace muon {
         exit(exitcode::FAILURE);
     }
 
-    VkFormat Device::find_supported_format(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
+    VkFormat Device::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
         for (VkFormat format : candidates) {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physical_device, format, &props);
@@ -86,7 +86,7 @@ namespace muon {
         exit(exitcode::FAILURE);
     }
 
-    void Device::create_buffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &buffer_memory) {
+    void Device::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &buffer_memory) {
         VkBufferCreateInfo buffer_info{};
         buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         buffer_info.size = size;
@@ -104,7 +104,7 @@ namespace muon {
         VkMemoryAllocateInfo alloc_info{};
         alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         alloc_info.allocationSize = memory_requirements.size;
-        alloc_info.memoryTypeIndex = find_memory_type(memory_requirements.memoryTypeBits, properties);
+        alloc_info.memoryTypeIndex = findMemoryType(memory_requirements.memoryTypeBits, properties);
 
         if (vkAllocateMemory(device, &alloc_info, nullptr, &buffer_memory) != VK_SUCCESS) {
             spdlog::error("Failed to allocate vertex buffer memory, exiting");
@@ -114,7 +114,7 @@ namespace muon {
         vkBindBufferMemory(device, buffer, buffer_memory, 0);
     }
 
-    VkCommandBuffer Device::begin_single_time_commands() {
+    VkCommandBuffer Device::beginSingleTimeCommands() {
         VkCommandBufferAllocateInfo alloc_info{};
         alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -132,7 +132,7 @@ namespace muon {
         return command_buffer;
     }
 
-    void Device::end_single_time_commands(VkCommandBuffer command_buffer) {
+    void Device::endSingleTimeCommands(VkCommandBuffer command_buffer) {
         vkEndCommandBuffer(command_buffer);
 
         VkSubmitInfo submitInfo{};
@@ -146,8 +146,8 @@ namespace muon {
         vkFreeCommandBuffers(device, command_pool, 1, &command_buffer);
     }
 
-    void Device::copy_buffer(VkBuffer src_buffer, VkBuffer dest_buffer, VkDeviceSize size) {
-        VkCommandBuffer command_buffer = begin_single_time_commands();
+    void Device::copyBuffer(VkBuffer src_buffer, VkBuffer dest_buffer, VkDeviceSize size) {
+        VkCommandBuffer command_buffer = beginSingleTimeCommands();
 
         VkBufferCopy copy_region{};
         copy_region.srcOffset = 0;
@@ -155,11 +155,11 @@ namespace muon {
         copy_region.size = size;
         vkCmdCopyBuffer(command_buffer, src_buffer, dest_buffer, 1, &copy_region);
 
-        end_single_time_commands(command_buffer);
+        endSingleTimeCommands(command_buffer);
     }
 
-    void Device::copy_buffer_to_image(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layer_count) {
-        VkCommandBuffer command_buffer = begin_single_time_commands();
+    void Device::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layer_count) {
+        VkCommandBuffer command_buffer = beginSingleTimeCommands();
 
         VkBufferImageCopy region{};
         region.bufferOffset = 0;
@@ -175,10 +175,10 @@ namespace muon {
         region.imageExtent = {width, height, 1};
 
         vkCmdCopyBufferToImage(command_buffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
-        end_single_time_commands(command_buffer);
+        endSingleTimeCommands(command_buffer);
     }
 
-    void Device::create_image_with_info(const VkImageCreateInfo &image_info, VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &image_memory) {
+    void Device::createImageWithInfo(const VkImageCreateInfo &image_info, VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &image_memory) {
         if (vkCreateImage(device, &image_info, nullptr, &image) != VK_SUCCESS) {
             spdlog::error("Failed to create image, exiting");
             exit(exitcode::FAILURE);
@@ -190,7 +190,7 @@ namespace muon {
         VkMemoryAllocateInfo allocate_info{};
         allocate_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocate_info.allocationSize = memory_requirements.size;
-        allocate_info.memoryTypeIndex = find_memory_type(memory_requirements.memoryTypeBits, properties);
+        allocate_info.memoryTypeIndex = findMemoryType(memory_requirements.memoryTypeBits, properties);
 
         if (vkAllocateMemory(device, &allocate_info, nullptr, &image_memory) != VK_SUCCESS) {
             spdlog::error("Failed to allocate image memory, exiting");
@@ -204,8 +204,8 @@ namespace muon {
     }
 
     /* Private functions */
-    void Device::create_instance() {
-        if (enable_validation_layers && !check_validation_layer_support()) {
+    void Device::createInstance() {
+        if (enable_validation_layers && !checkValidationLayerSupport()) {
             spdlog::error("Validation layers requested but not available, exiting");
             exit(exitcode::FAILURE);
         }
@@ -222,7 +222,7 @@ namespace muon {
         create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         create_info.pApplicationInfo = &app_info;
 
-        auto extensions = get_required_extensions();
+        auto extensions = getRequiredExtensions();
         create_info.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
         create_info.ppEnabledExtensionNames = extensions.data();
 
@@ -231,7 +231,7 @@ namespace muon {
             create_info.enabledLayerCount = static_cast<uint32_t>(validation_layers.size());
             create_info.ppEnabledLayerNames = validation_layers.data();
 
-            populate_debug_messenger_create_info(debug_create_info);
+            populateDebugMessengerCreateInfo(debug_create_info);
             create_info.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debug_create_info;
         } else {
             create_info.enabledLayerCount = 0;
@@ -243,28 +243,28 @@ namespace muon {
             exit(exitcode::FAILURE);
         }
 
-        has_sdl_required_instance_extensions();
+        hasSdlRequiredInstanceExtensions();
     }
 
-    void Device::setup_debug_messenger() {
+    void Device::setupDebugMessenger() {
         if constexpr (!enable_validation_layers) {
             return;
         }
 
         VkDebugUtilsMessengerCreateInfoEXT create_info;
-        populate_debug_messenger_create_info(create_info);
+        populateDebugMessengerCreateInfo(create_info);
 
-        if (create_debug_utils_messenger(instance, &create_info, nullptr, &debug_messenger) != VK_SUCCESS) {
+        if (createDebugUtilsMessenger(instance, &create_info, nullptr, &debug_messenger) != VK_SUCCESS) {
             spdlog::error("Failed to set up debug messenger, exiting");
             exit(exitcode::FAILURE);
         }
     }
 
-    void Device::create_surface() {
-        window.create_surface(instance, &surface);
+    void Device::createSurface() {
+        window.createSurface(instance, &surface);
     }
 
-    void Device::pick_physical_device() {
+    void Device::pickPhysicalDevice() {
         uint32_t device_count = 0;
         vkEnumeratePhysicalDevices(instance, &device_count, nullptr);
 
@@ -280,7 +280,7 @@ namespace muon {
         vkEnumeratePhysicalDevices(instance, &device_count, devices.data());
 
         for (const auto &device : devices) {
-            if (is_device_suitable(device)) {
+            if (isDeviceSuitable(device)) {
                 physical_device = device;
                 break;
             }
@@ -295,8 +295,8 @@ namespace muon {
         spdlog::debug("Physical device: {}", properties.deviceName);
     }
 
-    void Device::create_logical_device() {
-        QueueFamilyIndices indices = find_queue_families(physical_device);
+    void Device::createLogicalDevice() {
+        QueueFamilyIndices indices = findQueueFamilies(physical_device);
 
         std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
         std::set unique_queue_families = {indices.graphics_family, indices.present_family};
@@ -340,8 +340,8 @@ namespace muon {
         vkGetDeviceQueue(device, indices.present_family, 0, &present_queue);
     }
 
-    void Device::create_command_pool() {
-        QueueFamilyIndices queue_family_indices = get_physical_queue_families();
+    void Device::createCommandPool() {
+        QueueFamilyIndices queue_family_indices = getPhysicalQueueFamilies();
 
         VkCommandPoolCreateInfo pool_info = {};
         pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -355,24 +355,24 @@ namespace muon {
         }
     }
 
-    bool Device::is_device_suitable(VkPhysicalDevice device) {
-        const QueueFamilyIndices indices = find_queue_families(device);
+    bool Device::isDeviceSuitable(VkPhysicalDevice device) {
+        const QueueFamilyIndices indices = findQueueFamilies(device);
 
-        const bool extensionsSupported = check_device_extension_support(device);
+        const bool extensionsSupported = checkDeviceExtensionSupport(device);
 
         bool swapChainAdequate = false;
         if (extensionsSupported) {
-            const SwapChainSupportDetails swap_chain_support = query_swapchain_support(device);
+            const SwapChainSupportDetails swap_chain_support = querySwapchainSupport(device);
             swapChainAdequate = !swap_chain_support.formats.empty() && !swap_chain_support.present_modes.empty();
         }
 
         VkPhysicalDeviceFeatures supportedFeatures;
         vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
 
-        return indices.is_complete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
+        return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
     }
 
-    std::vector<const char*> Device::get_required_extensions() {
+    std::vector<const char*> Device::getRequiredExtensions() {
         uint32_t extension_count = 0;
         auto sdl_extensions = SDL_Vulkan_GetInstanceExtensions(&extension_count);
 
@@ -385,7 +385,7 @@ namespace muon {
         return extensions;
     }
 
-    bool Device::check_validation_layer_support() {
+    bool Device::checkValidationLayerSupport() {
         uint32_t layer_count;
         vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
 
@@ -410,7 +410,7 @@ namespace muon {
         return true;
     }
 
-    QueueFamilyIndices Device::find_queue_families(VkPhysicalDevice device) {
+    QueueFamilyIndices Device::findQueueFamilies(VkPhysicalDevice device) {
         QueueFamilyIndices indices;
 
         uint32_t queue_family_count = 0;
@@ -431,7 +431,7 @@ namespace muon {
                 indices.present_family = i;
                 indices.present_family_has_value = true;
             }
-            if (indices.is_complete()) {
+            if (indices.isComplete()) {
                 break;
             }
 
@@ -441,7 +441,7 @@ namespace muon {
         return indices;
     }
 
-    void Device::populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT &create_info) {
+    void Device::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &create_info) {
         auto type = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
         auto severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
         auto message_type = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
@@ -452,11 +452,11 @@ namespace muon {
         create_info.sType = type;
         create_info.messageSeverity = severity;
         create_info.messageType = message_type;
-        create_info.pfnUserCallback = debug_callback;
+        create_info.pfnUserCallback = debugCallback;
         create_info.pUserData = nullptr;
     }
 
-    void Device::has_sdl_required_instance_extensions() {
+    void Device::hasSdlRequiredInstanceExtensions() {
         uint32_t extension_count = 0;
         vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
         std::vector<VkExtensionProperties> extensions(extension_count);
@@ -470,7 +470,7 @@ namespace muon {
         }
 
         spdlog::trace("Required extensions:");
-        auto required_extensions = get_required_extensions();
+        auto required_extensions = getRequiredExtensions();
         for (const auto &required : required_extensions) {
             spdlog::trace("\t{}", required);
             if (available.find(required) == available.end()) {
@@ -480,7 +480,7 @@ namespace muon {
         }
     }
 
-    bool Device::check_device_extension_support(VkPhysicalDevice device) {
+    bool Device::checkDeviceExtensionSupport(VkPhysicalDevice device) {
         uint32_t extension_count;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extension_count, nullptr);
 
@@ -496,7 +496,7 @@ namespace muon {
         return required_extensions.empty();
     }
 
-    SwapChainSupportDetails Device::query_swapchain_support(VkPhysicalDevice device) {
+    SwapChainSupportDetails Device::querySwapchainSupport(VkPhysicalDevice device) {
         SwapChainSupportDetails details;
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
 

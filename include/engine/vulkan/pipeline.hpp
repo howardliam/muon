@@ -38,7 +38,7 @@ namespace muon {
 
         void bind(VkCommandBuffer command_buffer);
 
-        static void default_pipeline_config_info(PipelineConfigInfo &config_info);
+        static void defaultPipelineConfigInfo(PipelineConfigInfo &config_info);
     private:
         Device &device;
         VkPipeline graphics_pipeline;
@@ -46,8 +46,8 @@ namespace muon {
         VkShaderModule frag_shader_module;
 
 
-        void create_shader_module(const std::vector<char> &code, VkShaderModule *shader_module);
-        void create_graphics_pipeline(const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info);
+        void createShaderModule(const std::vector<char> &code, VkShaderModule *shader_module);
+        void createGraphicsPipeline(const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info);
     };
 
     // static std::vector<char> read_file(const std::string &path);

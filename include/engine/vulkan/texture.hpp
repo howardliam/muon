@@ -25,14 +25,14 @@ namespace muon {
         Texture(const Texture &) = delete;
         Texture& operator=(const Texture &) = delete;
 
-        const uint32_t get_width() const { return width; }
-        const uint32_t get_height() const { return height; }
+        const uint32_t getWidth() const { return width; }
+        const uint32_t getHeight() const { return height; }
 
-        VkSampler get_sampler() const { return sampler; }
-        VkImageView get_image_view() const { return image_view; }
-        VkImageLayout get_image_layout() const { return image_layout; }
+        VkSampler getSampler() const { return sampler; }
+        VkImageView getImageView() const { return image_view; }
+        VkImageLayout getImageLayout() const { return image_layout; }
 
-        VkDescriptorImageInfo descriptor_info() const;
+        VkDescriptorImageInfo descriptorInfo() const;
 
     private:
         Device &device;
@@ -48,9 +48,9 @@ namespace muon {
         VkFormat image_format;
         uint32_t instance_size;
 
-        void create_texture(void *image_data);
+        void createTexture(void *image_data);
 
-        void transition_image_layout(VkImageLayout old_layout, VkImageLayout new_layout);
+        void transitionImageLayout(VkImageLayout old_layout, VkImageLayout new_layout);
     };
 
 }

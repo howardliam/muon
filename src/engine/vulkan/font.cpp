@@ -18,7 +18,7 @@
 namespace muon {
 
     template<typename T, typename S, int N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
-    std::shared_ptr<Texture> create_atlas(Device &device, std::vector<msdf_atlas::GlyphGeometry> glyphs, uint32_t width, uint32_t height) {
+    std::shared_ptr<Texture> createAtlas(Device &device, std::vector<msdf_atlas::GlyphGeometry> glyphs, uint32_t width, uint32_t height) {
         msdf_atlas::GeneratorAttributes attributes;
         attributes.config.overlapSupport = true;
         attributes.scanlinePass = true;
@@ -104,7 +104,7 @@ namespace muon {
             }
         }
 
-        atlas = create_atlas<uint8_t, float, 3, msdf_atlas::msdfGenerator>(device, glyphs, width, height);
+        atlas = createAtlas<uint8_t, float, 3, msdf_atlas::msdfGenerator>(device, glyphs, width, height);
 
         // glyphs[0].getQuadAtlasBounds(double &l, double &b, double &r, double &t);
 

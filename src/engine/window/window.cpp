@@ -9,8 +9,8 @@
 namespace muon {
 
     Window::Window(WindowProperties &properties) : properties{properties} {
-        initialise_sdl();
-        initialise_window();
+        initializeSdl();
+        initializeWindow();
     }
 
     Window::~Window() {
@@ -18,11 +18,11 @@ namespace muon {
         SDL_Quit();
     }
 
-    void Window::poll_events() {
+    void Window::pollEvents() {
         SDL_Event event;
             while (SDL_PollEvent(&event)) {
                 if (input_manager != nullptr) {
-                    input_manager->process_event(event);
+                    input_manager->processEvent(event);
                 }
 
                 if (event.type == SDL_EVENT_QUIT) {
@@ -36,7 +36,7 @@ namespace muon {
             }
     }
 
-    void Window::set_icon(const char *icon_path) {
+    void Window::setIcon(const char *icon_path) {
         int width, height, channels;
         unsigned char *image_data = stbi_load(icon_path, &width, &height, &channels, 4);
 
@@ -46,18 +46,18 @@ namespace muon {
         stbi_image_free(image_data);
     }
 
-    void Window::create_surface(VkInstance instance, VkSurfaceKHR *surface) {
+    void Window::createSurface(VkInstance instance, VkSurfaceKHR *surface) {
         if (!SDL_Vulkan_CreateSurface(window, instance, nullptr, surface)) {
             spdlog::error("Failed to create window surface");
             exit(exitcode::FAILURE);
         }
     }
 
-    void Window::bind_input_manager(InputManager *input_manager) {
+    void Window::bindInputManager(InputManager *input_manager) {
         this->input_manager = input_manager;
     }
 
-    void Window::initialise_sdl() {
+    void Window::initializeSdl() {
         spdlog::debug("Begin initialising SDL");
         if (!SDL_Init(SDL_INIT_VIDEO)) {
             auto err = SDL_GetError();
@@ -67,7 +67,7 @@ namespace muon {
         spdlog::debug("Finished initialising SDL");
     }
 
-    void Window::initialise_window() {
+    void Window::initializeWindow() {
         spdlog::debug("Begin initialising window");
         auto flags = SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE;
         window = SDL_CreateWindow(properties.title.c_str(), properties.width, properties.height, flags);
@@ -81,7 +81,7 @@ namespace muon {
         auto pos = SDL_WINDOWPOS_CENTERED;
         SDL_SetWindowPosition(window, pos, pos);
 
-        set_icon(defaults::ICON_PATH);
+        setIcon(defaults::ICON_PATH);
 
         spdlog::debug("Finished initialising window");
     }

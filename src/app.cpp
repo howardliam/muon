@@ -29,11 +29,11 @@ namespace muon {
         glm::mat4 view{1.0f};
     };
 
-    std::unique_ptr<Model> generate_text(Device &device, Font &font, std::string &text) {
-        const auto &font_geometry = font.get_font_geometry();
+    std::unique_ptr<Model> generateText(Device &device, Font &font, std::string &text) {
+        const auto &font_geometry = font.getFontGeometry();
         const auto &metrics = font_geometry.getMetrics();
 
-        auto atlas = font.get_atlas();
+        auto atlas = font.getAtlas();
 
         double x = 0.0;
         double y = 0.0;
@@ -97,8 +97,8 @@ namespace muon {
             quad_min.y = -quad_min.y;
             quad_max.y = -quad_max.y;
 
-            float texel_width = 1.0f / atlas->get_width();
-            float texel_height = 1.0f / atlas->get_height();
+            float texel_width = 1.0f / atlas->getWidth();
+            float texel_height = 1.0f / atlas->getHeight();
             tex_coord_min *= glm::vec2{texel_width, texel_height};
             tex_coord_max *= glm::vec2{texel_width, texel_height};
 
@@ -155,9 +155,9 @@ namespace muon {
         spdlog::info("Starting up");
 
         global_pool = DescriptorPool::Builder(device)
-            .set_max_sets(Swapchain::MAX_FRAMES_IN_FLIGHT)
-            .add_pool_size(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, Swapchain::MAX_FRAMES_IN_FLIGHT)
-            .add_pool_size(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, Swapchain::MAX_FRAMES_IN_FLIGHT)
+            .setMaxSets(Swapchain::MAX_FRAMES_IN_FLIGHT)
+            .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, Swapchain::MAX_FRAMES_IN_FLIGHT)
+            .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, Swapchain::MAX_FRAMES_IN_FLIGHT)
             .build();
     }
 
@@ -168,10 +168,10 @@ namespace muon {
     void App::run() {
         std::string font_path = "assets/fonts/OpenSans-Regular.ttf";
         Font font{font_path, device};
-        auto atlas = font.get_atlas();
+        auto atlas = font.getAtlas();
 
         InputManager input_manager;
-        window.bind_input_manager(&input_manager);
+        window.bindInputManager(&input_manager);
 
         std::vector<std::unique_ptr<Buffer>> ubo_buffers(Swapchain::MAX_FRAMES_IN_FLIGHT);
         for (int i = 0; i < ubo_buffers.size(); i++) {
@@ -186,67 +186,67 @@ namespace muon {
         }
 
         auto global_set_layout = DescriptorSetLayout::Builder(device)
-            .add_binding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
-            .add_binding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
+            .addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
             .build();
 
         Texture texture{device, "assets/textures/icon.png"};
 
         std::vector<VkDescriptorSet> global_descriptor_sets(Swapchain::MAX_FRAMES_IN_FLIGHT);
         for (int i = 0; i < global_descriptor_sets.size(); i++) {
-            auto buffer_info = ubo_buffers[i]->descriptor_info();
-            // auto image_info = texture.descriptor_info();
-            auto image_info = atlas->descriptor_info();
+            auto buffer_info = ubo_buffers[i]->descriptorInfo();
+            // auto image_info = texture.descriptorInfo();
+            auto image_info = atlas->descriptorInfo();
 
             DescriptorWriter(*global_set_layout, *global_pool)
-                .write_to_buffer(0, &buffer_info)
-                .write_image(1, &image_info)
+                .writeToBuffer(0, &buffer_info)
+                .writeImage(1, &image_info)
                 .build(global_descriptor_sets[i]);
         }
 
-        RenderSystem3D render_system{device, renderer.get_swapchain_render_pass(), global_set_layout->get_descriptor_set_layout()};
+        RenderSystem3D render_system{device, renderer.getSwapchainRenderPass(), global_set_layout->getDescriptorSetLayout()};
 
         glm::vec3 camera_pos = {0.0f, 0.0f, 0.0f};
         Camera camera{};
-        camera.look_at(camera_pos, {0.0f, 0.0f, -1.0f});
+        camera.lookAt(camera_pos, {0.0f, 0.0f, -1.0f});
 
-        std::unique_ptr model = Model::from_file(device, "assets/models/quad.obj");
+        std::unique_ptr model = Model::fromFile(device, "assets/models/quad.obj");
 
         std::string text = "Hello, World";
-        std::unique_ptr text_model = generate_text(device, font, text);
+        std::unique_ptr text_model = generateText(device, font, text);
 
         auto current_time = std::chrono::high_resolution_clock::now();
         float frame_time;
 
-        while (window.is_open()) {
-            window.poll_events();
+        while (window.isOpen()) {
+            window.pollEvents();
 
-            if (input_manager.is_key_pressed(SDL_SCANCODE_ESCAPE)) {
-                window.set_to_close();
+            if (input_manager.isKeyPressed(SDL_SCANCODE_ESCAPE)) {
+                window.setToClose();
             }
 
             auto new_time = std::chrono::high_resolution_clock::now();
             frame_time = std::chrono::duration<float, std::chrono::seconds::period>(new_time - current_time).count();
             current_time = new_time;
 
-            // window.set_title(std::to_string(static_cast<int>(1 / frame_time)) + " FPS");
+            // window.setTitle(std::to_string(static_cast<int>(1 / frame_time)) + " FPS");
 
-            camera.set_perspective_projection(glm::radians(90.0f), renderer.get_aspect_ratio(), 0.01f, 1000.0f);
+            camera.setPerspectiveProjection(glm::radians(90.0f), renderer.getAspectRatio(), 0.01f, 1000.0f);
 
-            renderer.set_clear_colour({0.05f, 0.05f, 0.05f, 1.0f});
-            if (const auto command_buffer = renderer.begin_frame()) {
-                const int frame_index = renderer.get_frame_index();
+            renderer.setClearColor({0.05f, 0.05f, 0.05f, 1.0f});
+            if (const auto command_buffer = renderer.beginFrame()) {
+                const int frame_index = renderer.getFrameIndex();
 
                 GlobalUbo global_ubo{};
-                global_ubo.projection = camera.get_projection();
-                global_ubo.view = camera.get_view();
-                ubo_buffers[frame_index]->write_to_buffer(&global_ubo);
+                global_ubo.projection = camera.getProjection();
+                global_ubo.view = camera.getView();
+                ubo_buffers[frame_index]->writeToBuffer(&global_ubo);
                 ubo_buffers[frame_index]->flush();
 
-                renderer.begin_swapchain_render_pass(command_buffer);
+                renderer.beginSwapchainRenderPass(command_buffer);
 
                 // std::string fps_text = std::to_string(static_cast<int>(1.0f / frame_time)) + " FPS";
-                // text_model = generate_text(device, font, fps_text);
+                // text_model = generateText(device, font, fps_text);
 
                 FrameInfo frame_info{
                     frame_index,
@@ -255,17 +255,17 @@ namespace muon {
                     camera,
                     global_descriptor_sets[frame_index]
                 };
-                render_system.render_model(frame_info, *model);
+                render_system.renderModel(frame_info, *model);
                 // render_system.render_model(frame_info, *text_model);
 
-                renderer.end_swapchain_render_pass(command_buffer);
-                renderer.end_frame();
+                renderer.endSwapchainRenderPass(command_buffer);
+                renderer.endFrame();
             }
 
             input_manager.update();
         }
 
-        vkDeviceWaitIdle(device.get_device());
+        vkDeviceWaitIdle(device.getDevice());
     }
 
 }

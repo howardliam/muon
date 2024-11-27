@@ -16,9 +16,9 @@ namespace muon {
         Font(std::string &font_path, Device &device);
         ~Font() = default;
 
-        std::vector<msdf_atlas::GlyphGeometry> get_glyphs() { return glyphs; }
-        msdf_atlas::FontGeometry get_font_geometry() { return font_geometry; }
-        std::shared_ptr<Texture> get_atlas() const { return atlas; }
+        std::vector<msdf_atlas::GlyphGeometry> getGlyphs() { return glyphs; }
+        msdf_atlas::FontGeometry getFontGeometry() { return font_geometry; }
+        std::shared_ptr<Texture> getAtlas() const { return atlas; }
 
     private:
         std::vector<msdf_atlas::GlyphGeometry> glyphs{};

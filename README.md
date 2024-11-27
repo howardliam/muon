@@ -45,3 +45,9 @@ bash run.sh
 ## Attributions
 - [STB](https://github.com/nothings/stb)
 - [entt](https://github.com/skypjack/entt)
+
+## Additional notes
+### Conventions
+- Classes/structs are PascalCase
+- Functions/methods are camelCase
+- Variables and object members are snake_case

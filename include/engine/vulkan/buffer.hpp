@@ -18,24 +18,24 @@ namespace muon {
         VkResult map(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
         void unmap();
 
-        void write_to_buffer(void *data, VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
+        void writeToBuffer(void *data, VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
         VkResult flush(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
-        VkDescriptorBufferInfo descriptor_info(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
+        VkDescriptorBufferInfo descriptorInfo(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
         VkResult invalidate(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
-        void write_to_index(void* data, int index);
-        VkResult flush_index(int index);
-        VkDescriptorBufferInfo descriptor_info_for_index(int index);
-        VkResult invalidate_index(int index);
+        void writeToIndex(void* data, int index);
+        VkResult flushIndex(int index);
+        VkDescriptorBufferInfo descriptorInfoForIndex(int index);
+        VkResult invalidateIndex(int index);
 
-        VkBuffer get_buffer() const { return buffer; }
-        VkDeviceSize get_buffer_size() const { return buffer_size; }
-        void *get_mapped_memory() const { return mapped; }
-        uint32_t get_instance_count() const { return instance_count; }
-        VkDeviceSize get_instance_size() const { return instance_size; }
-        VkDeviceSize get_alignment_size() const { return alignment_size; }
-        VkBufferUsageFlags get_usage_flags() const { return usage_flags; }
-        VkMemoryPropertyFlags get_memory_property_flags() const { return memory_property_flags; }
+        VkBuffer getBuffer() const { return buffer; }
+        VkDeviceSize getBufferSize() const { return buffer_size; }
+        void *getMappedMemory() const { return mapped; }
+        uint32_t getInstanceCount() const { return instance_count; }
+        VkDeviceSize getInstanceSize() const { return instance_size; }
+        VkDeviceSize getAlignmentSize() const { return alignment_size; }
+        VkBufferUsageFlags getUsageFlags() const { return usage_flags; }
+        VkMemoryPropertyFlags getMemoryPropertyFlags() const { return memory_property_flags; }
 
     private:
         Device &device;
@@ -51,6 +51,6 @@ namespace muon {
         VkMemoryPropertyFlags memory_property_flags;
     };
 
-    VkDeviceSize get_alignment(VkDeviceSize instance_size, VkDeviceSize min_offset_alignment);
+    VkDeviceSize getAlignment(VkDeviceSize instance_size, VkDeviceSize min_offset_alignment);
 
 }

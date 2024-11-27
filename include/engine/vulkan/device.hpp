@@ -19,7 +19,7 @@ namespace muon {
         bool graphics_family_has_value{false};
         bool present_family_has_value{false};
 
-        bool is_complete() const {
+        bool isComplete() const {
             return graphics_family_has_value && present_family_has_value;
         }
     };
@@ -40,25 +40,25 @@ namespace muon {
         Device(const Device &&) = delete;
         Device& operator=(const Device &&) = delete;
 
-        VkInstance get_instance() const { return instance; }
-        VkPhysicalDevice get_physical_device() const { return physical_device; }
-        VkCommandPool get_command_pool() const { return command_pool; }
-        VkDevice get_device() const { return device; }
-        VkSurfaceKHR get_surface() const { return surface; }
-        VkQueue get_graphics_queue() const { return graphics_queue; }
-        VkQueue get_present_queue() const { return present_queue; }
-        SwapChainSupportDetails get_swapchain_support() { return query_swapchain_support(physical_device); }
-        QueueFamilyIndices get_physical_queue_families() { return find_queue_families(physical_device); }
+        VkInstance getInstance() const { return instance; }
+        VkPhysicalDevice getPhysicalDevice() const { return physical_device; }
+        VkCommandPool getCommandPool() const { return command_pool; }
+        VkDevice getDevice() const { return device; }
+        VkSurfaceKHR getSurface() const { return surface; }
+        VkQueue getGraphicsQueue() const { return graphics_queue; }
+        VkQueue getPresentQueue() const { return present_queue; }
+        SwapChainSupportDetails getSwapchainSupport() { return querySwapchainSupport(physical_device); }
+        QueueFamilyIndices getPhysicalQueueFamilies() { return findQueueFamilies(physical_device); }
 
-        uint32_t find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags properties);
-        VkFormat find_supported_format(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+        uint32_t findMemoryType(uint32_t type_filter, VkMemoryPropertyFlags properties);
+        VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
-        void create_buffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &buffer_memory);
-        VkCommandBuffer begin_single_time_commands();
-        void end_single_time_commands(VkCommandBuffer command_buffer);
-        void copy_buffer(VkBuffer src_buffer, VkBuffer dest_buffer, VkDeviceSize size);
-        void copy_buffer_to_image(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layer_count);
-        void create_image_with_info(const VkImageCreateInfo &image_info, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& image_memory);
+        void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &buffer_memory);
+        VkCommandBuffer beginSingleTimeCommands();
+        void endSingleTimeCommands(VkCommandBuffer command_buffer);
+        void copyBuffer(VkBuffer src_buffer, VkBuffer dest_buffer, VkDeviceSize size);
+        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layer_count);
+        void createImageWithInfo(const VkImageCreateInfo &image_info, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& image_memory);
 
     private:
         VkInstance instance{};
@@ -77,21 +77,21 @@ namespace muon {
         const std::vector<const char *> validation_layers = {"VK_LAYER_KHRONOS_validation"};
         const std::vector<const char *> device_extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
-        void create_instance();
-        void setup_debug_messenger();
-        void create_surface();
-        void pick_physical_device();
-        void create_logical_device();
-        void create_command_pool();
+        void createInstance();
+        void setupDebugMessenger();
+        void createSurface();
+        void pickPhysicalDevice();
+        void createLogicalDevice();
+        void createCommandPool();
 
-        bool is_device_suitable(VkPhysicalDevice device);
-        std::vector<const char *> get_required_extensions();
-        bool check_validation_layer_support();
-        QueueFamilyIndices find_queue_families(VkPhysicalDevice device);
-        void populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT &create_info);
-        void has_sdl_required_instance_extensions();
-        bool check_device_extension_support(VkPhysicalDevice device);
-        SwapChainSupportDetails query_swapchain_support(VkPhysicalDevice device);
+        bool isDeviceSuitable(VkPhysicalDevice device);
+        std::vector<const char *> getRequiredExtensions();
+        bool checkValidationLayerSupport();
+        QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+        void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &create_info);
+        void hasSdlRequiredInstanceExtensions();
+        bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+        SwapChainSupportDetails querySwapchainSupport(VkPhysicalDevice device);
     };
 
 }

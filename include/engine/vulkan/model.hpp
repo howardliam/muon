@@ -22,8 +22,8 @@ namespace muon {
             glm::vec3 normal{};
             glm::vec2 tex_coord{};
 
-            static std::vector<VkVertexInputBindingDescription> get_binding_descriptions();
-            static std::vector<VkVertexInputAttributeDescription> get_attribute_descriptions();
+            static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
+            static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
 
             bool operator==(const Vertex &other) const;
         };
@@ -32,7 +32,7 @@ namespace muon {
             std::vector<Vertex> vertices{};
             std::vector<uint32_t> indices{};
 
-            void load_model(const std::string &path);
+            void loadModel(const std::string &path);
         };
 
         Model(Device &device, const Builder &builder);
@@ -41,7 +41,7 @@ namespace muon {
         Model(const Model &) = delete;
         Model& operator=(const Model &) = delete;
 
-        static std::unique_ptr<Model> from_file(Device &device, const std::string &path);
+        static std::unique_ptr<Model> fromFile(Device &device, const std::string &path);
 
         void bind(VkCommandBuffer command_buffer);
         void draw(VkCommandBuffer command_buffer);
@@ -56,8 +56,8 @@ namespace muon {
         std::unique_ptr<Buffer> index_buffer;
         uint32_t index_count;
 
-        void create_vertex_buffer(const std::vector<Vertex> &vertices);
-        void create_index_buffer(const std::vector<uint32_t> &indices);
+        void createVertexBuffer(const std::vector<Vertex> &vertices);
+        void createIndexBuffer(const std::vector<uint32_t> &indices);
     };
 
 }

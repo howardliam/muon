@@ -10,7 +10,7 @@ namespace muon {
         public:
             Builder(Device &device) : device{device} {}
 
-            Builder &add_binding(uint32_t binding, VkDescriptorType descriptor_type, VkShaderStageFlags stage_flags, uint32_t count = 1);
+            Builder &addBinding(uint32_t binding, VkDescriptorType descriptor_type, VkShaderStageFlags stage_flags, uint32_t count = 1);
             std::unique_ptr<DescriptorSetLayout> build() const;
 
         private:
@@ -24,7 +24,7 @@ namespace muon {
         DescriptorSetLayout(const DescriptorSetLayout &) = delete;
         DescriptorSetLayout &operator=(const DescriptorSetLayout &) = delete;
 
-        VkDescriptorSetLayout get_descriptor_set_layout() const { return descriptor_set_layout; }
+        VkDescriptorSetLayout getDescriptorSetLayout() const { return descriptor_set_layout; }
 
     private:
         Device &device;
@@ -40,9 +40,9 @@ namespace muon {
         public:
             Builder(Device &device) : device{device} {}
 
-            Builder &add_pool_size(VkDescriptorType descriptor_type, uint32_t count);
-            Builder &set_pool_flags(VkDescriptorPoolCreateFlags flags);
-            Builder &set_max_sets(uint32_t count);
+            Builder &addPoolSize(VkDescriptorType descriptor_type, uint32_t count);
+            Builder &setPoolFlags(VkDescriptorPoolCreateFlags flags);
+            Builder &setMaxSets(uint32_t count);
             std::unique_ptr<DescriptorPool> build() const;
 
         private:
@@ -58,9 +58,9 @@ namespace muon {
         DescriptorPool(const DescriptorPool &) = delete;
         DescriptorPool &operator=(const DescriptorPool &) = delete;
 
-        bool allocate_descriptor(const VkDescriptorSetLayout descriptor_set_layout, VkDescriptorSet &descriptor) const;
-        void free_descriptors(std::vector<VkDescriptorSet> &descriptors) const;
-        void reset_pool();
+        bool allocateDescriptor(const VkDescriptorSetLayout descriptor_set_layout, VkDescriptorSet &descriptor) const;
+        void freeDescriptors(std::vector<VkDescriptorSet> &descriptors) const;
+        void resetPool();
 
     private:
         Device &device;
@@ -73,8 +73,8 @@ namespace muon {
     public:
         DescriptorWriter(DescriptorSetLayout &set_layout, DescriptorPool &pool);
 
-        DescriptorWriter &write_to_buffer(uint32_t binding, VkDescriptorBufferInfo *buffer_info);
-        DescriptorWriter &write_image(uint32_t binding, VkDescriptorImageInfo *image_info);
+        DescriptorWriter &writeToBuffer(uint32_t binding, VkDescriptorBufferInfo *buffer_info);
+        DescriptorWriter &writeImage(uint32_t binding, VkDescriptorImageInfo *image_info);
 
         bool build(VkDescriptorSet &set);
         void overwrite(VkDescriptorSet &set);

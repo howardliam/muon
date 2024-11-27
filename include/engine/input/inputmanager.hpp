@@ -9,11 +9,11 @@
 namespace muon {
     class InputManager {
     public:
-        void process_event(SDL_Event &event);
+        void processEvent(SDL_Event &event);
         void update();
 
-        bool is_key_pressed(SDL_Scancode key) const;
-        bool is_key_released(SDL_Scancode key) const;
+        bool isKeyPressed(SDL_Scancode key) const;
+        bool isKeyReleased(SDL_Scancode key) const;
     private:
         std::unordered_map<SDL_Scancode, bool> current_keys;
         std::unordered_map<SDL_Scancode, bool> previous_keys;

@@ -15,15 +15,15 @@ namespace muon {
     };
 
     RenderSystem3D::RenderSystem3D(Device &device, VkRenderPass render_pass, VkDescriptorSetLayout descriptor_set_layout) : device{device} {
-        create_pipeline_layout(descriptor_set_layout);
-        create_pipeline(render_pass);
+        createPipelineLayout(descriptor_set_layout);
+        createPipeline(render_pass);
     }
 
     RenderSystem3D::~RenderSystem3D() {
-        vkDestroyPipelineLayout(device.get_device(), pipeline_layout, nullptr);
+        vkDestroyPipelineLayout(device.getDevice(), pipeline_layout, nullptr);
     }
 
-    void RenderSystem3D::render_model(FrameInfo &frame_info, Model &model) {
+    void RenderSystem3D::renderModel(FrameInfo &frame_info, Model &model) {
         pipeline->bind(frame_info.command_buffer);
 
         vkCmdBindDescriptorSets(
@@ -49,7 +49,7 @@ namespace muon {
         model.draw(frame_info.command_buffer);
     }
 
-    void RenderSystem3D::create_pipeline_layout(VkDescriptorSetLayout descriptor_set_layout) {
+    void RenderSystem3D::createPipelineLayout(VkDescriptorSetLayout descriptor_set_layout) {
         VkPushConstantRange push_constant_range{};
         push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
         push_constant_range.offset = 0;
@@ -64,15 +64,15 @@ namespace muon {
         pipeline_layout_info.pushConstantRangeCount = 1;
         pipeline_layout_info.pPushConstantRanges = &push_constant_range;
 
-        if (vkCreatePipelineLayout(device.get_device(), &pipeline_layout_info, nullptr, &pipeline_layout) != VK_SUCCESS) {
+        if (vkCreatePipelineLayout(device.getDevice(), &pipeline_layout_info, nullptr, &pipeline_layout) != VK_SUCCESS) {
             spdlog::error("Failed to create pipeline layout");
             exit(exitcode::FAILURE);
         }
     }
 
-    void RenderSystem3D::create_pipeline(VkRenderPass render_pass) {
+    void RenderSystem3D::createPipeline(VkRenderPass render_pass) {
         PipelineConfigInfo pipeline_config{};
-        Pipeline::default_pipeline_config_info(pipeline_config);
+        Pipeline::defaultPipelineConfigInfo(pipeline_config);
         pipeline_config.render_pass= render_pass;
         pipeline_config.pipeline_layout = pipeline_layout;
 
