@@ -44,5 +44,4 @@ bash run.sh
 
 ## Attributions
 - [STB](https://github.com/nothings/stb)
-- [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 - [entt](https://github.com/skypjack/entt)
