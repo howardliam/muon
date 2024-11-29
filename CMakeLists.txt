@@ -60,7 +60,6 @@ set(OTHER_SRC
 
     # Scene
     src/scene/camera.cpp
-    src/scene/gameobject.cpp
     src/scene/scene.cpp
 )
 
