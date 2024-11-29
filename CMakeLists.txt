@@ -30,6 +30,8 @@ set(ENGINE_SRC
 
     # Input
     src/engine/input/inputmanager.cpp
+    src/engine/input/keyboard.cpp
+    src/engine/input/mouse.cpp
 
     # Render
     src/engine/render/common.cpp

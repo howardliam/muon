@@ -212,8 +212,7 @@ namespace muon {
 
         std::unique_ptr model = Model::fromFile(device, "assets/models/quad.obj");
 
-        std::string text = "Hello, World";
-        std::unique_ptr text_model = generateText(device, font, text);
+        std::unique_ptr<Model> text_model = nullptr;
 
         auto current_time = std::chrono::high_resolution_clock::now();
         float frame_time;
@@ -221,8 +220,14 @@ namespace muon {
         while (window.isOpen()) {
             window.pollEvents();
 
-            if (input_manager.isKeyPressed(SDL_SCANCODE_ESCAPE)) {
+            if (input_manager.getKeyboard().isKeyDown(SDL_SCANCODE_ESCAPE)) {
                 window.setToClose();
+            }
+
+            if (input_manager.getMouse().isButtonDown(MouseButton::Mouse1)) {
+                window.setTitle("Hello");
+            } else if (input_manager.getMouse().isButtonDown(MouseButton::Mouse2)) {
+                window.setTitle("World");
             }
 
             auto new_time = std::chrono::high_resolution_clock::now();
@@ -246,8 +251,13 @@ namespace muon {
 
                 renderer.beginSwapchainRenderPass(command_buffer);
 
-                std::string fps_text = std::to_string(static_cast<int>(1.0f / frame_time)) + " FPS";
-                text_model = generateText(device, font, fps_text);
+                // std::string fps_text = std::to_string(static_cast<int>(1.0f / frame_time)) + " FPS";
+                // text_model = generateText(device, font, fps_text);
+
+                auto mouse_pos = input_manager.getMouse().getCurrentPosition();
+                std::string pos_text = std::to_string(mouse_pos.x) + "\n" + std::to_string(mouse_pos.y);
+                text_model = generateText(device, font, pos_text);
+
 
                 FrameInfo frame_info{
                     frame_index,
