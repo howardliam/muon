@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-#include "engine/input/input.hpp"
+#include "input/input.hpp"
 
 namespace muon {
 

@@ -1,7 +1,9 @@
 #pragma once
 
-#include "engine/input/keyboard.hpp"
-#include "engine/input/mouse.hpp"
+#include <SDL3/SDL_events.h>
+
+#include "input/keyboard.hpp"
+#include "input/mouse.hpp"
 
 namespace muon {
 

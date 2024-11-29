@@ -1,4 +1,4 @@
-#include "engine/input/keyboard.hpp"
+#include "input/keyboard.hpp"
 
 #include <algorithm>
 

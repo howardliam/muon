@@ -1,4 +1,4 @@
-#include "engine/input/inputmanager.hpp"
+#include "input/inputmanager.hpp"
 
 namespace muon {
 

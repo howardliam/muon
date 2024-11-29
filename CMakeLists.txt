@@ -26,13 +26,6 @@ include_directories(
 )
 
 set(ENGINE_SRC
-    # Audio
-
-    # Input
-    src/engine/input/inputmanager.cpp
-    src/engine/input/keyboard.cpp
-    src/engine/input/mouse.cpp
-
     # Render
     src/engine/render/common.cpp
     src/engine/render/rendermodule.cpp
@@ -41,11 +34,6 @@ set(ENGINE_SRC
     # Rendering systems
     src/engine/rendering/rendersystem.cpp
     src/engine/rendering/textrenderer.cpp
-
-    # Scene
-    src/engine/scene/camera.cpp
-    src/engine/scene/gameobject.cpp
-    src/engine/scene/scene.cpp
 
     # Vulkan
     src/engine/vulkan/buffer.cpp
@@ -62,6 +50,20 @@ set(ENGINE_SRC
     src/engine/window/window.cpp
 )
 
+set(OTHER_SRC
+    # Audio
+
+    # Input
+    src/input/inputmanager.cpp
+    src/input/keyboard.cpp
+    src/input/mouse.cpp
+
+    # Scene
+    src/scene/camera.cpp
+    src/scene/gameobject.cpp
+    src/scene/scene.cpp
+)
+
 set(PROJ_SRC
     src/main.cpp
 
@@ -71,6 +73,7 @@ set(PROJ_SRC
 
 add_executable(${PROJ_NAME}
     ${ENGINE_SRC}
+    ${OTHER_SRC}
     ${PROJ_SRC}
 )
 

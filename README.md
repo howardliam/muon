@@ -9,10 +9,11 @@ An amateur game engine for learning Vulkan among other technologies.
 - [x] Texture loading
   - [x] Improve texture loading
   - [ ] Replace stb_image
+  - [ ] Add support for DDS
 - [ ] Camera
   - [x] Perspective projections
   - [ ] Orthographic projections
-  - [x] Look at
+  - [x] View matrix (look at)
 - [ ] Text
   - [x] MSDF text printing with transparency
   - [ ] Text rendering with orthographic projection
@@ -29,7 +30,7 @@ An amateur game engine for learning Vulkan among other technologies.
 ### Audio
 - [ ] Audio (OpenAL)
   - [ ] Ogg-Vorbis support
-  - [ ] Audio subsystem (something like Paul's Soundsystem)
+  - [ ] Audio subsystem (something like Paul's Code Soundsystem)
 
 ### Networking
 - [ ] Networking
@@ -38,9 +39,9 @@ An amateur game engine for learning Vulkan among other technologies.
   - [ ] UDP support
 
 ### Game
-- [ ] User input
-  - [ ] Keyboard handling
-  - [ ] Mouse handling
+- [x] User input
+  - [x] Keyboard handling
+  - [x] Mouse handling
   - [ ] Control scheme file
 - [ ] ECS implementation
 - [ ] C# scripting with Mono

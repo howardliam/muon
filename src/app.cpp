@@ -1,7 +1,5 @@
 #include "app.hpp"
 
-#include <SDL3/SDL_dialog.h>
-#include <SDL3/SDL_messagebox.h>
 #include <chrono>
 #include <memory>
 
@@ -18,9 +16,10 @@
 #include "engine/vulkan/swapchain.hpp"
 #include "engine/vulkan/texture.hpp"
 #include "engine/rendering/rendersystem.hpp"
-#include "engine/scene/camera.hpp"
-#include "engine/input/inputmanager.hpp"
 #include "engine/vulkan/font.hpp"
+
+#include "scene/camera.hpp"
+#include "input/inputmanager.hpp"
 
 namespace muon {
 

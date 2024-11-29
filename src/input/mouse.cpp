@@ -1,4 +1,4 @@
-#include "engine/input/mouse.hpp"
+#include "input/mouse.hpp"
 
 #include <algorithm>
 

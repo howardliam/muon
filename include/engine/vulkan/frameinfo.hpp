@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan.hpp>
 
-#include "engine/scene/camera.hpp"
+#include "scene/camera.hpp"
 
 namespace muon {
 
