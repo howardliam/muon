@@ -21,7 +21,7 @@ An amateur game engine for learning Vulkan among other technologies.
 - [ ] Render modules
   - [ ] Figure out some system for this
 - [ ] Render graph
-  - [ ] Using Framegraph (maybe?)
+  - [ ] Using [FrameGraph](https://github.com/skaarj1989/FrameGraph) (maybe?)
 - [ ] Multithreading
 - [ ] Post processing
   - [ ] Offscreen framebuffer rendering
@@ -34,7 +34,7 @@ An amateur game engine for learning Vulkan among other technologies.
 
 ### Networking
 - [ ] Networking
-  - [ ] Pick a networking library
+  - [ ] [GameNetworkingSockets](https://github.com/ValveSoftware/GameNetworkingSockets) ~~Pick a networking library~~
   - [ ] TCP support
   - [ ] UDP support
 
@@ -52,7 +52,8 @@ An amateur game engine for learning Vulkan among other technologies.
 
 ### Assets
 - [ ] Asset packing
-- [ ] Asset store (storage not a shop)
+- [ ] Asset storage
+  - [ ] Asynchronous asset loading
 
 ## Build instructions
 ```
