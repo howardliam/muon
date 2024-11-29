@@ -19,6 +19,8 @@ An amateur game engine for learning Vulkan among other technologies.
   - [ ] Text rendering pipeline
 - [ ] Render modules
   - [ ] Figure out some system for this
+- [ ] Render graph
+  - [ ] Using Framegraph (maybe?)
 - [ ] Multithreading
 - [ ] Post processing
   - [ ] Offscreen framebuffer rendering
