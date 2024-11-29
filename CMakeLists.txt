@@ -22,7 +22,7 @@ add_subdirectory(external/assimp)
 include_directories(
     libs/stb
     external/entt/single_include/entt
-    external/cpptoml/include
+    external/tomlplusplus/include
 )
 
 set(ENGINE_SRC

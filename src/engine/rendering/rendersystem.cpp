@@ -8,7 +8,7 @@
 
 namespace muon {
 
-    static glm::mat4 transform = glm::translate(glm::mat4{1.0f}, {0.0f, 0.0f, -3.0f});
+    static glm::mat4 transform = glm::translate(glm::mat4{1.0f}, {0.0f, 0.0f, -5.0f});
 
     struct SimplePushConstantData {
         glm::mat4 model{1.0f};
@@ -37,7 +37,7 @@ namespace muon {
             nullptr
         );
 
-        transform = glm::rotate(transform, glm::radians(1.0f), {0.0f, 1.0f, 0.0f});
+        // transform = glm::rotate(transform, glm::radians(1.0f), {0.0f, 1.0f, 0.0f});
 
         SimplePushConstantData push{};
         push.model = transform;

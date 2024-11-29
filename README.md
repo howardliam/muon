@@ -5,25 +5,51 @@ An amateur game engine for learning Vulkan among other technologies.
 ### Graphics (Vulkan)
 - [x] Initial Vulkan setup
 - [x] Model loading
+  - [x] Switch from tinyobjloader to Assimp
 - [x] Texture loading
-- [ ] Good base render system as an example
-- [x] Camera
+  - [x] Improve texture loading
+  - [ ] Replace stb_image
+- [ ] Camera
+  - [x] Perspective projections
+  - [ ] Orthographic projections
+  - [x] Look at
 - [ ] Text
+  - [x] MSDF text printing with transparency
+  - [ ] Text rendering with orthographic projection
+  - [ ] Text rendering pipeline
+- [ ] Render modules
+  - [ ] Figure out some system for this
 - [ ] Multithreading
 - [ ] Post processing
-- [x] Switch from tinyobjloader to Assimp
-- [x] Improve texture loading
+  - [ ] Offscreen framebuffer rendering
+  - [ ] Pipeline chain for effects
+
 ### Audio
 - [ ] Audio (OpenAL)
+  - [ ] Ogg-Vorbis support
+  - [ ] Audio subsystem (something like Paul's Soundsystem)
+
 ### Networking
-- [ ] TCP support
-- [ ] UDP support
+- [ ] Networking
+  - [ ] Pick a networking library
+  - [ ] TCP support
+  - [ ] UDP support
+
 ### Game
-- [ ] User input handling
+- [ ] User input
+  - [ ] Keyboard handling
+  - [ ] Mouse handling
+  - [ ] Control scheme file
 - [ ] ECS implementation
-- [ ] C# scripting with mono
+- [ ] C# scripting with Mono
+- [ ] Saving game data
+  - [ ] Object serialisation
+  - [ ] Serialised adata compression
+    - [ ] LZ4 support
+
 ### Assets
 - [ ] Asset packing
+- [ ] Asset store (storage not a shop)
 
 ## Build instructions
 ```
@@ -40,7 +66,7 @@ bash run.sh
 - [glm](https://github.com/g-truc/glm)
 - [STB](https://github.com/nothings/stb) *
 - [entt](https://github.com/skypjack/entt) *
-- [cpptoml](https://github.com/skystrife/cpptoml) *
+- [tomlplusplus](https://github.com/marzer/tomlplusplus) *
 - [assimp](https://github.com/assimp/assimp) *
 - [msdf-atlas-gen](https://github.com/Chlumsky/msdf-atlas-gen) *
 

@@ -232,6 +232,7 @@ namespace muon {
             // window.setTitle(std::to_string(static_cast<int>(1 / frame_time)) + " FPS");
 
             camera.setPerspectiveProjection(glm::radians(90.0f), renderer.getAspectRatio(), 0.01f, 1000.0f);
+            // camera.setOrthographicProjection(-renderer.getAspectRatio(), renderer.getAspectRatio(), -1, 1);
 
             renderer.setClearColor({0.05f, 0.05f, 0.05f, 1.0f});
             if (const auto command_buffer = renderer.beginFrame()) {
@@ -245,8 +246,8 @@ namespace muon {
 
                 renderer.beginSwapchainRenderPass(command_buffer);
 
-                // std::string fps_text = std::to_string(static_cast<int>(1.0f / frame_time)) + " FPS";
-                // text_model = generateText(device, font, fps_text);
+                std::string fps_text = std::to_string(static_cast<int>(1.0f / frame_time)) + " FPS";
+                text_model = generateText(device, font, fps_text);
 
                 FrameInfo frame_info{
                     frame_index,
@@ -255,8 +256,8 @@ namespace muon {
                     camera,
                     global_descriptor_sets[frame_index]
                 };
-                render_system.renderModel(frame_info, *model);
-                // render_system.render_model(frame_info, *text_model);
+                // render_system.renderModel(frame_info, *model);
+                render_system.renderModel(frame_info, *text_model);
 
                 renderer.endSwapchainRenderPass(command_buffer);
                 renderer.endFrame();
