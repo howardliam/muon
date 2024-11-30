@@ -6,17 +6,21 @@
 #include <utils.hpp>
 #include <engine/window/window.hpp>
 #include <engine/assets/audioloader.hpp>
-#include "app.hpp"
+#include <audio/soundsystem.hpp>
+#include <audio/audiobuffer.hpp>
+#include <toml++/toml.hpp>
 
-#include "toml++/toml.hpp"
+#include "app.hpp"
+#include "audio/audiosource.hpp"
 
 int main() {
     spdlog::set_level(spdlog::level::debug);
 
-    muon::OggProperties props;
-    std::vector<char> audio_data;
+    muon::SoundSystem sound_system;
     std::string path = "assets/audio/break-window.ogg";
-    muon::loadOggFile(path, audio_data, props);
+    muon::AudioBuffer buffer{path};
+    muon::AudioSource source{buffer};
+    source.play();
 
     auto config = toml::parse_file("config.toml");
     std::string_view title = config["window"]["title"].value_or(muon::defaults::TITLE);

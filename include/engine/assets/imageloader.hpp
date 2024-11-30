@@ -13,6 +13,6 @@ namespace muon {
         int bit_depth{};
     };
 
-    void readPngFile(std::string &path, std::vector<uint8_t> &image_data, PngProperties &properties);
+    void readPngFile(const std::string &path, std::vector<uint8_t> &image_data, PngProperties &properties);
 
 }

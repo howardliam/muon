@@ -10,7 +10,6 @@ find_package(SDL3 REQUIRED)
 find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(OpenAL REQUIRED)
-# find_package(PNG REQUIRED)
 
 set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "" FORCE)
 set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "" FORCE)
@@ -20,16 +19,15 @@ add_subdirectory(external/msdf-atlas-gen)
 add_subdirectory(external/assimp)
 
 include_directories(
-    libs/stb
     external/entt/single_include/entt
     external/tomlplusplus/include
-    # ${PNG_INCLUDE_DIR}
 )
 
 set(ENGINE_SRC
     # Assets
     src/engine/assets/imageloader.cpp
     src/engine/assets/audioloader.cpp
+    src/engine/assets/stb_vorbis.c
 
     # Render
     src/engine/render/common.cpp
@@ -57,6 +55,8 @@ set(ENGINE_SRC
 
 set(OTHER_SRC
     # Audio
+    src/audio/audiobuffer.cpp
+    src/audio/audiosource.cpp
     src/audio/soundsystem.cpp
 
     # Input
@@ -107,7 +107,7 @@ set(LIBS pthread dl)
 set(GRAPHICS_LIBS SDL3::SDL3 Vulkan::Vulkan glm)
 set(LOGGING_LIBS spdlog::spdlog fmt)
 set(TEXT_LIBS msdf-atlas-gen)
-set(AUDIO_LIBS openal vorbisfile)
+set(AUDIO_LIBS openal)
 set(MODEL_LIBS assimp)
 set(IMAGE_LIBS png)
 

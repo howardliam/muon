@@ -1,26 +1,40 @@
 #include "engine/vulkan/texture.hpp"
+#include "engine/assets/imageloader.hpp"
 
 #include <cmath>
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+
+// #define STB_IMAGE_IMPLEMENTATION
+// #include <stb_image.h>
 
 #include "engine/vulkan/buffer.hpp"
 
 namespace muon {
 
     Texture::Texture(Device &device, const std::string &path) : device{device} {
-        int w, h, channels;
-        stbi_uc *image_data = stbi_load(path.c_str(), &w, &h, &channels, STBI_rgb_alpha);
+        // int w, h, channels;
+        // stbi_uc *image_data = stbi_load(path.c_str(), &w, &h, &channels, STBI_rgb_alpha);
 
-        width = static_cast<uint32_t>(w);
-        height = static_cast<uint32_t>(h);
+        // width = static_cast<uint32_t>(w);
+        // height = static_cast<uint32_t>(h);
+
+        // image_format = VK_FORMAT_R8G8B8A8_SRGB;
+        // instance_size = 4;
+
+        // createTexture(image_data);
+
+        // stbi_image_free(image_data);
+
+        PngProperties properties{};
+        std::vector<uint8_t> image_data;
+        readPngFile(path, image_data, properties);
+
+        width = properties.width;
+        height = properties.height;
 
         image_format = VK_FORMAT_R8G8B8A8_SRGB;
         instance_size = 4;
 
-        createTexture(image_data);
-
-        stbi_image_free(image_data);
+        createTexture(image_data.data());
     }
 
     Texture::Texture(Device &device, TextureCreateInfo &info) : device{device}, width{info.width}, height{info.height},

@@ -9,7 +9,6 @@ namespace muon {
         SoundSystem();
         ~SoundSystem();
 
-
     private:
         ALCdevice *device;
         ALCcontext *context;
