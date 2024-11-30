@@ -8,8 +8,8 @@ An amateur game engine for learning Vulkan among other technologies.
   - [x] Switch from tinyobjloader to Assimp
 - [x] Texture loading
   - [x] Improve texture loading
-  - [ ] Replace stb_image
-  - [ ] Add support for DDS
+  - [x] Replace stb_image
+  - [ ] Add support for other formats than PNG
 - [ ] Camera
   - [x] Perspective projections
   - [ ] Orthographic projections
@@ -70,13 +70,14 @@ bash run.sh
 - [SDL3](https://www.libsdl.org/index.php)
 - [spdlog](https://github.com/gabime/spdlog)
 - [glm](https://github.com/g-truc/glm)
-- [STB](https://github.com/nothings/stb) *
 - [entt](https://github.com/skypjack/entt) *
 - [tomlplusplus](https://github.com/marzer/tomlplusplus) *
 - [assimp](https://github.com/assimp/assimp) *
 - [msdf-atlas-gen](https://github.com/Chlumsky/msdf-atlas-gen) *
+- [stb_vorbis](https://github.com/nothings/stb) **
 
 \* provided as a submodule
+\** included in source tree
 
 ## Additional notes
 ### Conventions
