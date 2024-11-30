@@ -29,6 +29,7 @@ include_directories(
 set(ENGINE_SRC
     # Assets
     src/engine/assets/imageloader.cpp
+    src/engine/assets/audioloader.cpp
 
     # Render
     src/engine/render/common.cpp
@@ -56,6 +57,7 @@ set(ENGINE_SRC
 
 set(OTHER_SRC
     # Audio
+    src/audio/soundsystem.cpp
 
     # Input
     src/input/inputmanager.cpp
@@ -105,7 +107,7 @@ set(LIBS pthread dl)
 set(GRAPHICS_LIBS SDL3::SDL3 Vulkan::Vulkan glm)
 set(LOGGING_LIBS spdlog::spdlog fmt)
 set(TEXT_LIBS msdf-atlas-gen)
-set(AUDIO_LIBS openal)
+set(AUDIO_LIBS openal vorbisfile)
 set(MODEL_LIBS assimp)
 set(IMAGE_LIBS png)
 

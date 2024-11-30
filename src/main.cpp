@@ -3,14 +3,20 @@
 
 #include <spdlog/spdlog.h>
 
-#include "engine/window/window.hpp"
+#include <utils.hpp>
+#include <engine/window/window.hpp>
+#include <engine/assets/audioloader.hpp>
 #include "app.hpp"
-#include "utils.hpp"
 
 #include "toml++/toml.hpp"
 
 int main() {
     spdlog::set_level(spdlog::level::debug);
+
+    muon::OggProperties props;
+    std::vector<char> audio_data;
+    std::string path = "assets/audio/break-window.ogg";
+    muon::loadOggFile(path, audio_data, props);
 
     auto config = toml::parse_file("config.toml");
     std::string_view title = config["window"]["title"].value_or(muon::defaults::TITLE);

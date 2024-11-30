@@ -1,4 +1,4 @@
-#include "engine/assets/imageloader.hpp"
+#include <engine/assets/imageloader.hpp>
 
 #include <csetjmp>
 #include <fstream>
@@ -36,8 +36,13 @@ namespace muon {
             return;
         }
 
-        std::ifstream image{path, std::ios::binary};
-        png_set_read_fn(png, static_cast<void *>(&image), pngReader);
+        std::ifstream image_file{path, std::ios::binary};
+        if (!image_file) {
+            spdlog::error("Failed to open file: {}", path);
+            return;
+        }
+
+        png_set_read_fn(png, static_cast<void *>(&image_file), pngReader);
         png_read_info(png, info);
 
         properties.width = png_get_image_width(png, info);
