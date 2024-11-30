@@ -21,33 +21,30 @@ namespace muon {
 
     void Window::pollEvents() {
         SDL_Event event;
-            while (SDL_PollEvent(&event)) {
-                if (input_manager != nullptr) {
-                    input_manager->processEvent(event);
-                }
-
-                if (event.type == SDL_EVENT_QUIT) {
-                    properties.open = false;
-                    break;
-                } else if (event.type == SDL_EVENT_WINDOW_RESIZED) {
-                    properties.width = event.window.data1;
-                    properties.height = event.window.data2;
-                    resized = true;
-                }
+        while (SDL_PollEvent(&event)) {
+            if (input_manager != nullptr) {
+                input_manager->processEvent(event);
             }
+
+            if (event.type == SDL_EVENT_QUIT) {
+                properties.open = false;
+                break;
+            } else if (event.type == SDL_EVENT_WINDOW_RESIZED) {
+                properties.width = event.window.data1;
+                properties.height = event.window.data2;
+                resized = true;
+            }
+        }
     }
 
     void Window::setIcon(std::string &icon_path) {
-        // int width, height, channels;
-        // unsigned char *image_data = stbi_load(icon_path, &width, &height, &channels, 4);
-        ImageProperties properties{};
+        PngImageProperties properties{};
         std::vector<uint8_t> image_data;
         readPngFile(icon_path, image_data, properties);
 
-        SDL_Surface *surface = SDL_CreateSurfaceFrom(properties.width, properties.height, SDL_PIXELFORMAT_RGBA32, image_data.data(), properties.width * 4);
+        SDL_Surface *surface = SDL_CreateSurfaceFrom(
+            properties.width, properties.height, SDL_PIXELFORMAT_RGBA32, image_data.data(), properties.width * 4);
         SDL_SetWindowIcon(window, surface);
-
-        // stbi_image_free(image_data);
     }
 
     void Window::createSurface(VkInstance instance, VkSurfaceKHR *surface) {

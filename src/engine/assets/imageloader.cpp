@@ -16,9 +16,7 @@ namespace muon {
         }
     }
 
-    void readPngFile(std::string &path, std::vector<uint8_t> &image_data, ImageProperties &properties) {
-        std::ifstream image{path, std::ios::binary};
-
+    void readPngFile(std::string &path, std::vector<uint8_t> &image_data, PngImageProperties &properties) {
         png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
         if (!png) {
             spdlog::error("Failed to create PNG read struct");
@@ -27,15 +25,18 @@ namespace muon {
 
         png_infop info = png_create_info_struct(png);
         if (!info) {
+            png_destroy_read_struct(&png, &info, nullptr);
             spdlog::error("Failed to create PNG info struct");
             return;
         }
 
         if (setjmp(png_jmpbuf(png))) {
+            png_destroy_read_struct(&png, &info, nullptr);
             spdlog::error("Error during PNG read");
             return;
         }
 
+        std::ifstream image{path, std::ios::binary};
         png_set_read_fn(png, static_cast<void *>(&image), pngReader);
         png_read_info(png, info);
 
@@ -56,7 +57,6 @@ namespace muon {
 
         png_read_image(png, row_pointers.data());
         png_destroy_read_struct(&png, &info, nullptr);
-
     }
 
 }
