@@ -53,7 +53,9 @@ An amateur game engine for learning Vulkan among other technologies.
 ### Assets
 - [ ] Asset packing
 - [ ] Asset storage
+  - [ ] Handling of loading assets separated from texture, model, sound classes, etc.
   - [ ] Asynchronous asset loading
+  - [ ] Resource cache
 
 ## Build instructions
 ```
