@@ -9,8 +9,8 @@ find_package(Vulkan REQUIRED)
 find_package(SDL3 REQUIRED)
 find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
-
 find_package(OpenAL REQUIRED)
+# find_package(PNG REQUIRED)
 
 set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "" FORCE)
 set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "" FORCE)
@@ -23,9 +23,13 @@ include_directories(
     libs/stb
     external/entt/single_include/entt
     external/tomlplusplus/include
+    # ${PNG_INCLUDE_DIR}
 )
 
 set(ENGINE_SRC
+    # Assets
+    src/engine/assets/imageloader.cpp
+
     # Render
     src/engine/render/common.cpp
     src/engine/render/rendermodule.cpp
@@ -103,8 +107,17 @@ set(LOGGING_LIBS spdlog::spdlog fmt)
 set(TEXT_LIBS msdf-atlas-gen)
 set(AUDIO_LIBS openal)
 set(MODEL_LIBS assimp)
+set(IMAGE_LIBS png)
 
 set(MSDF_DIRS external/msdf-atlas-gen/msdf-atlas-gen/ external/msdf-atlas-gen/msdfgen/)
 
 target_include_directories(${PROJ_NAME} PRIVATE include/ ${MSDF_DIRS})
-target_link_libraries(${PROJ_NAME} PRIVATE ${LIBS} ${GRAPHICS_LIBS} ${LOGGING_LIBS} ${TEXT_LIBS} ${AUDIO_LIBS} ${MODEL_LIBS})
+target_link_libraries(${PROJ_NAME} PRIVATE
+    ${LIBS}
+    ${GRAPHICS_LIBS}
+    ${LOGGING_LIBS}
+    ${TEXT_LIBS}
+    ${AUDIO_LIBS}
+    ${MODEL_LIBS}
+    ${IMAGE_LIBS}
+)

@@ -31,7 +31,7 @@ namespace muon {
         VkExtent2D getExtent() const { return { static_cast<uint32_t>(properties.width), static_cast<uint32_t>(properties.height) }; }
         bool isOpen() const { return properties.open; }
         void setToClose() { properties.open = false; }
-        void setIcon(const char *icon_path);
+        void setIcon(std::string &icon_path);
 
         SDL_Window *getWindow() const { return window; }
         void setTitle(std::string title) { SDL_SetWindowTitle(window, title.c_str()); properties.title = title; }

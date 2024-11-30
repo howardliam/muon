@@ -1,10 +1,11 @@
-#include "engine/window/window.hpp"
+#include <engine/window/window.hpp>
+#include <utils.hpp>
+#include <engine/assets/imageloader.hpp>
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_video.h>
 #include <SDL3/SDL_vulkan.h>
 #include <spdlog/spdlog.h>
-#include <stb_image.h>
 
 namespace muon {
 
@@ -36,14 +37,17 @@ namespace muon {
             }
     }
 
-    void Window::setIcon(const char *icon_path) {
-        int width, height, channels;
-        unsigned char *image_data = stbi_load(icon_path, &width, &height, &channels, 4);
+    void Window::setIcon(std::string &icon_path) {
+        // int width, height, channels;
+        // unsigned char *image_data = stbi_load(icon_path, &width, &height, &channels, 4);
+        ImageProperties properties{};
+        std::vector<uint8_t> image_data;
+        readPngFile(icon_path, image_data, properties);
 
-        SDL_Surface *surface = SDL_CreateSurfaceFrom(width, height, SDL_PIXELFORMAT_RGBA32, image_data, width * 4);
+        SDL_Surface *surface = SDL_CreateSurfaceFrom(properties.width, properties.height, SDL_PIXELFORMAT_RGBA32, image_data.data(), properties.width * 4);
         SDL_SetWindowIcon(window, surface);
 
-        stbi_image_free(image_data);
+        // stbi_image_free(image_data);
     }
 
     void Window::createSurface(VkInstance instance, VkSurfaceKHR *surface) {
@@ -81,7 +85,8 @@ namespace muon {
         auto pos = SDL_WINDOWPOS_CENTERED;
         SDL_SetWindowPosition(window, pos, pos);
 
-        setIcon(defaults::ICON_PATH);
+        std::string default_icon = defaults::ICON_PATH;
+        setIcon(default_icon);
 
         spdlog::debug("Finished initialising window");
     }
