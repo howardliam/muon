@@ -38,7 +38,7 @@ namespace muon {
     }
 
     void Window::setIcon(std::string &icon_path) {
-        PngImageProperties properties{};
+        PngProperties properties{};
         std::vector<uint8_t> image_data;
         readPngFile(icon_path, image_data, properties);
 

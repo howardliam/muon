@@ -16,7 +16,7 @@ namespace muon {
         }
     }
 
-    void readPngFile(std::string &path, std::vector<uint8_t> &image_data, PngImageProperties &properties) {
+    void readPngFile(std::string &path, std::vector<uint8_t> &image_data, PngProperties &properties) {
         png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
         if (!png) {
             spdlog::error("Failed to create PNG read struct");
