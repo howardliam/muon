@@ -47,6 +47,7 @@ set(ENGINE_SRC
     src/engine/vulkan/descriptors.cpp
     src/engine/vulkan/device.cpp
     src/engine/vulkan/font.cpp
+    src/engine/vulkan/framebuffer.cpp
     src/engine/vulkan/model.cpp
     src/engine/vulkan/pipeline.cpp
     src/engine/vulkan/renderer.cpp

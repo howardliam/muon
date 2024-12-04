@@ -4,6 +4,7 @@ An amateur game engine for learning Vulkan among other technologies.
 ## Todo
 ### Graphics (Vulkan)
 - [x] Initial Vulkan setup
+- [ ] Port to using full C++ headers
 - [x] Model loading
   - [x] Switch from tinyobjloader to Assimp
 - [x] Texture loading
