@@ -8,7 +8,7 @@
 #include "engine/vulkan/texture.hpp"
 
 namespace muon {
-    class AssetStore {
+    class ResourceCache {
     public:
 
     private:

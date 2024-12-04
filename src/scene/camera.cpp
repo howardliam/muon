@@ -6,7 +6,7 @@
 namespace muon {
 
     void Camera::setOrthographicProjection(float left, float right, float bottom, float top) {
-        projection = glm::ortho(left, right, bottom, top);
+        projection = glm::ortho(left, right, bottom, top, 0.0001f, 1000.0f);
     }
 
     void Camera::setPerspectiveProjection(float fov_x, float aspect_ratio, float z_near, float z_far) {

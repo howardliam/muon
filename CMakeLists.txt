@@ -18,6 +18,10 @@ add_subdirectory(external/msdf-atlas-gen)
 
 add_subdirectory(external/assimp)
 
+set(SPIRV_REFLECT_EXECUTABLE OFF CACHE BOOL "" FORCE)
+set(SPIRV_REFLECT_STATIC_LIB ON CACHE BOOL "" FORCE)
+add_subdirectory(external/SPIRV-Reflect)
+
 include_directories(
     external/entt/single_include/entt
     external/tomlplusplus/include
@@ -67,6 +71,8 @@ set(OTHER_SRC
     # Scene
     src/scene/camera.cpp
     src/scene/scene.cpp
+    src/scene/orthographiccamera.cpp
+    src/scene/perspectivecamera.cpp
 )
 
 set(PROJ_SRC
@@ -104,7 +110,7 @@ add_custom_target(compile_shaders DEPENDS ${SPIRV_OUTPUTS})
 add_dependencies(${PROJ_NAME} compile_shaders)
 
 set(LIBS pthread dl)
-set(GRAPHICS_LIBS SDL3::SDL3 Vulkan::Vulkan glm)
+set(GRAPHICS_LIBS SDL3::SDL3 Vulkan::Vulkan glm spirv-reflect-static)
 set(LOGGING_LIBS spdlog::spdlog fmt)
 set(TEXT_LIBS msdf-atlas-gen)
 set(AUDIO_LIBS openal)

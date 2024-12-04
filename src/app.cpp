@@ -235,8 +235,8 @@ namespace muon {
 
             // window.setTitle(std::to_string(static_cast<int>(1 / frame_time)) + " FPS");
 
-            camera.setPerspectiveProjection(glm::radians(90.0f), renderer.getAspectRatio(), 0.01f, 1000.0f);
-            // camera.setOrthographicProjection(-renderer.getAspectRatio(), renderer.getAspectRatio(), -1, 1);
+            // camera.setPerspectiveProjection(glm::radians(90.0f), renderer.getAspectRatio(), 0.01f, 1000.0f);
+            camera.setOrthographicProjection(-renderer.getAspectRatio(), renderer.getAspectRatio(), -1, 1);
 
             renderer.setClearColor({0.05f, 0.05f, 0.05f, 1.0f});
             if (const auto command_buffer = renderer.beginFrame()) {

@@ -8,6 +8,8 @@ namespace muon {
 
     class BaseCamera {
     public:
+        virtual void lookAt(glm::vec3 position, glm::vec3 target, glm::vec3 up = {0.0f, 1.0f, 0.0f}) = 0;
+
         const glm::mat4 &getProjection() const { return projection; }
         const glm::mat4 &getView() const { return view; }
 

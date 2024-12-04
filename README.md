@@ -12,7 +12,7 @@ An amateur game engine for learning Vulkan among other technologies.
   - [ ] Add support for other formats than PNG
 - [ ] Camera
   - [x] Perspective projections
-  - [ ] Orthographic projections
+  - [x] Orthographic projections
   - [x] View matrix (look at)
 - [ ] Text
   - [x] MSDF text printing with transparency

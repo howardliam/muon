@@ -8,7 +8,17 @@
 
 namespace muon {
 
-    static glm::mat4 transform = glm::translate(glm::mat4{1.0f}, {0.0f, 0.0f, -5.0f});
+    glm::mat4 transformData() {
+        glm::mat4 transform;
+
+        transform = glm::translate(glm::mat4{1.0f}, {0.0f, 0.0f, -5.0f});
+        float scale_factor = 0.1f;
+        transform = glm::scale(transform, {scale_factor, scale_factor, scale_factor});
+
+        return transform;
+    }
+
+    glm::mat4 transform = transformData();
 
     struct SimplePushConstantData {
         glm::mat4 model{1.0f};

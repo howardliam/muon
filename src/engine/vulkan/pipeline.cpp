@@ -5,9 +5,12 @@
 
 #include "engine/vulkan/model.hpp"
 
+#include <spirv_reflect.h>
+
 namespace muon {
 
     std::vector<char> readFile(const std::string &path) {
+        spdlog::debug("Loading shader: {}", path);
         std::ifstream file{path, std::ios::ate | std::ios::binary};
 
         if (!file.is_open()) {
@@ -21,7 +24,86 @@ namespace muon {
         file.seekg(0);
         file.read(buffer.data(), file_size);
 
-        file.close();
+        SpvReflectShaderModule module;
+        SpvReflectResult result = spvReflectCreateShaderModule(file_size, buffer.data(), &module);
+        if (result != SPV_REFLECT_RESULT_SUCCESS) {
+            spdlog::warn("Failed to create reflect shader module, returning early");
+            spvReflectDestroyShaderModule(&module);
+            return buffer;
+        }
+
+        uint32_t var_count = 0;
+        result = spvReflectEnumerateInputVariables(&module, &var_count, nullptr);
+        if (result != SPV_REFLECT_RESULT_SUCCESS) {
+            spdlog::warn("Failed to enumerate input variables, returning early");
+            spvReflectDestroyShaderModule(&module);
+            return buffer;
+        }
+
+        std::vector<SpvReflectInterfaceVariable *> input_vars(var_count);
+        result = spvReflectEnumerateInputVariables(&module, &var_count, input_vars.data());
+        if (result != SPV_REFLECT_RESULT_SUCCESS) {
+            spdlog::warn("Failed to enumerate input variables, returning early");
+            spvReflectDestroyShaderModule(&module);
+            return buffer;
+        }
+
+        for (int i = 0; i < var_count; i++) {
+            spdlog::debug("Var loc: {}, var name: {}", input_vars[i]->location, input_vars[i]->name);
+        }
+
+        uint32_t desc_count = 0;
+        result = spvReflectEnumerateDescriptorSets(&module, &desc_count, nullptr);
+        if (result != SPV_REFLECT_RESULT_SUCCESS) {
+            spdlog::warn("Failed to enumerate descriptor sets, returning early");
+            spvReflectDestroyShaderModule(&module);
+            return buffer;
+        }
+
+        std::vector<SpvReflectDescriptorSet *> desc_sets(desc_count);
+        result = spvReflectEnumerateDescriptorSets(&module, &desc_count, desc_sets.data());
+        if (result != SPV_REFLECT_RESULT_SUCCESS) {
+            spdlog::warn("Failed to enumerate descriptor sets, returning early");
+            spvReflectDestroyShaderModule(&module);
+            return buffer;
+        }
+
+        for (int i = 0; i < desc_count; i++) {
+            spdlog::debug("Set location: {}", desc_sets[i]->set);
+
+            for (int j = 0; j < desc_sets[i]->binding_count; j++) {
+                spdlog::debug("Binding location: {}", j);
+                spdlog::debug("Descriptor name: {}", desc_sets[i]->bindings[j]->name);
+            }
+        }
+
+        uint32_t push_constant_count = 0;
+        result = spvReflectEnumeratePushConstantBlocks(&module, &push_constant_count, nullptr);
+        if (result != SPV_REFLECT_RESULT_SUCCESS) {
+            spdlog::warn("Failed to enumerate push constants, returning early");
+            spvReflectDestroyShaderModule(&module);
+            return buffer;
+        }
+
+        std::vector<SpvReflectBlockVariable *> push_constants(push_constant_count);
+        result = spvReflectEnumeratePushConstantBlocks(&module, &push_constant_count, push_constants.data());
+        if (result != SPV_REFLECT_RESULT_SUCCESS) {
+            spdlog::warn("Failed to enumerate push constants, returning early");
+            spvReflectDestroyShaderModule(&module);
+            return buffer;
+        }
+
+        for (int i = 0; i < push_constant_count; i++) {
+            spdlog::debug("Push constant: {}", push_constants[i]->name);
+            spdlog::debug("Offset: {}", push_constants[i]->offset);
+            spdlog::debug("Size: {}", push_constants[i]->size);
+
+            for (int j = 0; j < push_constants[i]->member_count; j++) {
+                spdlog::debug("Push constant var name: {}", push_constants[i]->members[j].name);
+            }
+        }
+
+        spvReflectDestroyShaderModule(&module);
 
         return buffer;
     }

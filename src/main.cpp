@@ -16,11 +16,11 @@
 int main() {
     spdlog::set_level(spdlog::level::debug);
 
-    muon::SoundSystem sound_system;
-    std::string path = "assets/audio/break-window.ogg";
-    muon::AudioBuffer buffer{path};
-    muon::AudioSource source{buffer};
-    source.play();
+    // muon::SoundSystem sound_system;
+    // std::string path = "assets/audio/break-window.ogg";
+    // muon::AudioBuffer buffer{path};
+    // muon::AudioSource source{buffer};
+    // source.play();
 
     auto config = toml::parse_file("config.toml");
     std::string_view title = config["window"]["title"].value_or(muon::defaults::TITLE);
