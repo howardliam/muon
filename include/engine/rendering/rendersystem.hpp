@@ -10,7 +10,7 @@
 namespace muon {
     class RenderSystem3D {
     public:
-        RenderSystem3D(Device &device, VkRenderPass render_pass, VkDescriptorSetLayout descriptor_set_layout);
+        RenderSystem3D(Device &device, vk::RenderPass render_pass, vk::DescriptorSetLayout descriptor_set_layout);
         ~RenderSystem3D();
 
         RenderSystem3D(const RenderSystem3D&) = delete;
@@ -24,9 +24,9 @@ namespace muon {
         Device &device;
 
         std::unique_ptr<Pipeline> pipeline;
-        VkPipelineLayout pipeline_layout;
+        vk::PipelineLayout pipeline_layout;
 
-        void createPipelineLayout(VkDescriptorSetLayout descriptor_set_layout);
-        void createPipeline(VkRenderPass render_pass);
+        void createPipelineLayout(vk::DescriptorSetLayout descriptor_set_layout);
+        void createPipeline(vk::RenderPass render_pass);
     };
 }

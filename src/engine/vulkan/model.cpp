@@ -11,42 +11,42 @@
 namespace muon {
 
     /* Vertex */
-    std::vector<VkVertexInputBindingDescription> Model::Vertex::getBindingDescriptions() {
-        std::vector<VkVertexInputBindingDescription> binding_descriptions(1);
+    std::vector<vk::VertexInputBindingDescription> Model::Vertex::getBindingDescriptions() {
+        std::vector<vk::VertexInputBindingDescription> binding_descriptions(1);
 
         binding_descriptions[0].binding = 0;
         binding_descriptions[0].stride = sizeof(Vertex);
-        binding_descriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+        binding_descriptions[0].inputRate = vk::VertexInputRate::eVertex;
 
         return binding_descriptions;
     }
 
-    std::vector<VkVertexInputAttributeDescription> Model::Vertex::getAttributeDescriptions() {
-        std::vector<VkVertexInputAttributeDescription> attribute_descriptions{};
+    std::vector<vk::VertexInputAttributeDescription> Model::Vertex::getAttributeDescriptions() {
+        std::vector<vk::VertexInputAttributeDescription> attribute_descriptions{};
 
         uint32_t location = 0;
         attribute_descriptions.push_back({
             location++,
             0,
-            VK_FORMAT_R32G32B32_SFLOAT,
+            vk::Format::eR32G32B32Sfloat,
             offsetof(Vertex, position)
         });
         attribute_descriptions.push_back({
             location++,
             0,
-            VK_FORMAT_R32G32B32_SFLOAT,
+            vk::Format::eR32G32B32Sfloat,
             offsetof(Vertex, colour)
         });
         attribute_descriptions.push_back({
             location++,
             0,
-            VK_FORMAT_R32G32B32_SFLOAT,
+            vk::Format::eR32G32B32Sfloat,
             offsetof(Vertex, normal)
         });
         attribute_descriptions.push_back({
             location++,
             0,
-            VK_FORMAT_R32G32_SFLOAT,
+            vk::Format::eR32G32Sfloat,
             offsetof(Vertex, tex_coord)
         });
 
@@ -65,6 +65,7 @@ namespace muon {
         Assimp::Importer importer;
 
         auto flags = aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_GenNormals | aiProcess_OptimizeMeshes;
+        // auto flags = aiProcess_Triangulate | aiProcess_GenNormals;
         const aiScene *scene = importer.ReadFile(path, flags);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
@@ -120,22 +121,22 @@ namespace muon {
 
     Model::~Model() = default;
 
-    void Model::bind(VkCommandBuffer command_buffer) {
-        const VkBuffer buffers[] = {vertex_buffer->getBuffer()};
-        constexpr VkDeviceSize offsets[] = {0};
+    void Model::bind(vk::CommandBuffer command_buffer) {
+        const vk::Buffer buffers[] = {vertex_buffer->getBuffer()};
+        constexpr vk::DeviceSize offsets[] = {0};
 
-        vkCmdBindVertexBuffers(command_buffer, 0, 1, buffers, offsets);
+        command_buffer.bindVertexBuffers(0, buffers, offsets);
 
         if (has_index_buffer) {
-            vkCmdBindIndexBuffer(command_buffer, index_buffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
+            command_buffer.bindIndexBuffer(index_buffer->getBuffer(), 0, vk::IndexType::eUint32);
         }
     }
 
-    void Model::draw(VkCommandBuffer command_buffer) {
+    void Model::draw(vk::CommandBuffer command_buffer) {
         if (has_index_buffer) {
-            vkCmdDrawIndexed(command_buffer, index_count, 1, 0, 0, 0);
+            command_buffer.drawIndexed(index_count, 1, 0, 0, 0);
         } else {
-            vkCmdDraw(command_buffer, vertex_count, 1, 0, 0);
+            command_buffer.draw(vertex_count, 1, 0, 0);
         }
     }
 
@@ -143,14 +144,14 @@ namespace muon {
         vertex_count = static_cast<uint32_t>(vertices.size());
 
         uint32_t vertex_size = sizeof(vertices[0]);
-        VkDeviceSize buffer_size = sizeof(vertices[0]) * vertex_count;
+        vk::DeviceSize buffer_size = sizeof(vertices[0]) * vertex_count;
 
         Buffer staging_buffer{
             device,
             vertex_size,
             vertex_count,
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            vk::BufferUsageFlagBits::eTransferSrc,
+            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
         };
 
         staging_buffer.map();
@@ -160,8 +161,8 @@ namespace muon {
             device,
             vertex_size,
             vertex_count,
-            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+            vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst,
+            vk::MemoryPropertyFlagBits::eDeviceLocal
         );
 
         device.copyBuffer(staging_buffer.getBuffer(), vertex_buffer->getBuffer(), buffer_size);
@@ -176,14 +177,14 @@ namespace muon {
         }
 
         uint32_t index_size = sizeof(indices[0]);
-        VkDeviceSize buffer_size = sizeof(indices[0]) * index_count;
+        vk::DeviceSize buffer_size = sizeof(indices[0]) * index_count;
 
         Buffer staging_buffer{
             device,
             index_size,
             index_count,
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            vk::BufferUsageFlagBits::eTransferSrc,
+            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
         };
 
         staging_buffer.map();
@@ -193,8 +194,8 @@ namespace muon {
             device,
             index_size,
             index_count,
-            VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+            vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst,
+            vk::MemoryPropertyFlagBits::eDeviceLocal
         );
 
         device.copyBuffer(staging_buffer.getBuffer(), index_buffer->getBuffer(), buffer_size);

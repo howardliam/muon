@@ -2,8 +2,8 @@
 
 namespace muon {
 
-    Buffer::Buffer(Device &device, VkDeviceSize instance_size, uint32_t instance_count,
-        VkBufferUsageFlags usage_flags, VkMemoryPropertyFlags memory_property_flags, VkDeviceSize min_offset_alignment)
+    Buffer::Buffer(Device &device, vk::DeviceSize instance_size, uint32_t instance_count,
+        vk::BufferUsageFlags usage_flags, vk::MemoryPropertyFlags memory_property_flags, vk::DeviceSize min_offset_alignment)
         : device{device}, instance_size{instance_size}, instance_count{instance_count}, usage_flags{usage_flags}, memory_property_flags{memory_property_flags} {
 
         alignment_size = getAlignment(instance_size, min_offset_alignment);
@@ -13,56 +13,52 @@ namespace muon {
 
     Buffer::~Buffer() {
         unmap();
-        vkDestroyBuffer(device.getDevice(), buffer, nullptr);
-        vkFreeMemory(device.getDevice(), memory, nullptr);
+        device.getDevice().destroyBuffer(buffer, nullptr);
+        device.getDevice().freeMemory(memory, nullptr);
     }
 
-    VkResult Buffer::map(VkDeviceSize size, VkDeviceSize offset) {
-        return vkMapMemory(device.getDevice(), memory, offset, size, 0, &mapped);
+    vk::Result Buffer::map(vk::DeviceSize size, vk::DeviceSize offset) {
+        return device.getDevice().mapMemory(memory, offset, size, vk::MemoryMapFlags{}, &mapped);
     }
 
     void Buffer::unmap() {
         if (mapped) {
-            vkUnmapMemory(device.getDevice(), memory);
+            device.getDevice().unmapMemory(memory);
             mapped = nullptr;
         }
     }
 
 
-    void Buffer::writeToBuffer(void *data, VkDeviceSize size, VkDeviceSize offset) {
-        if (size == VK_WHOLE_SIZE) {
+    void Buffer::writeToBuffer(void *data, vk::DeviceSize size, vk::DeviceSize offset) {
+        if (size == vk::WholeSize) {
             memcpy(mapped, data, buffer_size);
         } else {
-            auto memOffset = static_cast<char*>(mapped);
-            memOffset += offset;
-            memcpy(memOffset, data, size);
+            auto memory_offset = static_cast<char *>(mapped);
+            memory_offset += offset;
+            memcpy(memory_offset, data, size);
         }
     }
 
-    VkResult Buffer::flush(VkDeviceSize size, VkDeviceSize offset) {
-        VkMappedMemoryRange mapped_range = {};
-        mapped_range.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+    vk::Result Buffer::flush(vk::DeviceSize size, vk::DeviceSize offset) {
+        vk::MappedMemoryRange mapped_range = {};
+        mapped_range.sType = vk::StructureType::eMappedMemoryRange;
         mapped_range.memory = memory;
         mapped_range.offset = offset;
         mapped_range.size = size;
-        return vkFlushMappedMemoryRanges(device.getDevice(), 1, &mapped_range);
+        return device.getDevice().flushMappedMemoryRanges(1, &mapped_range);
     }
 
-    VkDescriptorBufferInfo Buffer::descriptorInfo(VkDeviceSize size, VkDeviceSize offset) {
-        return VkDescriptorBufferInfo{
-            buffer,
-            offset,
-            size,
-        };
+    vk::DescriptorBufferInfo Buffer::descriptorInfo(vk::DeviceSize size, vk::DeviceSize offset) {
+        return vk::DescriptorBufferInfo{ buffer, offset, size };
     }
 
-    VkResult Buffer::invalidate(VkDeviceSize size, VkDeviceSize offset) {
-        VkMappedMemoryRange mapped_range = {};
-        mapped_range.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+    vk::Result Buffer::invalidate(vk::DeviceSize size, vk::DeviceSize offset) {
+        vk::MappedMemoryRange mapped_range = {};
+        mapped_range.sType = vk::StructureType::eMappedMemoryRange;
         mapped_range.memory = memory;
         mapped_range.offset = offset;
         mapped_range.size = size;
-        return vkInvalidateMappedMemoryRanges(device.getDevice(), 1, &mapped_range);
+        return device.getDevice().invalidateMappedMemoryRanges(1, &mapped_range);
     }
 
 
@@ -70,19 +66,19 @@ namespace muon {
         writeToBuffer(data, instance_size, index * alignment_size);
     }
 
-    VkResult Buffer::flushIndex(int index) {
+    vk::Result Buffer::flushIndex(int index) {
         return flush(alignment_size, index * alignment_size);
     }
 
-    VkDescriptorBufferInfo Buffer::descriptorInfoForIndex(int index) {
+    vk::DescriptorBufferInfo Buffer::descriptorInfoForIndex(int index) {
         return descriptorInfo(alignment_size, index * alignment_size);
     }
 
-    VkResult Buffer::invalidateIndex(int index) {
+    vk::Result Buffer::invalidateIndex(int index) {
         return invalidate(alignment_size, index * alignment_size);
     }
 
-    VkDeviceSize getAlignment(VkDeviceSize instance_size, VkDeviceSize min_offset_alignment) {
+    vk::DeviceSize getAlignment(vk::DeviceSize instance_size, vk::DeviceSize min_offset_alignment) {
         if (min_offset_alignment > 0) {
             return (instance_size + min_offset_alignment - 1) & ~(min_offset_alignment - 1);
         }

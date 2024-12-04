@@ -17,7 +17,7 @@
 
 namespace muon {
 
-    template<typename T, typename S, int N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
+    template<typename T, typename S, int32_t N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
     std::shared_ptr<Texture> createAtlas(Device &device, std::vector<msdf_atlas::GlyphGeometry> glyphs, uint32_t width, uint32_t height) {
         msdf_atlas::GeneratorAttributes attributes;
         attributes.config.overlapSupport = true;
@@ -31,7 +31,7 @@ namespace muon {
         msdfgen::BitmapConstRef<T, N> bitmap = (msdfgen::BitmapConstRef<T, N>)generator.atlasStorage();
 
         TextureCreateInfo info{};
-        info.image_format = VK_FORMAT_R8G8B8_SRGB;
+        info.image_format = vk::Format::eR8G8B8Srgb;
         info.instance_size = 3;
         info.width = width;
         info.height = height;
@@ -67,7 +67,7 @@ namespace muon {
 
         double font_scale = 1.0;
         font_geometry = msdf_atlas::FontGeometry(&glyphs);
-        int glyphs_loaded = font_geometry.loadCharset(font, font_scale, charset);
+        int32_t glyphs_loaded = font_geometry.loadCharset(font, font_scale, charset);
         spdlog::debug("Loaded {} glyphs from font (out of {})", glyphs_loaded, charset.size());
 
         double em_size = 40.0;
@@ -76,10 +76,10 @@ namespace muon {
         atlas_packer.setPixelRange(2.0);
         atlas_packer.setMiterLimit(1.0);
         atlas_packer.setScale(em_size);
-        int remaining = atlas_packer.pack(glyphs.data(), glyphs.size());
+        int32_t remaining = atlas_packer.pack(glyphs.data(), glyphs.size());
 
-        int width;
-        int height;
+        int32_t width;
+        int32_t height;
         atlas_packer.getDimensions(width, height);
         em_size = atlas_packer.getScale();
 
@@ -91,7 +91,7 @@ namespace muon {
         uint64_t colouring_seed = 0;
         bool expensive_colouring = false;
         if (expensive_colouring) {
-            msdf_atlas::Workload([&glyphs = glyphs, &colouring_seed](int i, int thread_no) -> bool {
+            msdf_atlas::Workload([&glyphs = glyphs, &colouring_seed](int32_t i, int32_t thread_no) -> bool {
                 unsigned long long glyph_seed = (LCG_MULTIPLIER * (colouring_seed ^ i) + LCG_INCREMENT) * !!colouring_seed;
                 glyphs[i].edgeColoring(msdfgen::edgeColoringInkTrap, DEFAULT_ANGLE_THRESHOLD, glyph_seed);
                 return true;

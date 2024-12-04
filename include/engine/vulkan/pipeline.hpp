@@ -14,17 +14,17 @@ namespace muon {
         PipelineConfigInfo(const PipelineConfigInfo &) = delete;
         PipelineConfigInfo& operator=(const PipelineConfigInfo &) = delete;
 
-        VkPipelineViewportStateCreateInfo viewport_info;
-        VkPipelineInputAssemblyStateCreateInfo input_assembly_info;
-        VkPipelineRasterizationStateCreateInfo rasterisation_info;
-        VkPipelineMultisampleStateCreateInfo multisample_info;
-        VkPipelineColorBlendAttachmentState colour_blend_attachment;
-        VkPipelineColorBlendStateCreateInfo colour_blend_info;
-        VkPipelineDepthStencilStateCreateInfo depth_stencil_info;
-        std::vector<VkDynamicState> dynamic_state_enables;
-        VkPipelineDynamicStateCreateInfo dynamic_state_info;
-        VkPipelineLayout pipeline_layout = nullptr;
-        VkRenderPass render_pass = nullptr;
+        vk::PipelineViewportStateCreateInfo viewport_info;
+        vk::PipelineInputAssemblyStateCreateInfo input_assembly_info;
+        vk::PipelineRasterizationStateCreateInfo rasterization_info;
+        vk::PipelineMultisampleStateCreateInfo multisample_info;
+        vk::PipelineColorBlendAttachmentState colour_blend_attachment;
+        vk::PipelineColorBlendStateCreateInfo colour_blend_info;
+        vk::PipelineDepthStencilStateCreateInfo depth_stencil_info;
+        std::vector<vk::DynamicState> dynamic_state_enables;
+        vk::PipelineDynamicStateCreateInfo dynamic_state_info;
+        vk::PipelineLayout pipeline_layout = nullptr;
+        vk::RenderPass render_pass = nullptr;
         uint32_t subpass = 0;
     };
 
@@ -36,17 +36,16 @@ namespace muon {
         Pipeline(const Pipeline&) = delete;
         Pipeline& operator=(const Pipeline&) = delete;
 
-        void bind(VkCommandBuffer command_buffer);
+        void bind(vk::CommandBuffer command_buffer);
 
         static void defaultPipelineConfigInfo(PipelineConfigInfo &config_info);
     private:
         Device &device;
-        VkPipeline graphics_pipeline;
-        VkShaderModule vert_shader_module;
-        VkShaderModule frag_shader_module;
+        vk::Pipeline graphics_pipeline;
+        vk::ShaderModule vert_shader_module;
+        vk::ShaderModule frag_shader_module;
 
-
-        void createShaderModule(const std::vector<char> &code, VkShaderModule *shader_module);
+        void createShaderModule(const std::vector<char> &byte_code, vk::ShaderModule *shader_module);
         void createGraphicsPipeline(const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info);
     };
 

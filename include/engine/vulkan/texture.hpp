@@ -9,7 +9,7 @@
 namespace muon {
 
     struct TextureCreateInfo {
-        VkFormat image_format;
+        vk::Format image_format;
         uint32_t instance_size;
         uint32_t width;
         uint32_t height;
@@ -28,11 +28,11 @@ namespace muon {
         const uint32_t getWidth() const { return width; }
         const uint32_t getHeight() const { return height; }
 
-        VkSampler getSampler() const { return sampler; }
-        VkImageView getImageView() const { return image_view; }
-        VkImageLayout getImageLayout() const { return image_layout; }
+        vk::Sampler getSampler() const { return sampler; }
+        vk::ImageView getImageView() const { return image_view; }
+        vk::ImageLayout getImageLayout() const { return image_layout; }
 
-        VkDescriptorImageInfo descriptorInfo() const;
+        vk::DescriptorImageInfo descriptorInfo() const;
 
     private:
         Device &device;
@@ -40,17 +40,17 @@ namespace muon {
         uint32_t width;
         uint32_t height;
 
-        VkImage image;
-        VkDeviceMemory image_memory;
-        VkSampler sampler;
-        VkImageView image_view;
-        VkImageLayout image_layout;
-        VkFormat image_format;
+        vk::Image image;
+        vk::DeviceMemory image_memory;
+        vk::Sampler sampler;
+        vk::ImageView image_view;
+        vk::ImageLayout image_layout;
+        vk::Format image_format;
         uint32_t instance_size;
 
         void createTexture(void *image_data);
 
-        void transitionImageLayout(VkImageLayout old_layout, VkImageLayout new_layout);
+        void transitionImageLayout(vk::ImageLayout old_layout, vk::ImageLayout new_layout);
     };
 
 }

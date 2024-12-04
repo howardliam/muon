@@ -7,11 +7,11 @@
 namespace muon {
 
     struct FrameInfo {
-        int frame_index;
+        int32_t frame_index;
         float frame_time;
-        VkCommandBuffer command_buffer;
+        vk::CommandBuffer command_buffer;
         Camera &camera;
-        VkDescriptorSet descriptor_set;
+        vk::DescriptorSet descriptor_set;
     };
 
 }

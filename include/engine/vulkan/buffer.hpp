@@ -8,49 +8,49 @@ namespace muon {
 
     class Buffer {
     public:
-        Buffer(Device &device, VkDeviceSize instance_size, uint32_t instance_count,
-            VkBufferUsageFlags usage_flags, VkMemoryPropertyFlags memory_property_flags, VkDeviceSize min_offset_alignment = 1);
+        Buffer(Device &device, vk::DeviceSize instance_size, uint32_t instance_count,
+            vk::BufferUsageFlags usage_flags, vk::MemoryPropertyFlags memory_property_flags, vk::DeviceSize min_offset_alignment = 1);
         ~Buffer();
 
         Buffer(const Buffer &) = delete;
         Buffer& operator=(const Buffer &) = delete;
 
-        VkResult map(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
+        vk::Result map(vk::DeviceSize size = vk::WholeSize, vk::DeviceSize offset = 0);
         void unmap();
 
-        void writeToBuffer(void *data, VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
-        VkResult flush(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
-        VkDescriptorBufferInfo descriptorInfo(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
-        VkResult invalidate(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
+        void writeToBuffer(void *data, vk::DeviceSize size = vk::WholeSize, vk::DeviceSize offset = 0);
+        vk::Result flush(vk::DeviceSize size = vk::WholeSize, vk::DeviceSize offset = 0);
+        vk::DescriptorBufferInfo descriptorInfo(vk::DeviceSize size = vk::WholeSize, vk::DeviceSize offset = 0);
+        vk::Result invalidate(vk::DeviceSize size = vk::WholeSize, vk::DeviceSize offset = 0);
 
         void writeToIndex(void* data, int index);
-        VkResult flushIndex(int index);
-        VkDescriptorBufferInfo descriptorInfoForIndex(int index);
-        VkResult invalidateIndex(int index);
+        vk::Result flushIndex(int index);
+        vk::DescriptorBufferInfo descriptorInfoForIndex(int index);
+        vk::Result invalidateIndex(int index);
 
-        VkBuffer getBuffer() const { return buffer; }
-        VkDeviceSize getBufferSize() const { return buffer_size; }
+        vk::Buffer getBuffer() const { return buffer; }
+        vk::DeviceSize getBufferSize() const { return buffer_size; }
         void *getMappedMemory() const { return mapped; }
         uint32_t getInstanceCount() const { return instance_count; }
-        VkDeviceSize getInstanceSize() const { return instance_size; }
-        VkDeviceSize getAlignmentSize() const { return alignment_size; }
-        VkBufferUsageFlags getUsageFlags() const { return usage_flags; }
-        VkMemoryPropertyFlags getMemoryPropertyFlags() const { return memory_property_flags; }
+        vk::DeviceSize getInstanceSize() const { return instance_size; }
+        vk::DeviceSize getAlignmentSize() const { return alignment_size; }
+        vk::BufferUsageFlags getUsageFlags() const { return usage_flags; }
+        vk::MemoryPropertyFlags getMemoryPropertyFlags() const { return memory_property_flags; }
 
     private:
         Device &device;
-        VkDeviceMemory memory = VK_NULL_HANDLE;
+        vk::DeviceMemory memory = nullptr;
 
-        VkBuffer buffer = VK_NULL_HANDLE;
-        VkDeviceSize buffer_size;
+        vk::Buffer buffer = nullptr;
+        vk::DeviceSize buffer_size;
         void *mapped = nullptr;
         uint32_t instance_count;
-        VkDeviceSize instance_size;
-        VkDeviceSize alignment_size;
-        VkBufferUsageFlags usage_flags;
-        VkMemoryPropertyFlags memory_property_flags;
+        vk::DeviceSize instance_size;
+        vk::DeviceSize alignment_size;
+        vk::BufferUsageFlags usage_flags;
+        vk::MemoryPropertyFlags memory_property_flags;
     };
 
-    VkDeviceSize getAlignment(VkDeviceSize instance_size, VkDeviceSize min_offset_alignment);
+    vk::DeviceSize getAlignment(vk::DeviceSize instance_size, vk::DeviceSize min_offset_alignment);
 
 }

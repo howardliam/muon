@@ -155,8 +155,8 @@ namespace muon {
 
         global_pool = DescriptorPool::Builder(device)
             .setMaxSets(Swapchain::MAX_FRAMES_IN_FLIGHT)
-            .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, Swapchain::MAX_FRAMES_IN_FLIGHT)
-            .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, Swapchain::MAX_FRAMES_IN_FLIGHT)
+            .addPoolSize(vk::DescriptorType::eUniformBuffer, Swapchain::MAX_FRAMES_IN_FLIGHT)
+            .addPoolSize(vk::DescriptorType::eCombinedImageSampler, Swapchain::MAX_FRAMES_IN_FLIGHT)
             .build();
     }
 
@@ -178,20 +178,20 @@ namespace muon {
                 device,
                 sizeof(GlobalUbo),
                 1,
-                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+                vk::BufferUsageFlagBits::eUniformBuffer,
+                vk::MemoryPropertyFlagBits::eHostVisible
             );
             ubo_buffers[i]->map();
         }
 
         auto global_set_layout = DescriptorSetLayout::Builder(device)
-            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
-            .addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+            .addBinding(0, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eAllGraphics)
+            .addBinding(1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment)
             .build();
 
         Texture texture{device, "assets/textures/icon.png"};
 
-        std::vector<VkDescriptorSet> global_descriptor_sets(Swapchain::MAX_FRAMES_IN_FLIGHT);
+        std::vector<vk::DescriptorSet> global_descriptor_sets(Swapchain::MAX_FRAMES_IN_FLIGHT);
         for (int i = 0; i < global_descriptor_sets.size(); i++) {
             auto buffer_info = ubo_buffers[i]->descriptorInfo();
             // auto image_info = texture.descriptorInfo();
@@ -209,7 +209,7 @@ namespace muon {
         Camera camera{};
         camera.lookAt(camera_pos, {0.0f, 0.0f, -1.0f});
 
-        std::unique_ptr model = Model::fromFile(device, "assets/models/quad.obj");
+        std::unique_ptr model = Model::fromFile(device, "assets/models/cube.obj");
 
         std::unique_ptr<Model> text_model = nullptr;
 
@@ -233,8 +233,6 @@ namespace muon {
             frame_time = std::chrono::duration<float, std::chrono::seconds::period>(new_time - current_time).count();
             current_time = new_time;
 
-            // window.setTitle(std::to_string(static_cast<int>(1 / frame_time)) + " FPS");
-
             // camera.setPerspectiveProjection(glm::radians(90.0f), renderer.getAspectRatio(), 0.01f, 1000.0f);
             camera.setOrthographicProjection(-renderer.getAspectRatio(), renderer.getAspectRatio(), -1, 1);
 
@@ -250,12 +248,11 @@ namespace muon {
 
                 renderer.beginSwapchainRenderPass(command_buffer);
 
-                // std::string fps_text = std::to_string(static_cast<int>(1.0f / frame_time)) + " FPS";
-                // text_model = generateText(device, font, fps_text);
-
                 auto mouse_pos = input_manager.getMouse().getCurrentPosition();
                 std::string pos_text = std::to_string(mouse_pos.x) + "\n" + std::to_string(mouse_pos.y);
-                text_model = generateText(device, font, pos_text);
+                std::string fps_text = std::to_string(static_cast<int>(1.0f / frame_time)) + " FPS";
+                std::string both_text = fps_text + '\n' + pos_text;
+                text_model = generateText(device, font, both_text);
 
 
                 FrameInfo frame_info{

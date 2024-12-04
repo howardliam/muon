@@ -8,11 +8,11 @@ namespace muon {
 
     class Framebuffer {
     public:
-        Framebuffer(Device &device, VkRenderPass render_pass, VkExtent2D extent);
+        Framebuffer(Device &device, vk::RenderPass render_pass, vk::Extent2D extent);
         ~Framebuffer();
 
     private:
-        VkFramebuffer framebuffer;
+        vk::Framebuffer framebuffer;
 
     };
 

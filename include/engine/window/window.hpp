@@ -39,7 +39,7 @@ namespace muon {
         bool wasResized() const { return resized; }
         void resetResized() { resized = false; }
 
-        void createSurface(VkInstance instance, VkSurfaceKHR *surface);
+        void createSurface(vk::Instance instance, vk::SurfaceKHR *surface);
 
         void bindInputManager(InputManager *input_manager);
 

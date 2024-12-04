@@ -24,7 +24,7 @@ namespace muon {
         glm::mat4 model{1.0f};
     };
 
-    RenderSystem3D::RenderSystem3D(Device &device, VkRenderPass render_pass, VkDescriptorSetLayout descriptor_set_layout) : device{device} {
+    RenderSystem3D::RenderSystem3D(Device &device, vk::RenderPass render_pass, vk::DescriptorSetLayout descriptor_set_layout) : device{device} {
         createPipelineLayout(descriptor_set_layout);
         createPipeline(render_pass);
     }
@@ -36,9 +36,8 @@ namespace muon {
     void RenderSystem3D::renderModel(FrameInfo &frame_info, Model &model) {
         pipeline->bind(frame_info.command_buffer);
 
-        vkCmdBindDescriptorSets(
-            frame_info.command_buffer,
-            VK_PIPELINE_BIND_POINT_GRAPHICS,
+        frame_info.command_buffer.bindDescriptorSets(
+            vk::PipelineBindPoint::eGraphics,
             pipeline_layout,
             0,
             1,
@@ -52,35 +51,35 @@ namespace muon {
         SimplePushConstantData push{};
         push.model = transform;
 
-        auto shader_stages = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-        vkCmdPushConstants(frame_info.command_buffer, pipeline_layout, shader_stages, 0, sizeof(SimplePushConstantData), &push);
+        auto shader_stages = vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment;
+        frame_info.command_buffer.pushConstants(pipeline_layout, shader_stages, 0, sizeof(SimplePushConstantData), &push);
 
         model.bind(frame_info.command_buffer);
         model.draw(frame_info.command_buffer);
     }
 
-    void RenderSystem3D::createPipelineLayout(VkDescriptorSetLayout descriptor_set_layout) {
-        VkPushConstantRange push_constant_range{};
-        push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+    void RenderSystem3D::createPipelineLayout(vk::DescriptorSetLayout descriptor_set_layout) {
+        vk::PushConstantRange push_constant_range{};
+        push_constant_range.stageFlags = vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment;
         push_constant_range.offset = 0;
         push_constant_range.size = sizeof(SimplePushConstantData);
 
-        std::vector<VkDescriptorSetLayout> descriptor_set_layouts{descriptor_set_layout};
+        std::vector<vk::DescriptorSetLayout> descriptor_set_layouts{descriptor_set_layout};
 
-        VkPipelineLayoutCreateInfo pipeline_layout_info{};
-        pipeline_layout_info.sType =  VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+        vk::PipelineLayoutCreateInfo pipeline_layout_info{};
+        pipeline_layout_info.sType =  vk::StructureType::ePipelineLayoutCreateInfo;
         pipeline_layout_info.setLayoutCount = static_cast<uint32_t>(descriptor_set_layouts.size());
         pipeline_layout_info.pSetLayouts = descriptor_set_layouts.data();
         pipeline_layout_info.pushConstantRangeCount = 1;
         pipeline_layout_info.pPushConstantRanges = &push_constant_range;
 
-        if (vkCreatePipelineLayout(device.getDevice(), &pipeline_layout_info, nullptr, &pipeline_layout) != VK_SUCCESS) {
+        if (device.getDevice().createPipelineLayout(&pipeline_layout_info, nullptr, &pipeline_layout) != vk::Result::eSuccess) {
             spdlog::error("Failed to create pipeline layout");
             exit(exitcode::FAILURE);
         }
     }
 
-    void RenderSystem3D::createPipeline(VkRenderPass render_pass) {
+    void RenderSystem3D::createPipeline(vk::RenderPass render_pass) {
         PipelineConfigInfo pipeline_config{};
         Pipeline::defaultPipelineConfigInfo(pipeline_config);
         pipeline_config.render_pass= render_pass;

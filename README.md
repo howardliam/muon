@@ -2,11 +2,16 @@
 An amateur game engine for learning Vulkan among other technologies.
 
 ## Todo
+### Global
+- [ ] Switch from using C integer types (int, short, byte, etc.)
+to cstdint (int32_t, int16_t, int8_t, etc.) where applicable
+- [ ] Add \[\[nodiscard\]\] to getters and other methods
 ### Graphics (Vulkan)
 - [x] Initial Vulkan setup
-- [ ] Port to using full C++ headers
+- [x] Port to using full C++ headers
 - [x] Model loading
   - [x] Switch from tinyobjloader to Assimp
+  - [ ] Remove colour as vertex attribute and move it to UBO's/push constants where applicable
 - [x] Texture loading
   - [x] Improve texture loading
   - [x] Replace stb_image

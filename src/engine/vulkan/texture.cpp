@@ -2,6 +2,7 @@
 #include "engine/assets/imageloader.hpp"
 
 #include <cmath>
+#include <vulkan/vulkan.hpp>
 
 // #define STB_IMAGE_IMPLEMENTATION
 // #include <stb_image.h>
@@ -31,7 +32,7 @@ namespace muon {
         width = properties.width;
         height = properties.height;
 
-        image_format = VK_FORMAT_R8G8B8A8_SRGB;
+        image_format = vk::Format::eR8G8B8A8Srgb;
         instance_size = 4;
 
         createTexture(image_data.data());
@@ -43,14 +44,14 @@ namespace muon {
     }
 
     Texture::~Texture() {
-        vkDestroyImage(device.getDevice(), image, nullptr);
-        vkFreeMemory(device.getDevice(), image_memory, nullptr);
-        vkDestroyImageView(device.getDevice(), image_view, nullptr);
-        vkDestroySampler(device.getDevice(), sampler, nullptr);
+        device.getDevice().destroyImage(image, nullptr);
+        device.getDevice().freeMemory(image_memory, nullptr);
+        device.getDevice().destroyImageView(image_view, nullptr);
+        device.getDevice().destroySampler(sampler, nullptr);
     }
 
-    VkDescriptorImageInfo Texture::descriptorInfo() const {
-        VkDescriptorImageInfo image_info{};
+    vk::DescriptorImageInfo Texture::descriptorInfo() const {
+        vk::DescriptorImageInfo image_info{};
         image_info.sampler = sampler;
         image_info.imageView = image_view;
         image_info.imageLayout = image_layout;
@@ -63,108 +64,108 @@ namespace muon {
             device,
             instance_size,
             width * height,
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            vk::BufferUsageFlagBits::eTransferSrc,
+            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
         };
 
         staging_buffer.map();
         staging_buffer.writeToBuffer(image_data);
 
-        VkImageCreateInfo image_info{};
-        image_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-        image_info.imageType = VK_IMAGE_TYPE_2D;
+        vk::ImageCreateInfo image_info{};
+        image_info.sType = vk::StructureType::eImageCreateInfo;
+        image_info.imageType = vk::ImageType::e2D;
         image_info.extent.width = width;
         image_info.extent.height = height;
         image_info.extent.depth = 1;
         image_info.format = image_format;
         image_info.mipLevels = 1;
         image_info.arrayLayers = 1;
-        image_info.samples = VK_SAMPLE_COUNT_1_BIT;
-        image_info.tiling = VK_IMAGE_TILING_OPTIMAL;
-        image_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        image_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-        image_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        image_info.samples = vk::SampleCountFlagBits::e1;
+        image_info.tiling = vk::ImageTiling::eOptimal;
+        image_info.initialLayout = vk::ImageLayout::eUndefined;
+        image_info.usage = vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled;
+        image_info.sharingMode = vk::SharingMode::eExclusive;
 
-        device.createImageWithInfo(image_info, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, image, image_memory);
+        device.createImageWithInfo(image_info, vk::MemoryPropertyFlagBits::eDeviceLocal, image, image_memory);
 
-        transitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        transitionImageLayout(vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
 
         device.copyBufferToImage(staging_buffer.getBuffer(), image, width, height, 1);
 
-        transitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        transitionImageLayout(vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 
-        image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        image_layout = vk::ImageLayout::eShaderReadOnlyOptimal;
 
-        VkSamplerCreateInfo sampler_info{};
-        sampler_info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-        sampler_info.minFilter = VK_FILTER_LINEAR;
-        sampler_info.magFilter = VK_FILTER_LINEAR;
-        sampler_info.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-        sampler_info.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        sampler_info.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        sampler_info.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        vk::SamplerCreateInfo sampler_info{};
+        sampler_info.sType = vk::StructureType::eSamplerCreateInfo;
+        sampler_info.minFilter = vk::Filter::eLinear;
+        sampler_info.magFilter = vk::Filter::eLinear;
+        sampler_info.mipmapMode = vk::SamplerMipmapMode::eLinear;
+        sampler_info.addressModeU = vk::SamplerAddressMode::eRepeat;
+        sampler_info.addressModeV = vk::SamplerAddressMode::eRepeat;
+        sampler_info.addressModeW = vk::SamplerAddressMode::eRepeat;
         sampler_info.mipLodBias = 0.0f;
-        sampler_info.compareOp = VK_COMPARE_OP_NEVER;
+        sampler_info.compareOp = vk::CompareOp::eNever;
         sampler_info.minLod = 0.0f;
         sampler_info.maxLod = 0.0f;
         sampler_info.maxAnisotropy = 4.0f;
         sampler_info.anisotropyEnable = VK_TRUE;
-        sampler_info.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+        sampler_info.borderColor = vk::BorderColor::eFloatOpaqueWhite;
 
-        vkCreateSampler(device.getDevice(), &sampler_info, nullptr, &sampler);
+        device.getDevice().createSampler(&sampler_info, nullptr, &sampler);
 
-        VkImageViewCreateInfo image_view_info{};
-        image_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        vk::ImageViewCreateInfo image_view_info{};
+        image_view_info.sType = vk::StructureType::eImageViewCreateInfo;
         image_view_info.image = image;
-        image_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        image_view_info.viewType = vk::ImageViewType::e2D;
         image_view_info.format = image_format;
-        image_view_info.components = { VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A };
-        image_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        image_view_info.components = { vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA };
+        image_view_info.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
         image_view_info.subresourceRange.baseMipLevel = 0;
         image_view_info.subresourceRange.levelCount = 1;
         image_view_info.subresourceRange.baseArrayLayer = 0;
         image_view_info.subresourceRange.layerCount = 1;
 
-        vkCreateImageView(device.getDevice(), &image_view_info, nullptr, &image_view);
+        device.getDevice().createImageView(&image_view_info, nullptr, &image_view);
     }
 
-    void Texture::transitionImageLayout(VkImageLayout old_layout, VkImageLayout new_layout) {
-        VkCommandBuffer command_buffer = device.beginSingleTimeCommands();
+    void Texture::transitionImageLayout(vk::ImageLayout old_layout, vk::ImageLayout new_layout) {
+        vk::CommandBuffer command_buffer = device.beginSingleTimeCommands();
 
-        VkImageMemoryBarrier barrier{};
-        barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        vk::ImageMemoryBarrier barrier{};
+        barrier.sType = vk::StructureType::eImageMemoryBarrier;
         barrier.oldLayout = old_layout;
         barrier.newLayout = new_layout;
-        barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.srcQueueFamilyIndex = vk::QueueFamilyIgnored;
+        barrier.dstQueueFamilyIndex = vk::QueueFamilyIgnored;
         barrier.image = image;
-        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
         barrier.subresourceRange.baseMipLevel = 0;
         barrier.subresourceRange.levelCount = 1;
         barrier.subresourceRange.baseArrayLayer = 0;
         barrier.subresourceRange.layerCount = 1;
 
-        VkPipelineStageFlags source_stage;
-        VkPipelineStageFlags destination_stage;
+        vk::PipelineStageFlags source_stage;
+        vk::PipelineStageFlags destination_stage;
 
-        if (old_layout == VK_IMAGE_LAYOUT_UNDEFINED && new_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
-            barrier.srcAccessMask = 0;
-            barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        if (old_layout == vk::ImageLayout::eUndefined && new_layout == vk::ImageLayout::eTransferDstOptimal) {
+            barrier.srcAccessMask = vk::AccessFlags{};
+            barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
-            source_stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-            destination_stage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-        } else if (old_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && new_layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
-            barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-            barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            source_stage = vk::PipelineStageFlagBits::eTopOfPipe;
+            destination_stage = vk::PipelineStageFlagBits::eTransfer;
+        } else if (old_layout == vk::ImageLayout::eTransferDstOptimal && new_layout == vk::ImageLayout::eShaderReadOnlyOptimal) {
+            barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
+            barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
 
-            source_stage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-            destination_stage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+            source_stage = vk::PipelineStageFlagBits::eTransfer;
+            destination_stage = vk::PipelineStageFlagBits::eFragmentShader;
         } else {
             spdlog::error("Unsupported layout transition, exiting");
             exit(exitcode::FAILURE);
         }
 
-        vkCmdPipelineBarrier(command_buffer, source_stage, destination_stage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+        command_buffer.pipelineBarrier(source_stage, destination_stage, vk::DependencyFlags{}, 0, nullptr, 0, nullptr, 1, &barrier);
 
         device.endSingleTimeCommands(command_buffer);
     }

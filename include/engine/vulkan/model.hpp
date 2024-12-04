@@ -22,8 +22,8 @@ namespace muon {
             glm::vec3 normal{};
             glm::vec2 tex_coord{};
 
-            static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
-            static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
+            static std::vector<vk::VertexInputBindingDescription> getBindingDescriptions();
+            static std::vector<vk::VertexInputAttributeDescription> getAttributeDescriptions();
 
             bool operator==(const Vertex &other) const;
         };
@@ -43,8 +43,8 @@ namespace muon {
 
         static std::unique_ptr<Model> fromFile(Device &device, const std::string &path);
 
-        void bind(VkCommandBuffer command_buffer);
-        void draw(VkCommandBuffer command_buffer);
+        void bind(vk::CommandBuffer command_buffer);
+        void draw(vk::CommandBuffer command_buffer);
 
     private:
         Device &device;

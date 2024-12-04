@@ -47,8 +47,8 @@ namespace muon {
         SDL_SetWindowIcon(window, surface);
     }
 
-    void Window::createSurface(VkInstance instance, VkSurfaceKHR *surface) {
-        if (!SDL_Vulkan_CreateSurface(window, instance, nullptr, surface)) {
+    void Window::createSurface(vk::Instance instance, vk::SurfaceKHR *surface) {
+        if (!SDL_Vulkan_CreateSurface(window, static_cast<VkInstance>(instance), nullptr, reinterpret_cast<VkSurfaceKHR *>(surface))) {
             spdlog::error("Failed to create window surface");
             exit(exitcode::FAILURE);
         }

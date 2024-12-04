@@ -14,17 +14,17 @@ namespace muon {
         Renderer(const Renderer &) = delete;
         Renderer& operator=(const Renderer &) = delete;
 
-        VkCommandBuffer beginFrame();
+        vk::CommandBuffer beginFrame();
         void endFrame();
 
-        void beginSwapchainRenderPass(VkCommandBuffer command_buffer);
-        void endSwapchainRenderPass(VkCommandBuffer command_buffer);
+        void beginSwapchainRenderPass(vk::CommandBuffer command_buffer);
+        void endSwapchainRenderPass(vk::CommandBuffer command_buffer);
 
-        VkRenderPass getSwapchainRenderPass() const { return swapchain->getRenderPass(); }
-        VkCommandBuffer getCurrentCommandBuffer() const { return command_buffers[current_frame_index]; }
-        void setClearColor(VkClearColorValue new_color) { clear_color = new_color; }
-        void setClearDepthStencil(VkClearDepthStencilValue new_depth) { clear_depth_stencil = new_depth; }
-        int getFrameIndex() const { return current_frame_index; }
+        vk::RenderPass getSwapchainRenderPass() const { return swapchain->getRenderPass(); }
+        vk::CommandBuffer getCurrentCommandBuffer() const { return command_buffers[current_frame_index]; }
+        void setClearColor(vk::ClearColorValue new_color) { clear_color = new_color; }
+        void setClearDepthStencil(vk::ClearDepthStencilValue new_depth) { clear_depth_stencil = new_depth; }
+        int32_t getFrameIndex() const { return current_frame_index; }
         bool isFrameInProgress() const { return frame_in_progress; }
         float getAspectRatio() const { return swapchain->extentAspectRatio(); }
 
@@ -32,13 +32,13 @@ namespace muon {
         Window &window;
         Device &device;
         std::unique_ptr<Swapchain> swapchain;
-        std::vector<VkCommandBuffer> command_buffers;
+        std::vector<vk::CommandBuffer> command_buffers;
 
-        VkClearColorValue clear_color{0.0f, 0.0f, 0.0f, 1.0f};
-        VkClearDepthStencilValue clear_depth_stencil{1.0f, 0};
+        vk::ClearColorValue clear_color{0.0f, 0.0f, 0.0f, 1.0f};
+        vk::ClearDepthStencilValue clear_depth_stencil{1.0f, 0};
 
         uint32_t current_image_index{};
-        int current_frame_index{0};
+        int32_t current_frame_index{0};
         bool frame_in_progress{false};
 
         void createCommandBuffers();

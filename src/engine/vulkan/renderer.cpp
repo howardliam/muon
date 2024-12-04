@@ -1,6 +1,7 @@
 #include "engine/vulkan/renderer.hpp"
 
 #include <SDL3/SDL_events.h>
+#include <vulkan/vulkan_core.h>
 
 namespace muon {
 
@@ -13,15 +14,15 @@ namespace muon {
         freeCommandBuffers();
     }
 
-    VkCommandBuffer Renderer::beginFrame() {
-        const auto result = swapchain->acquireNextImage(&current_image_index);
+    vk::CommandBuffer Renderer::beginFrame() {
+        const vk::Result result = swapchain->acquireNextImage(&current_image_index);
 
-        if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        if (result == vk::Result::eErrorOutOfDateKHR) {
             recreateSwapchain();
             return nullptr;
         }
 
-        if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR) {
             spdlog::error("Failed to acquire next swap chain image");
             exit(exitcode::FAILURE);
         }
@@ -30,10 +31,10 @@ namespace muon {
 
         const auto command_buffer = getCurrentCommandBuffer();
 
-        VkCommandBufferBeginInfo begin_info{};
-        begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        vk::CommandBufferBeginInfo begin_info{};
+        begin_info.sType = vk::StructureType::eCommandBufferBeginInfo;
 
-        if (vkBeginCommandBuffer(command_buffer, &begin_info) != VK_SUCCESS) {
+        if (command_buffer.begin(&begin_info) != vk::Result::eSuccess) {
             spdlog::error("Failed to begin recording command buffer");
             exit(exitcode::FAILURE);
         }
@@ -44,18 +45,15 @@ namespace muon {
     void Renderer::endFrame() {
         const auto command_buffer = getCurrentCommandBuffer();
 
-        if (vkEndCommandBuffer(command_buffer) != VK_SUCCESS) {
-            spdlog::error("Failed to record command buffer");
-            exit(exitcode::FAILURE);
-        }
+        command_buffer.end();
 
         const auto result = swapchain->submitCommandBuffers(&command_buffer, &current_image_index);
 
         /* Resizing window */
-        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || window.wasResized()) {
+        if (result == vk::Result::eErrorOutOfDateKHR || result == vk::Result::eSuboptimalKHR || window.wasResized()) {
             window.resetResized();
             recreateSwapchain();
-        } else if (result != VK_SUCCESS) {
+        } else if (result != vk::Result::eSuccess) {
             spdlog::error("Failed to present swapchain image");
             exit(exitcode::FAILURE);
         }
@@ -65,25 +63,25 @@ namespace muon {
     }
 
 
-    void Renderer::beginSwapchainRenderPass(VkCommandBuffer command_buffer) {
-        VkRenderPassBeginInfo render_pass_info{};
-        render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    void Renderer::beginSwapchainRenderPass(vk::CommandBuffer command_buffer) {
+        vk::RenderPassBeginInfo render_pass_info{};
+        render_pass_info.sType = vk::StructureType::eRenderPassBeginInfo;
         render_pass_info.renderPass = swapchain->getRenderPass();
         render_pass_info.framebuffer = swapchain->getFramebuffer(current_image_index);
 
-        render_pass_info.renderArea.offset = {0, 0};
+        render_pass_info.renderArea.setOffset({0, 0});
         render_pass_info.renderArea.extent = swapchain->getSwapchainExtent();
 
-        std::array<VkClearValue, 2> clear_values{};
+        std::array<vk::ClearValue, 2> clear_values{};
         clear_values[0].color = clear_color;
         clear_values[1].depthStencil = clear_depth_stencil;
 
         render_pass_info.clearValueCount = static_cast<uint32_t>(clear_values.size());
         render_pass_info.pClearValues = clear_values.data();
 
-        vkCmdBeginRenderPass(command_buffer, &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
+        command_buffer.beginRenderPass(&render_pass_info, vk::SubpassContents::eInline);
 
-        VkViewport viewport{};
+        vk::Viewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
         viewport.width = static_cast<float>(swapchain->getSwapchainExtent().width);
@@ -91,35 +89,35 @@ namespace muon {
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
 
-        VkRect2D scissor{};
-        scissor.offset = {0, 0};
+        vk::Rect2D scissor{};
+        scissor.setOffset({0, 0});
         scissor.extent = swapchain->getSwapchainExtent();
 
-        vkCmdSetViewport(command_buffer, 0, 1, &viewport);
-        vkCmdSetScissor(command_buffer, 0, 1, &scissor);
+        command_buffer.setViewport(0, 1, &viewport);
+        command_buffer.setScissor(0, 1, &scissor);
     }
 
-    void Renderer::endSwapchainRenderPass(VkCommandBuffer command_buffer) {
-        vkCmdEndRenderPass(command_buffer);
+    void Renderer::endSwapchainRenderPass(vk::CommandBuffer command_buffer) {
+        command_buffer.endRenderPass();
     }
 
     void Renderer::createCommandBuffers() {
         command_buffers.resize(Swapchain::MAX_FRAMES_IN_FLIGHT);
 
-        VkCommandBufferAllocateInfo alloc_info{};
-        alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        vk::CommandBufferAllocateInfo alloc_info{};
+        alloc_info.sType = vk::StructureType::eCommandBufferAllocateInfo;
+        alloc_info.level = vk::CommandBufferLevel::ePrimary;
         alloc_info.commandPool = device.getCommandPool();
         alloc_info.commandBufferCount = static_cast<uint32_t>(command_buffers.size());
 
-        if (vkAllocateCommandBuffers(device.getDevice(), &alloc_info, command_buffers.data()) != VK_SUCCESS) {
+        if (device.getDevice().allocateCommandBuffers(&alloc_info, command_buffers.data()) != vk::Result::eSuccess) {
             spdlog::error("Failed to allocate command buffers");
             exit(exitcode::FAILURE);
         }
     }
 
     void Renderer::freeCommandBuffers() {
-        vkFreeCommandBuffers(device.getDevice(), device.getCommandPool(), static_cast<uint32_t>(command_buffers.size()), command_buffers.data());
+        device.getDevice().freeCommandBuffers(device.getCommandPool(), static_cast<uint32_t>(command_buffers.size()), command_buffers.data());
         command_buffers.clear();
     }
 
@@ -131,7 +129,7 @@ namespace muon {
             SDL_WaitEvent(&event);
         }
 
-        vkDeviceWaitIdle(device.getDevice());
+        device.getDevice().waitIdle();
 
         if (swapchain == nullptr) {
             swapchain = std::make_unique<Swapchain>(device, extent);

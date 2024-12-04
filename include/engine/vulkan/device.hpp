@@ -1,16 +1,17 @@
 #pragma once
 
-#include <vulkan/vulkan.hpp>
 #include <spdlog/spdlog.h>
+#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_handles.hpp>
 
 #include "engine/window/window.hpp"
 
 namespace muon {
 
-    struct SwapChainSupportDetails {
-        VkSurfaceCapabilitiesKHR capabilities;
-        std::vector<VkSurfaceFormatKHR> formats;
-        std::vector<VkPresentModeKHR> present_modes;
+    struct SwapchainSupportDetails {
+        vk::SurfaceCapabilitiesKHR capabilities;
+        std::vector<vk::SurfaceFormatKHR> formats;
+        std::vector<vk::PresentModeKHR> present_modes;
     };
 
     struct QueueFamilyIndices {
@@ -40,39 +41,39 @@ namespace muon {
         Device(const Device &&) = delete;
         Device& operator=(const Device &&) = delete;
 
-        VkInstance getInstance() const { return instance; }
-        VkPhysicalDevice getPhysicalDevice() const { return physical_device; }
-        VkCommandPool getCommandPool() const { return command_pool; }
-        VkDevice getDevice() const { return device; }
-        VkSurfaceKHR getSurface() const { return surface; }
-        VkQueue getGraphicsQueue() const { return graphics_queue; }
-        VkQueue getPresentQueue() const { return present_queue; }
-        SwapChainSupportDetails getSwapchainSupport() { return querySwapchainSupport(physical_device); }
+        vk::Instance getInstance() const { return instance; }
+        vk::PhysicalDevice getPhysicalDevice() const { return physical_device; }
+        vk::CommandPool getCommandPool() const { return command_pool; }
+        vk::Device getDevice() const { return device; }
+        vk::SurfaceKHR getSurface() const { return surface; }
+        vk::Queue getGraphicsQueue() const { return graphics_queue; }
+        vk::Queue getPresentQueue() const { return present_queue; }
+        SwapchainSupportDetails getSwapchainSupport() { return querySwapchainSupport(physical_device); }
         QueueFamilyIndices getPhysicalQueueFamilies() { return findQueueFamilies(physical_device); }
 
-        uint32_t findMemoryType(uint32_t type_filter, VkMemoryPropertyFlags properties);
-        VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+        uint32_t findMemoryType(uint32_t type_filter, vk::MemoryPropertyFlags properties);
+        vk::Format findSupportedFormat(const std::vector<vk::Format> &candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features);
 
-        void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &buffer_memory);
-        VkCommandBuffer beginSingleTimeCommands();
-        void endSingleTimeCommands(VkCommandBuffer command_buffer);
-        void copyBuffer(VkBuffer src_buffer, VkBuffer dest_buffer, VkDeviceSize size);
-        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layer_count);
-        void createImageWithInfo(const VkImageCreateInfo &image_info, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& image_memory);
+        void createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::Buffer &buffer, vk::DeviceMemory &buffer_memory);
+        vk::CommandBuffer beginSingleTimeCommands();
+        void endSingleTimeCommands(vk::CommandBuffer command_buffer);
+        void copyBuffer(vk::Buffer src_buffer, vk::Buffer dest_buffer, vk::DeviceSize size);
+        void copyBufferToImage(vk::Buffer buffer, vk::Image image, uint32_t width, uint32_t height, uint32_t layer_count);
+        void createImageWithInfo(const vk::ImageCreateInfo &image_info, vk::MemoryPropertyFlags properties, vk::Image& image, vk::DeviceMemory& image_memory);
 
     private:
-        VkInstance instance{};
-        VkDebugUtilsMessengerEXT debug_messenger{};
-        VkPhysicalDevice physical_device = VK_NULL_HANDLE;
+        vk::Instance instance{};
+        vk::DebugUtilsMessengerEXT debug_messenger{};
+        vk::PhysicalDevice physical_device = nullptr;
         Window &window;
-        VkCommandPool command_pool{};
+        vk::CommandPool command_pool{};
 
-        VkDevice device{};
-        VkSurfaceKHR surface{};
-        VkQueue graphics_queue{};
-        VkQueue present_queue{};
+        vk::Device device{};
+        vk::SurfaceKHR surface{};
+        vk::Queue graphics_queue{};
+        vk::Queue present_queue{};
 
-        VkPhysicalDeviceProperties properties{};
+        vk::PhysicalDeviceProperties properties{};
 
         const std::vector<const char *> validation_layers = {"VK_LAYER_KHRONOS_validation"};
         const std::vector<const char *> device_extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
@@ -84,14 +85,14 @@ namespace muon {
         void createLogicalDevice();
         void createCommandPool();
 
-        bool isDeviceSuitable(VkPhysicalDevice device);
+        bool isDeviceSuitable(vk::PhysicalDevice device);
         std::vector<const char *> getRequiredExtensions();
         bool checkValidationLayerSupport();
-        QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-        void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &create_info);
+        QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device);
+        void populateDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT &create_info);
         void hasSdlRequiredInstanceExtensions();
-        bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-        SwapChainSupportDetails querySwapchainSupport(VkPhysicalDevice device);
+        bool checkDeviceExtensionSupport(vk::PhysicalDevice device);
+        SwapchainSupportDetails querySwapchainSupport(vk::PhysicalDevice device);
     };
 
 }
