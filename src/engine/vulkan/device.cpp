@@ -1,10 +1,12 @@
 #include "engine/vulkan/device.hpp"
 
 #include <set>
+#include <spdlog/spdlog.h>
 #include <unordered_set>
 
 #include <SDL3/SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_enums.hpp>
 #include <vulkan/vulkan_to_string.hpp>
 
 #include "utils/defaults.hpp"
@@ -128,13 +130,20 @@ namespace muon {
         alloc_info.commandBufferCount = 1;
 
         vk::CommandBuffer command_buffer;
-        device.allocateCommandBuffers(&alloc_info, &command_buffer);
+        auto result = device.allocateCommandBuffers(&alloc_info, &command_buffer);
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to allocate command buffers");
+        }
 
         vk::CommandBufferBeginInfo begin_info{};
         begin_info.sType = vk::StructureType::eCommandBufferBeginInfo;
         begin_info.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
 
-        command_buffer.begin(&begin_info);
+        result = command_buffer.begin(&begin_info);
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to begin command buffer recording");
+        }
+
         return command_buffer;
     }
 
@@ -146,7 +155,11 @@ namespace muon {
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &command_buffer;
 
-        graphics_queue.submit(1, &submitInfo, VK_NULL_HANDLE);
+        auto result = graphics_queue.submit(1, &submitInfo, nullptr);
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to submit to graphics queue");
+        }
+
         graphics_queue.waitIdle();
 
         device.freeCommandBuffers(command_pool, 1, &command_buffer);
@@ -261,7 +274,7 @@ namespace muon {
         vk::DebugUtilsMessengerCreateInfoEXT create_info;
         populateDebugMessengerCreateInfo(create_info);
 
-        vk::Result result = createDebugUtilsMessenger(
+        auto result = createDebugUtilsMessenger(
             static_cast<VkInstance>(instance),
             reinterpret_cast<const VkDebugUtilsMessengerCreateInfoEXT *>(&create_info),
             nullptr,
@@ -290,7 +303,10 @@ namespace muon {
 
         std::vector<vk::PhysicalDevice> devices(device_count);
 
-        instance.enumeratePhysicalDevices(&device_count, devices.data());
+        auto result = instance.enumeratePhysicalDevices(&device_count, devices.data());
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to enumerate physical devices");
+        }
 
         for (const auto &device : devices) {
             if (isDeviceSuitable(device)) {
@@ -500,10 +516,16 @@ namespace muon {
 
     bool Device::checkDeviceExtensionSupport(vk::PhysicalDevice device) {
         uint32_t extension_count;
-        device.enumerateDeviceExtensionProperties(nullptr, &extension_count, nullptr);
+        auto result = device.enumerateDeviceExtensionProperties(nullptr, &extension_count, nullptr);
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to enumerate device extension properties");
+        }
 
         std::vector<vk::ExtensionProperties> availabile_extensions(extension_count);
-        device.enumerateDeviceExtensionProperties(nullptr, &extension_count, availabile_extensions.data());
+        result = device.enumerateDeviceExtensionProperties(nullptr, &extension_count, availabile_extensions.data());
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to enumerate device extension properties");
+        }
 
         std::set<std::string> required_extensions(device_extensions.begin(), device_extensions.end());
 
@@ -516,14 +538,23 @@ namespace muon {
 
     SwapchainSupportDetails Device::querySwapchainSupport(vk::PhysicalDevice device) {
         SwapchainSupportDetails details;
-        device.getSurfaceCapabilitiesKHR(surface, &details.capabilities);
+        auto result = device.getSurfaceCapabilitiesKHR(surface, &details.capabilities);
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to get surface capabilities");
+        }
 
         uint32_t format_count;
-        device.getSurfaceFormatsKHR(surface, &format_count, nullptr);
+        result = device.getSurfaceFormatsKHR(surface, &format_count, nullptr);
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to get surface formats");
+        }
 
         if (format_count != 0) {
             details.formats.resize(format_count);
-            device.getSurfaceFormatsKHR(surface, &format_count, details.formats.data());
+            result = device.getSurfaceFormatsKHR(surface, &format_count, details.formats.data());
+            if (result != vk::Result::eSuccess) {
+                spdlog::warn("Failed to get surface formats");
+            }
         }
 
         uint32_t present_mode_count;
@@ -531,7 +562,10 @@ namespace muon {
 
         if (present_mode_count != 0) {
             details.present_modes.resize(present_mode_count);
-            device.getSurfacePresentModesKHR(surface, &present_mode_count, details.present_modes.data());
+            result = device.getSurfacePresentModesKHR(surface, &present_mode_count, details.present_modes.data());
+            if (result != vk::Result::eSuccess) {
+                spdlog::warn("Failed to get surface present modes");
+            }
         }
         return details;
     }
