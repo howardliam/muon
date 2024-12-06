@@ -1,5 +1,10 @@
 #pragma once
 
+#include <unordered_map>
+#include <memory>
+
+#include <vulkan/vulkan.hpp>
+
 #include "engine/vulkan/device.hpp"
 
 namespace muon {

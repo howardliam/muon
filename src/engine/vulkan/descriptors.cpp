@@ -3,6 +3,8 @@
 #include <spdlog/spdlog.h>
 #include <vulkan/vulkan_core.h>
 
+#include "utils/exitcode.hpp"
+
 namespace muon {
 
     /* DescriptorSetLayout Builder */

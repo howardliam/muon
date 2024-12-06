@@ -8,7 +8,7 @@ namespace muon {
 
     AudioBuffer::AudioBuffer(std::string &path) {
         OggProperties properties;
-        std::vector<short> audio_data;
+        std::vector<int16_t> audio_data;
         loadOggFile(path, audio_data, properties);
 
         if (properties.channels == 1) {

@@ -20,6 +20,7 @@
 
 #include "scene/camera.hpp"
 #include "input/inputmanager.hpp"
+#include "utils/color.hpp"
 
 namespace muon {
 
@@ -136,7 +137,7 @@ namespace muon {
             indices.push_back(index_count + 3);
             indices.push_back(index_count + 0);
 
-            index_count+= 4;
+            index_count += 4;
 
             if (i < text.size() - 1) {
                 double advance = glyph->getAdvance();
@@ -236,7 +237,7 @@ namespace muon {
             // camera.setPerspectiveProjection(glm::radians(90.0f), renderer.getAspectRatio(), 0.01f, 1000.0f);
             camera.setOrthographicProjection(-renderer.getAspectRatio(), renderer.getAspectRatio(), -1, 1);
 
-            renderer.setClearColor({0.05f, 0.05f, 0.05f, 1.0f});
+            renderer.setClearColor(color::hexToRgbaArray(0xFF1010FF));
             if (const auto command_buffer = renderer.beginFrame()) {
                 const int frame_index = renderer.getFrameIndex();
 

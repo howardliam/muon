@@ -6,6 +6,8 @@
 #include <glm/trigonometric.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
+#include "utils/exitcode.hpp"
+
 namespace muon {
 
     glm::mat4 transformData() {

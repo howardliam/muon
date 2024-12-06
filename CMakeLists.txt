@@ -74,6 +74,9 @@ set(OTHER_SRC
     src/scene/scene.cpp
     src/scene/orthographiccamera.cpp
     src/scene/perspectivecamera.cpp
+
+    # Utils
+    src/utils/color.cpp
 )
 
 set(PROJ_SRC

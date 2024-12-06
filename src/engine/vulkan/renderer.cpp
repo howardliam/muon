@@ -3,6 +3,8 @@
 #include <SDL3/SDL_events.h>
 #include <vulkan/vulkan_core.h>
 
+#include "utils/exitcode.hpp"
+
 namespace muon {
 
     Renderer::Renderer(Window &window, Device &device) : window{window}, device{device} {

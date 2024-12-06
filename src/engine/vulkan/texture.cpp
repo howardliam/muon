@@ -9,6 +9,8 @@
 
 #include "engine/vulkan/buffer.hpp"
 
+#include "utils/exitcode.hpp"
+
 namespace muon {
 
     Texture::Texture(Device &device, const std::string &path) : device{device} {

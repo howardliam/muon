@@ -13,7 +13,8 @@
 #include "glyph-generators.h"
 
 #include "engine/vulkan/texture.hpp"
-#include "utils.hpp"
+
+#include "utils/exitcode.hpp"
 
 namespace muon {
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <audio/audiobuffer.hpp>
+#include <cstdint>
 #include <AL/al.h>
 
 namespace muon {
@@ -16,7 +17,7 @@ namespace muon {
         void stop() { alSourceStop(source); }
 
     private:
-        ALuint source{};
+        uint32_t source{};
     };
 
 }

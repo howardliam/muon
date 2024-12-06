@@ -1,12 +1,13 @@
 #include "engine/vulkan/model.hpp"
 
+#include <spdlog/spdlog.h>
+
 #include "assimp/Importer.hpp"
 #include "assimp/mesh.h"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
-#include "utils.hpp"
 
-#include <spdlog/spdlog.h>
+#include "utils/exitcode.hpp"
 
 namespace muon {
 

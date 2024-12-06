@@ -1,11 +1,12 @@
-#include <engine/window/window.hpp>
-#include <utils.hpp>
-#include <engine/assets/imageloader.hpp>
+#include "engine/window/window.hpp"
+#include "engine/assets/imageloader.hpp"
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_video.h>
 #include <SDL3/SDL_vulkan.h>
 #include <spdlog/spdlog.h>
+
+#include "utils/exitcode.hpp"
 
 namespace muon {
 
@@ -82,7 +83,7 @@ namespace muon {
         auto pos = SDL_WINDOWPOS_CENTERED;
         SDL_SetWindowPosition(window, pos, pos);
 
-        std::string default_icon = defaults::ICON_PATH;
+        std::string default_icon = "assets/textures/icon.png";
         setIcon(default_icon);
 
         spdlog::debug("Finished initialising window");

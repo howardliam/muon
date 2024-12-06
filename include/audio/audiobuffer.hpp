@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <cstdint>
 #include <AL/al.h>
 
 namespace muon {
@@ -10,11 +11,11 @@ namespace muon {
         AudioBuffer(std::string &path);
         ~AudioBuffer();
 
-        ALuint getBuffer() { return buffer; }
+        uint32_t getBuffer() { return buffer; }
 
     private:
-        ALuint format{};
-        ALuint buffer{};
+        uint32_t format{};
+        uint32_t buffer{};
     };
 
 }

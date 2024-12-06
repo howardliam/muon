@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <memory>
+
 #include <vulkan/vulkan.hpp>
 
 #include "engine/vulkan/device.hpp"
@@ -8,7 +11,7 @@ namespace muon {
 
     class Swapchain {
     public:
-        static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
+        static constexpr int32_t MAX_FRAMES_IN_FLIGHT = 2;
 
         Swapchain(Device &device, vk::Extent2D window_extent);
         Swapchain(Device &device, vk::Extent2D window_extent, std::shared_ptr<Swapchain> previous);

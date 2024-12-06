@@ -6,15 +6,15 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_video.h>
 
-#include "utils.hpp"
+#include "utils/defaults.hpp"
 #include "input/inputmanager.hpp"
 
 namespace muon {
 
     struct WindowProperties {
-        int width{defaults::WIDTH};
-        int height{defaults::HEIGHT};
-        std::string title{defaults::TITLE};
+        uint32_t width{defaults::window::WIDTH};
+        uint32_t height{defaults::window::HEIGHT};
+        std::string title{defaults::window::TITLE};
         bool open{true};
     };
 
@@ -28,7 +28,7 @@ namespace muon {
 
         void pollEvents();
 
-        VkExtent2D getExtent() const { return { static_cast<uint32_t>(properties.width), static_cast<uint32_t>(properties.height) }; }
+        VkExtent2D getExtent() const { return { properties.width, properties.height }; }
         bool isOpen() const { return properties.open; }
         void setToClose() { properties.open = false; }
         void setIcon(std::string &icon_path);

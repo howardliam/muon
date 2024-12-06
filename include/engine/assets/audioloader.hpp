@@ -11,6 +11,6 @@ namespace muon {
         int64_t sample_rate;
     };
 
-    void loadOggFile(const std::string &path, std::vector<short> &audio_data, OggProperties &properties);
+    void loadOggFile(const std::string &path, std::vector<int16_t> &audio_data, OggProperties &properties);
 
 }

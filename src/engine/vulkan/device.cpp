@@ -7,6 +7,9 @@
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_to_string.hpp>
 
+#include "utils/defaults.hpp"
+#include "utils/exitcode.hpp"
+
 namespace muon {
 
     /* Debug messenger */
@@ -216,7 +219,7 @@ namespace muon {
 
         vk::ApplicationInfo app_info = {};
         app_info.sType = vk::StructureType::eApplicationInfo;
-        app_info.pApplicationName = defaults::TITLE;
+        app_info.pApplicationName = defaults::window::TITLE.c_str();
         app_info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
         app_info.pEngineName = "Muon";
         app_info.engineVersion = VK_MAKE_VERSION(1, 0, 0);

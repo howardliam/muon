@@ -23,10 +23,10 @@ namespace muon {
         vk::DescriptorBufferInfo descriptorInfo(vk::DeviceSize size = vk::WholeSize, vk::DeviceSize offset = 0);
         vk::Result invalidate(vk::DeviceSize size = vk::WholeSize, vk::DeviceSize offset = 0);
 
-        void writeToIndex(void* data, int index);
-        vk::Result flushIndex(int index);
-        vk::DescriptorBufferInfo descriptorInfoForIndex(int index);
-        vk::Result invalidateIndex(int index);
+        void writeToIndex(void* data, int32_t index);
+        vk::Result flushIndex(int32_t index);
+        vk::DescriptorBufferInfo descriptorInfoForIndex(int32_t index);
+        vk::Result invalidateIndex(int32_t index);
 
         vk::Buffer getBuffer() const { return buffer; }
         vk::DeviceSize getBufferSize() const { return buffer_size; }
