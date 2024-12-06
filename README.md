@@ -3,7 +3,7 @@ An amateur game engine for learning Vulkan among other technologies.
 
 ## Todo
 ### Global
-- [ ] Switch from using C integer types (int, short, byte, etc.)
+- [x] Switch from using C integer types (int, short, byte, etc.)
 to cstdint (int32_t, int16_t, int8_t, etc.) where applicable
 - [ ] Add \[\[nodiscard\]\] to getters and other methods
 ### Graphics (Vulkan)

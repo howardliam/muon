@@ -33,11 +33,6 @@ set(ENGINE_SRC
     src/engine/assets/audioloader.cpp
     src/engine/assets/stb_vorbis.c
 
-    # Render
-    src/engine/render/common.cpp
-    src/engine/render/rendermodule.cpp
-    src/engine/render/scenemodule.cpp
-
     # Rendering systems
     src/engine/rendering/rendersystem.cpp
     src/engine/rendering/textrenderer.cpp
@@ -51,6 +46,7 @@ set(ENGINE_SRC
     src/engine/vulkan/model.cpp
     src/engine/vulkan/pipeline.cpp
     src/engine/vulkan/renderer.cpp
+    src/engine/vulkan/shaderreflection.cpp
     src/engine/vulkan/swapchain.cpp
     src/engine/vulkan/texture.cpp
 
@@ -101,10 +97,10 @@ foreach (SHADER ${SHADERS})
     set(SPIRV_OUTPUT_FILE ${SPIRV_OUTPUT_DIR}/${SHADER_NAME}.spv)
 
     add_custom_command(
-            OUTPUT ${SPIRV_OUTPUT_FILE}
-            COMMAND ${Vulkan_GLSLC_EXECUTABLE} -o ${SPIRV_OUTPUT_FILE} ${SHADER}
-            DEPENDS ${SHADER}
-            COMMENT "Compiling shader ${SHADER} to SPIR-V"
+        OUTPUT ${SPIRV_OUTPUT_FILE}
+        COMMAND ${Vulkan_GLSLC_EXECUTABLE} -o ${SPIRV_OUTPUT_FILE} ${SHADER}
+        DEPENDS ${SHADER}
+        COMMENT "Compiling shader ${SHADER} to SPIR-V"
     )
 
     list(APPEND SPIRV_OUTPUTS ${SPIRV_OUTPUT_FILE})

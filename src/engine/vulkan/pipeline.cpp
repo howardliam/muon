@@ -1,18 +1,20 @@
 #include "engine/vulkan/pipeline.hpp"
 
+#include <array>
 #include <cstdlib>
 #include <fstream>
 
+#include <spdlog/spdlog.h>
 #include <vulkan/vulkan.hpp>
 #include <spirv_reflect.h>
 
 #include "engine/vulkan/model.hpp"
+#include "engine/vulkan/shaderreflection.hpp"
 #include "utils/exitcode.hpp"
 
 namespace muon {
 
     std::vector<char> readFile(const std::string &path) {
-        spdlog::debug("Loading shader: {}", path);
         std::ifstream file{path, std::ios::ate | std::ios::binary};
 
         if (!file.is_open()) {
@@ -20,92 +22,10 @@ namespace muon {
             exit(exitcode::FAILURE);
         }
 
-        size_t file_size = static_cast<size_t>(file.tellg());
-        std::vector<char> buffer(file_size);
+        std::vector<char> buffer(file.tellg());
 
         file.seekg(0);
-        file.read(buffer.data(), file_size);
-
-        SpvReflectShaderModule module;
-        SpvReflectResult result = spvReflectCreateShaderModule(file_size, buffer.data(), &module);
-        if (result != SPV_REFLECT_RESULT_SUCCESS) {
-            spdlog::warn("Failed to create reflect shader module, returning early");
-            spvReflectDestroyShaderModule(&module);
-            return buffer;
-        }
-
-        uint32_t var_count = 0;
-        result = spvReflectEnumerateInputVariables(&module, &var_count, nullptr);
-        if (result != SPV_REFLECT_RESULT_SUCCESS) {
-            spdlog::warn("Failed to enumerate input variables, returning early");
-            spvReflectDestroyShaderModule(&module);
-            return buffer;
-        }
-
-        std::vector<SpvReflectInterfaceVariable *> input_vars(var_count);
-        result = spvReflectEnumerateInputVariables(&module, &var_count, input_vars.data());
-        if (result != SPV_REFLECT_RESULT_SUCCESS) {
-            spdlog::warn("Failed to enumerate input variables, returning early");
-            spvReflectDestroyShaderModule(&module);
-            return buffer;
-        }
-
-        for (int i = 0; i < var_count; i++) {
-            spdlog::debug("Var loc: {}, var name: {}", input_vars[i]->location, input_vars[i]->name);
-        }
-
-        uint32_t desc_count = 0;
-        result = spvReflectEnumerateDescriptorSets(&module, &desc_count, nullptr);
-        if (result != SPV_REFLECT_RESULT_SUCCESS) {
-            spdlog::warn("Failed to enumerate descriptor sets, returning early");
-            spvReflectDestroyShaderModule(&module);
-            return buffer;
-        }
-
-        std::vector<SpvReflectDescriptorSet *> desc_sets(desc_count);
-        result = spvReflectEnumerateDescriptorSets(&module, &desc_count, desc_sets.data());
-        if (result != SPV_REFLECT_RESULT_SUCCESS) {
-            spdlog::warn("Failed to enumerate descriptor sets, returning early");
-            spvReflectDestroyShaderModule(&module);
-            return buffer;
-        }
-
-        for (int i = 0; i < desc_count; i++) {
-            spdlog::debug("Set location: {}", desc_sets[i]->set);
-
-            for (int j = 0; j < desc_sets[i]->binding_count; j++) {
-                spdlog::debug("Binding location: {}", j);
-                spdlog::debug("Descriptor name: {}", desc_sets[i]->bindings[j]->name);
-            }
-        }
-
-        uint32_t push_constant_count = 0;
-        result = spvReflectEnumeratePushConstantBlocks(&module, &push_constant_count, nullptr);
-        if (result != SPV_REFLECT_RESULT_SUCCESS) {
-            spdlog::warn("Failed to enumerate push constants, returning early");
-            spvReflectDestroyShaderModule(&module);
-            return buffer;
-        }
-
-        std::vector<SpvReflectBlockVariable *> push_constants(push_constant_count);
-        result = spvReflectEnumeratePushConstantBlocks(&module, &push_constant_count, push_constants.data());
-        if (result != SPV_REFLECT_RESULT_SUCCESS) {
-            spdlog::warn("Failed to enumerate push constants, returning early");
-            spvReflectDestroyShaderModule(&module);
-            return buffer;
-        }
-
-        for (int i = 0; i < push_constant_count; i++) {
-            spdlog::debug("Push constant: {}", push_constants[i]->name);
-            spdlog::debug("Offset: {}", push_constants[i]->offset);
-            spdlog::debug("Size: {}", push_constants[i]->size);
-
-            for (int j = 0; j < push_constants[i]->member_count; j++) {
-                spdlog::debug("Push constant var name: {}", push_constants[i]->members[j].name);
-            }
-        }
-
-        spvReflectDestroyShaderModule(&module);
+        file.read(buffer.data(), buffer.size());
 
         return buffer;
     }
@@ -128,7 +48,7 @@ namespace muon {
         vk::ShaderModuleCreateInfo create_info{};
         create_info.sType = vk::StructureType::eShaderModuleCreateInfo;
         create_info.codeSize = byte_code.size();
-        create_info.pCode = reinterpret_cast<const uint32_t*>(byte_code.data());
+        create_info.pCode = reinterpret_cast<const uint32_t *>(byte_code.data());
 
         if (device.getDevice().createShaderModule(&create_info, nullptr, shader_module) != vk::Result::eSuccess) {
             spdlog::error("Failed to create shader module");
@@ -140,42 +60,46 @@ namespace muon {
         auto vert = readFile(vert_path);
         auto frag = readFile(frag_path);
 
+        ShaderReflection reflection{vert};
+        reflection.computeVertexInfo();
+        auto vertex_info = reflection.getVertexInfo();
+
         createShaderModule(vert, &vert_shader_module);
         createShaderModule(frag, &frag_shader_module);
 
-        uint32_t num_stages = 2;
-        vk::PipelineShaderStageCreateInfo shader_stages[num_stages];
+        auto a = offsetof(Model::Vertex, colour);
 
-        shader_stages[0].sType = vk::StructureType::ePipelineShaderStageCreateInfo;
-        shader_stages[0].stage = vk::ShaderStageFlagBits::eVertex;
-        shader_stages[0].module = vert_shader_module;
-        shader_stages[0].pName = "main";
-        shader_stages[0].flags = vk::PipelineShaderStageCreateFlags{};
-        shader_stages[0].pNext = nullptr;
-        shader_stages[0].pSpecializationInfo = nullptr;
+        std::array<vk::PipelineShaderStageCreateInfo, 2> shader_stages;
 
-        shader_stages[1].sType = vk::StructureType::ePipelineShaderStageCreateInfo;
-        shader_stages[1].stage = vk::ShaderStageFlagBits::eFragment;
-        shader_stages[1].module = frag_shader_module;
-        shader_stages[1].pName = "main";
-        shader_stages[1].flags = vk::PipelineShaderStageCreateFlags{};
-        shader_stages[1].pNext = nullptr;
-        shader_stages[1].pSpecializationInfo = nullptr;
+        size_t idx = 0;
+        shader_stages[idx].sType = vk::StructureType::ePipelineShaderStageCreateInfo;
+        shader_stages[idx].stage = vk::ShaderStageFlagBits::eVertex;
+        shader_stages[idx].module = vert_shader_module;
+        shader_stages[idx].pName = "main";
+        shader_stages[idx].flags = vk::PipelineShaderStageCreateFlags{};
+        shader_stages[idx].pNext = nullptr;
+        shader_stages[idx].pSpecializationInfo = nullptr;
 
-        auto binding_descriptions = Model::Vertex::getBindingDescriptions();
-        auto attribute_descriptions = Model::Vertex::getAttributeDescriptions();
+        idx += 1;
+        shader_stages[idx].sType = vk::StructureType::ePipelineShaderStageCreateInfo;
+        shader_stages[idx].stage = vk::ShaderStageFlagBits::eFragment;
+        shader_stages[idx].module = frag_shader_module;
+        shader_stages[idx].pName = "main";
+        shader_stages[idx].flags = vk::PipelineShaderStageCreateFlags{};
+        shader_stages[idx].pNext = nullptr;
+        shader_stages[idx].pSpecializationInfo = nullptr;
 
         vk::PipelineVertexInputStateCreateInfo vertex_input_info{};
         vertex_input_info.sType = vk::StructureType::ePipelineVertexInputStateCreateInfo;
-        vertex_input_info.vertexAttributeDescriptionCount = static_cast<uint32_t>(attribute_descriptions.size());
-        vertex_input_info.vertexBindingDescriptionCount = static_cast<uint32_t>(binding_descriptions.size());
-        vertex_input_info.pVertexAttributeDescriptions = attribute_descriptions.data();
-        vertex_input_info.pVertexBindingDescriptions = binding_descriptions.data();
+        vertex_input_info.vertexAttributeDescriptionCount = static_cast<uint32_t>(vertex_info.attribute_descriptions.size());
+        vertex_input_info.vertexBindingDescriptionCount = static_cast<uint32_t>(vertex_info.binding_descriptions.size());
+        vertex_input_info.pVertexAttributeDescriptions = vertex_info.attribute_descriptions.data();
+        vertex_input_info.pVertexBindingDescriptions = vertex_info.binding_descriptions.data();
 
         vk::GraphicsPipelineCreateInfo pipeline_info{};
         pipeline_info.sType = vk::StructureType::eGraphicsPipelineCreateInfo;
-        pipeline_info.stageCount = num_stages;
-        pipeline_info.pStages = shader_stages;
+        pipeline_info.stageCount = static_cast<uint32_t>(shader_stages.size());
+        pipeline_info.pStages = shader_stages.data();
         pipeline_info.pVertexInputState = &vertex_input_info;
         pipeline_info.pInputAssemblyState = &config_info.input_assembly_info;
         pipeline_info.pViewportState = &config_info.viewport_info;
@@ -192,7 +116,7 @@ namespace muon {
         pipeline_info.basePipelineIndex = -1;
         pipeline_info.basePipelineHandle = nullptr;
 
-        if (device.getDevice().createGraphicsPipelines(VK_NULL_HANDLE, 1, &pipeline_info, nullptr, &graphics_pipeline) != vk::Result::eSuccess) {
+        if (device.getDevice().createGraphicsPipelines(nullptr, 1, &pipeline_info, nullptr, &graphics_pipeline) != vk::Result::eSuccess) {
             spdlog::error("Failed to create graphics pipeline");
             exit(exitcode::FAILURE);
         }

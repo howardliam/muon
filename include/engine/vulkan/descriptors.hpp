@@ -9,6 +9,13 @@
 
 namespace muon {
 
+    struct DescriptorBinding {
+        uint32_t binding;
+        vk::DescriptorType descriptor_type;
+        vk::ShaderStageFlags stage_flags;
+        uint32_t count{1};
+    };
+
     class DescriptorSetLayout {
     public:
         class Builder {

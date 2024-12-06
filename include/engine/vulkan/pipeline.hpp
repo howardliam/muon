@@ -5,6 +5,7 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include "engine/vulkan/descriptors.hpp"
 #include "engine/vulkan/device.hpp"
 
 namespace muon {
@@ -29,6 +30,11 @@ namespace muon {
         uint32_t subpass = 0;
     };
 
+    struct DescriptorSetLayoutData {
+        uint32_t set_number;
+        std::vector<DescriptorBinding> bindings;
+    };
+
     class Pipeline {
     public:
         Pipeline(Device &device, const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info);
@@ -49,7 +55,5 @@ namespace muon {
         void createShaderModule(const std::vector<char> &byte_code, vk::ShaderModule *shader_module);
         void createGraphicsPipeline(const std::string &vert_path, const std::string &frag_path, const PipelineConfigInfo &config_info);
     };
-
-    // static std::vector<char> read_file(const std::string &path);
 
 }
