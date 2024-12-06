@@ -2,7 +2,9 @@
 #include "engine/assets/imageloader.hpp"
 
 #include <cmath>
+#include <spdlog/spdlog.h>
 #include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_enums.hpp>
 
 #include "engine/vulkan/buffer.hpp"
 
@@ -98,7 +100,10 @@ namespace muon {
         sampler_info.anisotropyEnable = VK_TRUE;
         sampler_info.borderColor = vk::BorderColor::eFloatOpaqueWhite;
 
-        device.getDevice().createSampler(&sampler_info, nullptr, &sampler);
+        auto result = device.getDevice().createSampler(&sampler_info, nullptr, &sampler);
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to create sampler");
+        }
 
         vk::ImageViewCreateInfo image_view_info{};
         image_view_info.sType = vk::StructureType::eImageViewCreateInfo;
@@ -112,7 +117,10 @@ namespace muon {
         image_view_info.subresourceRange.baseArrayLayer = 0;
         image_view_info.subresourceRange.layerCount = 1;
 
-        device.getDevice().createImageView(&image_view_info, nullptr, &image_view);
+        result = device.getDevice().createImageView(&image_view_info, nullptr, &image_view);
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to create image view");
+        }
     }
 
     void Texture::transitionImageLayout(vk::ImageLayout old_layout, vk::ImageLayout new_layout) {
