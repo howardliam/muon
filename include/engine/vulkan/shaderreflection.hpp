@@ -19,7 +19,6 @@ namespace muon {
         ~ShaderReflection();
 
         void computeVertexInfo();
-        void computePushConstant();
         void computeDescriptorSetLayout();
 
         VertexInfo getVertexInfo() { return vertex_info; }

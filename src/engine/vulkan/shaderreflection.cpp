@@ -35,6 +35,9 @@ namespace muon {
             spdlog::error("Failed to create reflect shader module, exiting");
             exit(exitcode::FAILURE);
         }
+
+        computeVertexInfo();
+        computeDescriptorSetLayout();
     }
 
     ShaderReflection::~ShaderReflection() {
@@ -84,7 +87,31 @@ namespace muon {
             total_offset,
             vk::VertexInputRate::eVertex
         });
-
     }
 
+
+    void ShaderReflection::computeDescriptorSetLayout() {
+        uint32_t desc_count = 0;
+        auto result = spvReflectEnumerateDescriptorSets(&module, &desc_count, nullptr);
+        if (result != SPV_REFLECT_RESULT_SUCCESS) {
+            spdlog::warn("Failed to enumerate descriptor sets, returning early");
+            return;
+        }
+
+        std::vector<SpvReflectDescriptorSet *> desc_sets(desc_count);
+        result = spvReflectEnumerateDescriptorSets(&module, &desc_count, desc_sets.data());
+        if (result != SPV_REFLECT_RESULT_SUCCESS) {
+            spdlog::warn("Failed to enumerate descriptor sets, returning early");
+            return;
+        }
+
+        for (int i = 0; i < desc_count; i++) {
+            spdlog::debug("Set location: {}", desc_sets[i]->set);
+
+            for (int j = 0; j < desc_sets[i]->binding_count; j++) {
+                spdlog::debug("Binding location: {}", j);
+                spdlog::debug("Descriptor name: {}", desc_sets[i]->bindings[j]->name);
+            }
+        }
+    }
 }

@@ -61,7 +61,6 @@ namespace muon {
         auto frag = readFile(frag_path);
 
         ShaderReflection reflection{vert};
-        reflection.computeVertexInfo();
         auto vertex_info = reflection.getVertexInfo();
 
         createShaderModule(vert, &vert_shader_module);
