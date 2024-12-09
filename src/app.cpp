@@ -237,7 +237,7 @@ namespace muon {
             // camera.setPerspectiveProjection(glm::radians(90.0f), renderer.getAspectRatio(), 0.01f, 1000.0f);
             camera.setOrthographicProjection(-renderer.getAspectRatio(), renderer.getAspectRatio(), -1, 1);
 
-            renderer.setClearColor(color::hexToRgba<std::array<float, 4>>(0xFF1010FF));
+            renderer.setClearColor(color::hexBytesToRgba<std::array<float, 4>>(0xFF, 0x10, 0x10, 0xFF));
             if (const auto command_buffer = renderer.beginFrame()) {
                 const int frame_index = renderer.getFrameIndex();
 

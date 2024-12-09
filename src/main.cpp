@@ -5,7 +5,6 @@
 #include <spdlog/spdlog.h>
 #include <toml++/toml.hpp>
 
-
 #include "engine/window/window.hpp"
 #include "app.hpp"
 

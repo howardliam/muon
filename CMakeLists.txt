@@ -11,20 +11,23 @@ find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(OpenAL REQUIRED)
 
+add_subdirectory(external/assimp)
+
 set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "" FORCE)
 set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "" FORCE)
 set(MSDF_ATLAS_USE_SKIA OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/msdf-atlas-gen)
 
-add_subdirectory(external/assimp)
-
 set(SPIRV_REFLECT_EXECUTABLE OFF CACHE BOOL "" FORCE)
 set(SPIRV_REFLECT_STATIC_LIB ON CACHE BOOL "" FORCE)
 add_subdirectory(external/SPIRV-Reflect)
 
+add_subdirectory(external/VulkanMemoryAllocator)
+
 include_directories(
     external/entt/single_include/entt
     external/tomlplusplus/include
+    external/json/single_include/nlohmann
 )
 
 set(ENGINE_SRC
@@ -109,9 +112,24 @@ endforeach ()
 add_custom_target(compile_shaders DEPENDS ${SPIRV_OUTPUTS})
 add_dependencies(${PROJ_NAME} compile_shaders)
 
-set(LIBS pthread dl)
-set(GRAPHICS_LIBS SDL3::SDL3 Vulkan::Vulkan glm spirv-reflect-static)
-set(LOGGING_LIBS spdlog::spdlog fmt)
+set(LIBS
+    pthread
+    dl
+)
+
+set(GRAPHICS_LIBS
+    SDL3::SDL3
+    Vulkan::Vulkan
+    glm
+    spirv-reflect-static
+    GPUOpen::VulkanMemoryAllocator
+)
+
+set(LOGGING_LIBS
+    spdlog::spdlog
+    fmt
+)
+
 set(TEXT_LIBS msdf-atlas-gen)
 set(AUDIO_LIBS openal)
 set(MODEL_LIBS assimp)
