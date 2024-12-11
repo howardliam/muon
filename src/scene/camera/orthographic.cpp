@@ -1,4 +1,4 @@
-#include "scene/orthographiccamera.hpp"
+#include "scene/camera/orthographic.hpp"
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>

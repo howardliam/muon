@@ -1,6 +1,6 @@
 #pragma once
 
-#include "scene/basecamera.hpp"
+#include "scene/camera/basecamera.hpp"
 
 namespace muon {
 

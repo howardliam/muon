@@ -71,8 +71,10 @@ set(OTHER_SRC
     # Scene
     src/scene/camera.cpp
     src/scene/scene.cpp
-    src/scene/orthographiccamera.cpp
-    src/scene/perspectivecamera.cpp
+
+    # Camera
+    src/scene/camera/orthographic.cpp
+    src/scene/camera/perspective.cpp
 
     # Utils
     src/utils/color.cpp
