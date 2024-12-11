@@ -60,6 +60,29 @@ namespace muon {
         model.draw(frame_info.command_buffer);
     }
 
+    void RenderSystem3D::renderModel(FrameInfo &frame_info, Model &model, glm::mat4 transform) {
+        pipeline->bind(frame_info.command_buffer);
+
+        frame_info.command_buffer.bindDescriptorSets(
+            vk::PipelineBindPoint::eGraphics,
+            pipeline_layout,
+            0,
+            1,
+            &frame_info.descriptor_set,
+            0,
+            nullptr
+        );
+
+        SimplePushConstantData push{};
+        push.model = transform;
+
+        auto shader_stages = vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment;
+        frame_info.command_buffer.pushConstants(pipeline_layout, shader_stages, 0, sizeof(SimplePushConstantData), &push);
+
+        model.bind(frame_info.command_buffer);
+        model.draw(frame_info.command_buffer);
+    }
+
     void RenderSystem3D::createPipelineLayout(vk::DescriptorSetLayout descriptor_set_layout) {
         vk::PushConstantRange push_constant_range{};
         push_constant_range.stageFlags = vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment;

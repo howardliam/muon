@@ -22,6 +22,8 @@
 #include "input/inputmanager.hpp"
 #include "utils/color.hpp"
 
+#include "entt.hpp"
+
 namespace muon {
 
     struct GlobalUbo {
@@ -210,12 +212,41 @@ namespace muon {
         Camera camera{};
         camera.lookAt(camera_pos, {0.0f, 0.0f, -1.0f});
 
-        std::unique_ptr model = Model::fromFile(device, "assets/models/cube.obj");
+        std::shared_ptr model = Model::fromFile(device, "assets/models/cube.obj");
 
         std::unique_ptr<Model> text_model = nullptr;
 
         auto current_time = std::chrono::high_resolution_clock::now();
         float frame_time;
+
+        struct ModelComponent {
+            std::weak_ptr<Model> model;
+        };
+
+        struct TransformComponent {
+            glm::mat4 transform;
+        };
+
+        struct TextComponent {
+            std::unique_ptr<Model> text;
+        };
+
+        entt::registry registry;
+
+        entt::entity cube = registry.create();
+        entt::entity text = registry.create();
+
+        registry.emplace<ModelComponent>(cube, model);
+        registry.emplace<TextComponent>(text, nullptr);
+
+        glm::mat4 cube_transform = glm::translate(glm::mat4{1.0f}, {0.0f, 0.0f, -5.0f});
+        cube_transform = glm::scale(cube_transform, {0.5f, 0.5f, 0.5f});
+        registry.emplace<TransformComponent>(cube, cube_transform);
+
+
+        glm::mat4 text_transform = glm::translate(glm::mat4{1.0f}, {0.5f, -0.5f, -5.0f});
+        text_transform = glm::scale(text_transform, {0.1f, 0.1f, 0.1f});
+        registry.emplace<TransformComponent>(text, text_transform);
 
         while (window.isOpen()) {
             window.pollEvents();
@@ -237,7 +268,7 @@ namespace muon {
             // camera.setPerspectiveProjection(glm::radians(90.0f), renderer.getAspectRatio(), 0.01f, 1000.0f);
             camera.setOrthographicProjection(-renderer.getAspectRatio(), renderer.getAspectRatio(), -1, 1);
 
-            renderer.setClearColor(color::hexBytesToRgba<std::array<float, 4>>(0xFF, 0x10, 0x10, 0xFF));
+            renderer.setClearColor(color::hexToRgba<std::array<float, 4>>(0xFF1010FF));
             if (const auto command_buffer = renderer.beginFrame()) {
                 const int frame_index = renderer.getFrameIndex();
 
@@ -253,8 +284,12 @@ namespace muon {
                 std::string pos_text = std::to_string(mouse_pos.x) + "\n" + std::to_string(mouse_pos.y);
                 std::string fps_text = std::to_string(static_cast<int>(1.0f / frame_time)) + " FPS";
                 std::string both_text = fps_text + '\n' + pos_text;
-                text_model = generateText(device, font, both_text);
+                // text_model = generateText(device, font, both_text);
+                TextComponent &text_component = registry.get<TextComponent>(text);
+                text_component.text = generateText(device, font, both_text);
 
+                TransformComponent &cube_transform = registry.get<TransformComponent>(cube);
+                cube_transform.transform = glm::rotate(cube_transform.transform, glm::radians(1.0f), {1.0f, 1.0f, 1.0f});
 
                 FrameInfo frame_info{
                     frame_index,
@@ -264,7 +299,17 @@ namespace muon {
                     global_descriptor_sets[frame_index]
                 };
                 // render_system.renderModel(frame_info, *model);
-                render_system.renderModel(frame_info, *text_model);
+                // render_system.renderModel(frame_info, *text_model);
+
+                auto model_transform = registry.view<ModelComponent, TransformComponent>();
+                model_transform.each([&](ModelComponent &model, TransformComponent &transform) {
+                    render_system.renderModel(frame_info, *model.model.lock(), transform.transform);
+                });
+
+                auto text_transform = registry.view<TextComponent, TransformComponent>();
+                text_transform.each([&](TextComponent &text, TransformComponent &transform) {
+                    render_system.renderModel(frame_info, *text.text, transform.transform);
+                });
 
                 renderer.endSwapchainRenderPass(command_buffer);
                 renderer.endFrame();

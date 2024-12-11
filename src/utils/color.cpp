@@ -1,5 +1,8 @@
 #include "utils/color.hpp"
 
+#include <array>
+#include <glm/glm.hpp>
+
 namespace muon {
     namespace color {
         template <>
@@ -23,7 +26,7 @@ namespace muon {
         }
 
         template <>
-        std::array<float, 4> hexBytesToRgba<std::array<float, 4>>(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+        std::array<float, 4> hexToRgba<std::array<float, 4>>(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
             return {
                 static_cast<float>(r) / 0xFF,
                 static_cast<float>(g) / 0xFF,
@@ -33,7 +36,7 @@ namespace muon {
         }
 
         template <>
-        glm::vec4 hexBytesToRgba<glm::vec4>(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+        glm::vec4 hexToRgba<glm::vec4>(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
             return {
                 static_cast<float>(r) / 0xFF,
                 static_cast<float>(g) / 0xFF,
@@ -61,7 +64,7 @@ namespace muon {
         }
 
         template <>
-        std::array<float, 3> hexBytesToRgba<std::array<float, 3>>(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+        std::array<float, 3> hexToRgba<std::array<float, 3>>(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
             return {
                 static_cast<float>(r) / 0xFF,
                 static_cast<float>(g) / 0xFF,
@@ -70,7 +73,7 @@ namespace muon {
         }
 
         template <>
-        glm::vec3 hexBytesToRgb<glm::vec3>(uint8_t r, uint8_t g, uint8_t b) {
+        glm::vec3 hexToRgb<glm::vec3>(uint8_t r, uint8_t g, uint8_t b) {
             return {
                 static_cast<float>(r) / 0xFF,
                 static_cast<float>(g) / 0xFF,

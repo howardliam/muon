@@ -1,8 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <array>
-#include <glm/glm.hpp>
 
 namespace muon {
 
@@ -16,7 +14,7 @@ namespace muon {
         T hexToRgba(uint32_t color);
 
         template <typename T>
-        T hexBytesToRgba(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+        T hexToRgba(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
         /**
             *  Three byte hex to RGB
@@ -27,7 +25,7 @@ namespace muon {
         T hexToRgb(uint32_t color);
 
         template <typename T>
-        T hexBytesToRgb(uint8_t r, uint8_t g, uint8_t b);
+        T hexToRgb(uint8_t r, uint8_t g, uint8_t b);
     }
 
 }

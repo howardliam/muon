@@ -55,9 +55,12 @@ namespace muon {
     }
 
     vk::Result Swapchain::acquireNextImage(uint32_t* image_index) {
-        device.getDevice().waitForFences(1, &in_flight_fences[current_frame], vk::True, std::numeric_limits<uint64_t>::max());
+        auto result = device.getDevice().waitForFences(1, &in_flight_fences[current_frame], vk::True, std::numeric_limits<uint64_t>::max());
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to wait for fences");
+        }
 
-        vk::Result result = device.getDevice().acquireNextImageKHR(
+        result = device.getDevice().acquireNextImageKHR(
             swapchain,
             std::numeric_limits<uint64_t>::max(),
             image_available_semaphores[current_frame],
@@ -70,7 +73,10 @@ namespace muon {
 
     vk::Result Swapchain::submitCommandBuffers(const vk::CommandBuffer* buffers, uint32_t* image_index) {
         if (images_in_flight[*image_index] != nullptr) {
-            device.getDevice().waitForFences(1, &images_in_flight[*image_index], vk::True, UINT64_MAX);
+            auto result = device.getDevice().waitForFences(1, &images_in_flight[*image_index], vk::True, UINT64_MAX);
+            if (result != vk::Result::eSuccess) {
+                spdlog::warn("Failed to wait for fences");
+            }
         }
         images_in_flight[*image_index] = in_flight_fences[current_frame];
 
@@ -90,8 +96,12 @@ namespace muon {
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signal_semaphores;
 
-        device.getDevice().resetFences(1, &in_flight_fences[current_frame]);
-        if (device.getGraphicsQueue().submit(1, &submitInfo, in_flight_fences[current_frame]) != vk::Result::eSuccess) {
+        auto result = device.getDevice().resetFences(1, &in_flight_fences[current_frame]);
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to reset fences");
+        }
+        result = device.getGraphicsQueue().submit(1, &submitInfo, in_flight_fences[current_frame]);
+        if (result != vk::Result::eSuccess) {
             spdlog::error("Failed to submit draw command buffer");
             exit(exitcode::FAILURE);
         }
@@ -108,7 +118,10 @@ namespace muon {
 
         present_info.pImageIndices = image_index;
 
-        auto result = device.getPresentQueue().presentKHR(&present_info);
+        result = device.getPresentQueue().presentKHR(&present_info);
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to present swapchain");
+        }
 
         current_frame = (current_frame + 1) % MAX_FRAMES_IN_FLIGHT;
 
@@ -179,9 +192,15 @@ namespace muon {
             exit(exitcode::FAILURE);
         }
 
-        device.getDevice().getSwapchainImagesKHR(swapchain, &image_count, nullptr);
+        auto result = device.getDevice().getSwapchainImagesKHR(swapchain, &image_count, nullptr);
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to get swapchain images");
+        }
         swapchain_images.resize(image_count);
-        device.getDevice().getSwapchainImagesKHR(swapchain, &image_count, swapchain_images.data());
+        result = device.getDevice().getSwapchainImagesKHR(swapchain, &image_count, swapchain_images.data());
+        if (result != vk::Result::eSuccess) {
+            spdlog::warn("Failed to get swapchain images");
+        }
 
         swapchain_image_format = surface_format.format;
         swapchain_extent = extent;

@@ -1,13 +1,11 @@
 #include "engine/vulkan/device.hpp"
 
 #include <set>
-#include <spdlog/spdlog.h>
 #include <unordered_set>
 
+#include <spdlog/spdlog.h>
 #include <SDL3/SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_enums.hpp>
-#include <vulkan/vulkan_to_string.hpp>
 
 #include "utils/defaults.hpp"
 #include "utils/exitcode.hpp"

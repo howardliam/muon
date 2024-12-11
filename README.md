@@ -32,6 +32,14 @@ to cstdint (int32_t, int16_t, int8_t, etc.) where applicable
 - [ ] Post processing
   - [ ] Offscreen framebuffer rendering
   - [ ] Pipeline chain for effects
+    - [ ] Anti aliasing
+    - [ ] Ambient occlusion
+    - [ ] Screen space reflections
+- [ ] Descriptors
+  - [ ] Descriptor sets
+    - [ ] Global one for: camera, lights, other stuff
+    - [ ] One for textures for models
+    - [ ] One for other buffers like model transform data
 
 ### Audio
 - [ ] Audio (OpenAL)

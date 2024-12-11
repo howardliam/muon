@@ -19,6 +19,7 @@ namespace muon {
 
         // void render_game_objects(FrameInfo &frame_info, std::vector<GameObject>& game_objects);
         void renderModel(FrameInfo &frame_info, Model &model);
+        void renderModel(FrameInfo &frame_info, Model &model, glm::mat4 transform);
 
     private:
         Device &device;

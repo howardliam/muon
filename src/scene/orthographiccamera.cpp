@@ -6,7 +6,7 @@
 namespace muon {
 
     void OrthographicCamera::setProjection(float left, float right, float bottom, float top, float z_near, float z_far) {
-        projection = glm::ortho(left, right, bottom, top, 0.0001f, 1000.0f);
+        projection = glm::ortho(left, right, bottom, top, z_near, z_far);
     }
 
     void OrthographicCamera::lookAt(glm::vec3 position, glm::vec3 target, glm::vec3 up) {
